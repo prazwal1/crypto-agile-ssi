@@ -35,8 +35,8 @@ $gitBin = if ($git) { Join-Path (Split-Path (Split-Path $git.Source)) "bin" } el
 $node = Get-Command node -ErrorAction SilentlyContinue
 if ($node) {
   $nv = (node --version).TrimStart("v"); $major = [int]$nv.Split(".")[0]
-  if ($major -ge 18 -and $major -le 22) { Pass "Node $nv" } else { Fail "Node 18 to 22 required, found $nv (Node 20 LTS recommended)" }
-} else { Fail "Node.js 20 LTS (https://nodejs.org)" }
+  if ($major -ge 18 -and $major -le 22) { Pass "Node $nv" } else { Fail "Node 18 to 22 required, found $nv (Node 22 LTS recommended)" }
+} else { Fail "Node.js 22 LTS (https://nodejs.org/en/download, choose v22)" }
 
 # JDK 17 (RN 0.74 / AGP 8.4). Fall back to Android Studio's bundled JBR.
 if (-not $env:JAVA_HOME) {
@@ -46,7 +46,7 @@ if (-not $env:JAVA_HOME) {
 if ($env:JAVA_HOME -and (Test-Path "$env:JAVA_HOME\bin\java.exe")) {
   $jv = (cmd /c "`"$env:JAVA_HOME\bin\java.exe`" -version 2>&1" | Select-Object -First 1)
   if ($jv -match '"(17|21)\.') { Pass "JDK: $jv" } else { Warn "JDK 17 recommended, found: $jv" }
-} else { Fail "JDK 17 (install Android Studio, or Temurin 17, and set JAVA_HOME)" }
+} else { Fail "JDK 17 or 21 (Android Studio bundles one; or install Temurin 21 and set JAVA_HOME)" }
 
 # Android SDK
 $sdk = if ($env:ANDROID_HOME) { $env:ANDROID_HOME } elseif ($env:ANDROID_SDK_ROOT) { $env:ANDROID_SDK_ROOT } else { "$env:LOCALAPPDATA\Android\Sdk" }
