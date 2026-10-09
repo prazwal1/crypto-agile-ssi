@@ -1,0 +1,47 @@
+﻿**********************
+Windows PowerShell transcript start
+Start time: 20261009150452
+Username: PRAJWAL\Prajwal
+RunAs User: PRAJWAL\Prajwal
+Configuration Name: 
+Machine: PRAJWAL (Microsoft Windows NT 10.0.26200.0)
+Host Application: powershell -NoProfile -ExecutionPolicy Bypass -File C:\Users\Prajwal\Documents\inji-thesis-stack\test-issuance.ps1
+Process ID: 5960
+PSVersion: 5.1.26100.9444
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.9444
+BuildVersion: 10.0.26100.9444
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+=== test-issuance 2026-10-09T15:04:52 ===
+Public Certify URL: https://should-waters-mens-incomplete.trycloudflare.com
+  saved did          .\logs\evidence\20261009-1504-did.json (666 bytes)
+  saved issuer-meta  .\logs\evidence\20261009-1504-issuer-meta.json (1540 bytes)
+  saved as-meta      .\logs\evidence\20261009-1504-as-meta.json (566 bytes)
+  saved jwks         .\logs\evidence\20261009-1504-jwks.json (7509 bytes)
+
+=== credential offer ===
+Unexpected response:
+{
+    "responseTime":  "2026-10-09T08:04:54.303Z",
+    "response":  null,
+    "errors":  [
+                   {
+                       "errorCode":  "unknown_claims",
+                       "errorMessage":  "unknown_claims"
+                   }
+               ]
+}
+
+=== certify log (last 2 min, errors) ===
+{"@timestamp":"2026-10-09T08:04:54.300Z","@version":"1","message":"Unknown claims provided: [mobileNumber, state, district, villageOrTown, postalCode, landArea, landOwnershipType, primaryCropType, secondaryCropType, face, farmerID]","logger_name":"io.mosip.certify.services.PreAuthorizedCodeService","thread_name":"http-nio-8090-exec-7","level":"ERROR","level_value":40000,"appName":"certify","traceId":"6ac8a02674923aed8a64bac5a75e4ea4","spanId":"2080b78a9ea681e9"}
+{"@timestamp":"2026-10-09T08:04:54.302Z","@version":"1","message":"Unhandled exception encountered in handler advice","logger_name":"io.mosip.certify.advice.ExceptionHandlerAdvice","thread_name":"http-nio-8090-exec-7","level":"ERROR","level_value":40000,"stack_trace":"io.mosip.certify.core.exception.InvalidRequestException: unknown_claims\n\tat io.mosip.certify.services.PreAuthorizedCodeService.validateClaimsForLDPVC(PreAuthorizedCodeService.java:171)\n\tat io.mosip.certify.services.PreAuthorize
+
+=== done 2026-10-09T15:04:54 ===
+**********************
+Windows PowerShell transcript end
+End time: 20261009150454
+**********************

@@ -1,0 +1,100 @@
+﻿**********************
+Windows PowerShell transcript start
+Start time: 20261009145649
+Username: PRAJWAL\Prajwal
+RunAs User: PRAJWAL\Prajwal
+Configuration Name: 
+Machine: PRAJWAL (Microsoft Windows NT 10.0.26200.0)
+Host Application: powershell -NoProfile -ExecutionPolicy Bypass -File C:\Users\Prajwal\Documents\inji-thesis-stack\fix-and-check.ps1
+Process ID: 18768
+PSVersion: 5.1.26100.9444
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.9444
+BuildVersion: 10.0.26100.9444
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+=== fix-and-check 2026-10-09T14:56:49 ===
+Starting tunnels...
+  Certify: https://should-waters-mens-incomplete.trycloudflare.com
+  Mimoto : https://optimal-deviation-config-differences.trycloudflare.com
+Recreating Certify with the public URL...
+Waiting for Certify through the tunnel (1 to 3 minutes)...
+PS>TerminatingError(Invoke-WebRequest): "error code: 502
+"
+>> TerminatingError(Invoke-WebRequest): "error code: 502
+"
+>> TerminatingError(Invoke-WebRequest): "error code: 502
+"
+  OK    mimoto           https://optimal-deviation-config-differences.trycloudflare.com/v1/mimoto/issuers
+PS>TerminatingError(Invoke-WebRequest): "error code: 502
+"
+>> TerminatingError(Invoke-WebRequest): "error code: 502
+"
+>> TerminatingError(Invoke-WebRequest): "error code: 502
+"
+  OK    issuer metadata  https://should-waters-mens-incomplete.trycloudflare.com/v1/certify/.well-known/openid-credential-issuer
+  OK    AS metadata      https://should-waters-mens-incomplete.trycloudflare.com/.well-known/oauth-authorization-server
+  OK    issuer DID       https://should-waters-mens-incomplete.trycloudflare.com/.well-known/did.json
+  DID id: did:web:should-waters-mens-incomplete.trycloudflare.com
+
+Wrote wallet.env (MIMOTO_HOST=https://optimal-deviation-config-differences.trycloudflare.com). Run ..\inji-thesis-wallet\setup-wallet.ps1 or sync-env.ps1 next.
+
+=== docker compose ps ===
+NAME             IMAGE                                        COMMAND                  SERVICE          CREATED          STATUS                PORTS
+certify          injistack/inji-certify-with-plugins:0.14.0   "./configure_start.sΓÇª"   certify          9 minutes ago    Up 25 seconds         0.0.0.0:8090->8090/tcp, [::]:8090->8090/tcp
+certify-nginx    nginx:stable                                 "/docker-entrypoint.ΓÇª"   certify-nginx    6 days ago       Up 24 seconds         0.0.0.0:8091->80/tcp, [::]:8091->80/tcp
+inji-postgres    postgres:15                                  "docker-entrypoint.sΓÇª"   database         6 days ago       Up 6 days (healthy)   0.0.0.0:5433->5432/tcp, [::]:5433->5432/tcp
+inji-web         injistack/inji-web:0.16.0                    "./configure_start.sΓÇª"   inji-web         6 days ago       Up 6 days             0.0.0.0:3004->3004/tcp, [::]:3004->3004/tcp
+mimoto-service   injistack/mimoto:0.21.0                      "/__cacert_entrypoinΓÇª"   mimoto-service   45 minutes ago   Up 45 minutes         0.0.0.0:8099->8099/tcp, [::]:8099->8099/tcp
+tunnel-certify   cloudflare/cloudflared:latest                "cloudflared --no-auΓÇª"   tunnel-certify   29 hours ago     Up 9 minutes
+tunnel-mimoto    cloudflare/cloudflared:latest                "cloudflared --no-auΓÇª"   tunnel-mimoto    29 hours ago     Up 9 minutes
+verify-service   injistack/inji-verify-service:0.18.2         "/__cacert_entrypoinΓÇª"   verify-service   6 days ago       Up 6 days             0.0.0.0:8095->8080/tcp, [::]:8095->8080/tcp
+verify-ui        injistack/inji-verify-ui:0.18.2              "/configure_start.shΓÇª"   verify-ui        6 days ago       Up 6 days             0.0.0.0:3000->8000/tcp, [::]:3000->8000/tcp
+
+=== local checks ===
+  200  http://localhost:8090/v1/certify/actuator/health
+  200  http://localhost:8091/.well-known/did.json
+  200  http://localhost:8091/.well-known/openid-credential-issuer
+  200  http://localhost:8090/v1/certify/.well-known/oauth-authorization-server
+  200  http://localhost:8091/.well-known/oauth-authorization-server
+  200  http://localhost:8099/v1/mimoto/issuers
+
+=== .env ===
+PUBLIC_CERTIFY_URL=https://should-waters-mens-incomplete.trycloudflare.com
+PUBLIC_CERTIFY_HOST=should-waters-mens-incomplete.trycloudflare.com
+PUBLIC_MIMOTO_URL=https://optimal-deviation-config-differences.trycloudflare.com
+
+=== tunnel-certify (last 15) ===
+2026-10-09T07:47:38Z INF precheck component="DNS Resolution" details="DNS Resolved successfully" run_id=69de279d-b769-48b7-b057-545e6120c209 status=pass target=region2.v2.argotunnel.com
+2026-10-09T07:47:38Z INF precheck component="UDP Connectivity" details="QUIC connection successful" run_id=69de279d-b769-48b7-b057-545e6120c209 status=pass target=region1.v2.argotunnel.com
+2026-10-09T07:47:38Z INF precheck component="UDP Connectivity" details="QUIC connection successful" run_id=69de279d-b769-48b7-b057-545e6120c209 status=pass target=region2.v2.argotunnel.com
+2026-10-09T07:47:38Z INF precheck component="TCP Connectivity" details="HTTP/2 connection successful" run_id=69de279d-b769-48b7-b057-545e6120c209 status=pass target=region1.v2.argotunnel.com
+2026-10-09T07:47:38Z INF precheck component="TCP Connectivity" details="HTTP/2 connection successful" run_id=69de279d-b769-48b7-b057-545e6120c209 status=pass target=region2.v2.argotunnel.com
+2026-10-09T07:47:38Z INF precheck component="Cloudflare API" details="API is reachable" run_id=69de279d-b769-48b7-b057-545e6120c209 status=pass target=api.cloudflare.com:443
+2026-10-09T07:47:38Z INF precheck complete hard_fail=false run_id=69de279d-b769-48b7-b057-545e6120c209 suggested_protocol=quic
+2026-10-09T07:47:39Z INF Registered tunnel connection connIndex=0 connection=c5efe268-0006-4814-9c6b-d5f91f273f27 event=0 ip=198.41.192.167 location=sin08 protocol=quic
+
+=== tunnel-mimoto (last 15) ===
+2026-10-09T07:47:38Z INF precheck component="DNS Resolution" details="DNS Resolved successfully" run_id=6847ba82-fe65-4b9e-a8fe-1ed530f2436c status=pass target=region2.v2.argotunnel.com
+2026-10-09T07:47:38Z INF precheck component="UDP Connectivity" details="QUIC connection successful" run_id=6847ba82-fe65-4b9e-a8fe-1ed530f2436c status=pass target=region1.v2.argotunnel.com
+2026-10-09T07:47:38Z INF precheck component="UDP Connectivity" details="QUIC connection successful" run_id=6847ba82-fe65-4b9e-a8fe-1ed530f2436c status=pass target=region2.v2.argotunnel.com
+2026-10-09T07:47:38Z INF precheck component="TCP Connectivity" details="HTTP/2 connection successful" run_id=6847ba82-fe65-4b9e-a8fe-1ed530f2436c status=pass target=region1.v2.argotunnel.com
+2026-10-09T07:47:38Z INF precheck component="TCP Connectivity" details="HTTP/2 connection successful" run_id=6847ba82-fe65-4b9e-a8fe-1ed530f2436c status=pass target=region2.v2.argotunnel.com
+2026-10-09T07:47:38Z INF precheck component="Cloudflare API" details="API is reachable" run_id=6847ba82-fe65-4b9e-a8fe-1ed530f2436c status=pass target=api.cloudflare.com:443
+2026-10-09T07:47:38Z INF precheck complete hard_fail=false run_id=6847ba82-fe65-4b9e-a8fe-1ed530f2436c suggested_protocol=quic
+2026-10-09T07:47:39Z INF Registered tunnel connection connIndex=0 connection=5fafddb7-805f-440b-8de2-3666ff1d9b9d event=0 ip=198.41.200.63 location=sin12 protocol=quic
+
+=== certify errors (last 10) ===
+{"@timestamp":"2026-10-09T07:48:13.586Z","@version":"1","message":"Started CertifyServiceApplication in 19.953 seconds (process running for 21.383)","logger_name":"io.mosip.certify.CertifyServiceApplication","thread_name":"main","level":"INFO","level_value":20000,"appName":"certify"}
+{"@timestamp":"2026-10-09T07:52:57.696Z","@version":"1","message":"Unhandled exception encountered in handler advice","logger_name":"io.mosip.certify.advice.ExceptionHandlerAdvice","thread_name":"http-nio-8090-exec-1","level":"ERROR","level_value":40000,"stack_trace":"org.springframework.security.authentication.InsufficientAuthenticationException: Full authentication is required to access this res
+{"@timestamp":"2026-10-09T07:57:07.343Z","@version":"1","message":"Started CertifyServiceApplication in 13.527 seconds (process running for 14.818)","logger_name":"io.mosip.certify.CertifyServiceApplication","thread_name":"main","level":"INFO","level_value":20000,"appName":"certify"}
+{"@timestamp":"2026-10-09T07:57:18.048Z","@version":"1","message":"Unhandled exception encountered in handler advice","logger_name":"io.mosip.certify.advice.ExceptionHandlerAdvice","thread_name":"http-nio-8090-exec-5","level":"ERROR","level_value":40000,"stack_trace":"org.springframework.security.authentication.InsufficientAuthenticationException: Full authentication is required to access this res
+
+=== done 2026-10-09T14:57:18 ===
+**********************
+Windows PowerShell transcript end
+End time: 20261009145718
+**********************
