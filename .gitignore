@@ -1,0 +1,16 @@
+# Runtime state and secrets
+env/stack/.env
+env/stack/wallet.env
+env/stack/logs/
+env/stack/data/
+env/stack/offer.html
+
+# Pinned third-party clones (recreate with tools/clone-baseline)
+phase1-dependency-analysis/repos/
+
+# OS / editor
+Thumbs.db
+desktop.ini
+.DS_Store
+.vscode/
+__pycache__/
