@@ -83,6 +83,7 @@ Environment problems and fixes are listed in `known-issues.md`. Commands are run
 | `start` | Pull images, start containers, publish tunnels, run checks |
 | `refresh-tunnels` | Replace dead tunnels; update issuer URL, DID and `wallet.env` |
 | `check` | Container state, local and public endpoints, tunnel status, recent errors |
+| `restart-issuer` | Restart Certify and nginx after a configuration change |
 | `apply-patches` | Apply `sql/patches/*.sql` to the running database |
 | `capture-baseline` | Save issuer DID and metadata under `evidence/` |
 | `issue-offer` | Pre-authorized FarmerCredential offer as a QR code |
