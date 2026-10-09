@@ -16,4 +16,5 @@ Environment problems met so far, how they showed up, and the fix in place. Dates
 | 2026-10-09 | Dead hostnames reported as alive | `Resolve-DnsName` returns the zone SOA record for a missing name | Check requires an A record |
 | 2026-10-09 | `certify-nginx` returns 502 after Certify restarts | nginx caches the upstream container address | nginx restarted after every Certify restart (`Restart-Issuer`) |
 | 2026-10-09 | Credential offer rejected with `unknown_claims` | Upstream seed declares 4 of the 14 CSV claims | SQL patch 001 |
+| 2026-10-09 | Credential offer fails with `credentialOfferCache not available` | Cache list in the injistack-derived config predates Certify 0.14.0; offer and pre-auth caches not declared | Cache names, sizes and expiry aligned with Certify 0.14.0 defaults in `certify-default.properties` |
 | 2026-10-09 | Certify logs `InsufficientAuthenticationException` shortly after each start | Not yet investigated; no functional impact seen | Open |

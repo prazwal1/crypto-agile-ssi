@@ -6,6 +6,10 @@ Dated record of working sessions. Each entry states what was done, what was obse
 
 ## 2026-10-09 (Fri)
 
+### Stack moved to the repository
+- Stopped the previous stack and started it from `env/stack` (15:18). New tunnels; issuer DID now `did:web:cardiac-poor-which-springs.trycloudflare.com`. All public endpoints OK; database and issuer keys carried over.
+- Applied SQL patch 001 (15:21). The next offer attempt no longer failed on claims but on `credentialOfferCache not available`: the cache list in the configuration inherited from the injistack compose predates Certify 0.14.0. Aligned the cache configuration with the 0.14.0 defaults.
+
 ### Repository restructure
 - Consolidated the environment (`env/`), Phase 1 analysis and evidence into this single repository under version control.
 - Replaced ad hoc scripts with one entry point, `env/stack/stack.ps1 <command>`, which logs every run to `env/stack/logs/`.
