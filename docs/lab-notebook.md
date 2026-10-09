@@ -9,6 +9,7 @@ Dated record of working sessions. Each entry states what was done, what was obse
 ### Stack moved to the repository
 - Stopped the previous stack and started it from `env/stack` (15:18). New tunnels; issuer DID now `did:web:cardiac-poor-which-springs.trycloudflare.com`. All public endpoints OK; database and issuer keys carried over.
 - Applied SQL patch 001 (15:21). The next offer attempt no longer failed on claims but on `credentialOfferCache not available`: the cache list in the configuration inherited from the injistack compose predates Certify 0.14.0. Aligned the cache configuration with the 0.14.0 defaults.
+- After `restart-issuer`, `issue-offer` succeeded: Certify returned a pre-authorized FarmerCredential offer (OpenID4VCI `credential_offer_uri`), rendered as a QR code. Server-side issuance path confirmed; the wallet is the next component.
 
 ### Repository restructure
 - Consolidated the environment (`env/`), Phase 1 analysis and evidence into this single repository under version control.
