@@ -1,0 +1,40 @@
+# Phase 1 crypto-binding rule catalog.
+# Each rule: id, kind, algorithm (what it binds to), surface (default S1-S4 guess,
+# overridden by path rules in scan.py), regex (ripgrep / Rust regex syntax).
+# kind: alg = algorithm identifier, suite = proof suite / VC format,
+#       vm = verification-method encoding, api = crypto API call site,
+#       lib = crypto library dependency or import
+rules:
+  # ---- algorithm identifiers ----
+  - {id: ALG-ED25519,   kind: alg, algorithm: Ed25519,     surface: "",  regex: '\b(Ed25519|ED25519|EdDSA|EDDSA|ed25519)'}
+  - {id: ALG-P256,      kind: alg, algorithm: ECDSA-P256,  surface: "",  regex: '(\bES256\b|\bsecp256r1|\bSECP256R1|\bprime256v1|\bP-256\b|\bP_256|\bEC_P256)'}
+  - {id: ALG-K256,      kind: alg, algorithm: secp256k1,   surface: "",  regex: '\b(ES256K|secp256k1|SECP256K1|Secp256k1)'}
+  - {id: ALG-P384,      kind: alg, algorithm: ECDSA-P384,  surface: "",  regex: '\b(ES384|secp384r1|P-384)\b'}
+  - {id: ALG-RSA,       kind: alg, algorithm: RSA,         surface: "",  regex: '\b(RS256|PS256|RS512|RSA|Rsa(Signature|Verifier|Signer|Key)|SHA256withRSA)'}
+  - {id: ALG-X25519,    kind: alg, algorithm: X25519,      surface: S4,  regex: '\b(X25519|x25519|Curve25519|curve25519|XDH)'}
+  - {id: ALG-BBS,       kind: alg, algorithm: BBS/BLS,     surface: S3,  regex: '\b(BBS\+?|Bls12381G2|bls12381|BLS12-381)\b'}
+  - {id: ALG-PQ,        kind: alg, algorithm: post-quantum, surface: "", regex: '\b(ML-DSA|MLDSA|Dilithium|SLH-DSA|SPHINCS|Falcon|FN-DSA|ML-KEM|Kyber)\b'}
+
+  # ---- proof suites and credential formats (S3) ----
+  - {id: SUITE-LEGACY,  kind: suite, algorithm: "",  surface: S3, regex: '\b(Ed25519Signature2018|Ed25519Signature2020|EcdsaSecp256k1Signature2019|EcdsaSecp256r1Signature2019|RsaSignature2018|JsonWebSignature2020)\b'}
+  - {id: SUITE-DI,      kind: suite, algorithm: "",  surface: S3, regex: '\b(DataIntegrityProof|eddsa-rdfc-2022|eddsa-jcs-2022|ecdsa-rdfc-2019|ecdsa-jcs-2019|ecdsa-sd-2023|bbs-2023)\b'}
+  - {id: VC-FORMAT,     kind: suite, algorithm: "",  surface: S3, regex: '(ldp_vc|jwt_vc_json(-ld)?|vc\+sd-jwt|dc\+sd-jwt|mso_mdoc)'}
+
+  # ---- verification-method / DID document encoding (S2) ----
+  - {id: VM-ENCODING,   kind: vm, algorithm: "", surface: S2, regex: '\b(Multikey|publicKeyMultibase|publicKeyJwk|publicKeyPem|Ed25519VerificationKey20(18|20)|JsonWebKey2020|EcdsaSecp256k1VerificationKey2019|verificationMethod)\b'}
+  - {id: VM-MULTICODEC, kind: vm, algorithm: "", surface: S2, regex: '(0xed01|0x8024|0x8124|0xe701|\bz6Mk|\bzDn)'}
+  - {id: DID-METHOD,    kind: vm, algorithm: "", surface: S2, regex: '\bdid:(web|key|jwk|ion|indy|peer)\b'}
+
+  # ---- key generation / storage (S1) ----
+  - {id: API-KEYGEN,    kind: api, algorithm: "", surface: S1, regex: '\b(KeyPairGenerator|KeyGenParameterSpec|AndroidKeyStore|KeyStore\.getInstance|kSecAttrKeyType\w*|SecureEnclave|generateKeyPair|generateKey)\b'}
+
+  # ---- sign / verify call sites (surface decided by path) ----
+  - {id: API-SIGN,      kind: api, algorithm: "", surface: "", regex: '\b(Signature\.getInstance|JWSSigner|Ed25519Signer|ECDSASigner|RSASSASigner|JWSAlgorithm\.\w+|createSign|signJWT|sign\(|\.sign\b)'}
+  - {id: API-VERIFY,    kind: api, algorithm: "", surface: "", regex: '\b(JWSVerifier|Ed25519Verifier|ECDSAVerifier|RSASSAVerifier|\.verify\()'}
+  - {id: JOSE-ALG,      kind: api, algorithm: "", surface: "", regex: '\balg["'']?\s*[:=]'}
+
+  # ---- transport / key agreement (S4) ----
+  - {id: API-TRANSPORT, kind: api, algorithm: "", surface: S4, regex: '\b(KeyAgreement|ECDH\w*|ECDH-ES|AES/GCM\S*|AES-GCM|A256GCM|HKDF|ChaCha20\S*)\b'}
+
+  # ---- crypto libraries ----
+  - {id: LIB,           kind: lib, algorithm: "", surface: "", regex: '(org\.bouncycastle|bcprov|bcpkix|com\.nimbusds|nimbus-jose-jwt|com\.google\.crypto\.tink|node-forge|node-jose|@noble/\w+|jsrsasign|jose4j|@digitalbazaar/[\w-]+|jsonld-signatures|io\.ipfs\.multibase|titanium-json-ld|kernel-keymanager|io\.mosip\.kernel\.keymanager|react-native-rsa-native|expo-crypto)'}
