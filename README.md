@@ -31,6 +31,8 @@ Supervisor: Aj. George
 
 Requirements: Windows 10/11 with Docker Desktop (WSL2), Git, Node 20, JDK 17, Android Studio (SDK), Python 3 with PyYAML, ripgrep.
 
+PowerShell scripts need local scripts to be allowed once per user (`Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`). Without that, use `env\stack\stack.cmd <command>`, which runs `stack.ps1` with a per-call bypass.
+
 ```powershell
 cd env\stack
 .\stack.ps1 start              # pull, start, publish tunnels, health check
