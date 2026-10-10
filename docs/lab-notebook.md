@@ -9,6 +9,9 @@ Dated record of working sessions. Each entry states what was done, what was obse
 ### Wallet toolchain
 - Installed Node 22.23.2 and Android Studio (winget). Setup check: Git and Node OK; Android SDK not yet present (first-run wizard not completed); Android Studio's bundled JDK is 25.
 - JDK 25 is outside what Gradle 8.6 (wallet build) supports. Added `env/wallet/find-jdk.ps1` to select a JDK 17 to 21 explicitly; the setup now fails with an actionable message instead of a warning. Temurin 17 to be installed.
+- Installed Temurin 17.0.20 and, through the Android Studio SDK Manager, SDK platform 35, build-tools 35.0.0, NDK 21.4.7075529, command-line tools and platform-tools.
+- `setup-wallet.ps1` completed (20:50): Inji Wallet v0.22.1 cloned to `C:\dev\inji-wallet`, branch `thesis/crypto-agility` and tag `thesis-baseline` created on the release commit, `.env` pointed at the local Mimoto tunnel, npm dependencies installed.
+- First `run-wallet.ps1` started.
 
 ---
 
