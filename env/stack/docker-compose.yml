@@ -9,6 +9,7 @@ services:
   database:
     image: postgres:15
     container_name: inji-postgres
+    restart: unless-stopped
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
@@ -29,6 +30,7 @@ services:
   certify:
     image: injistack/inji-certify-with-plugins:0.14.0
     container_name: certify
+    restart: unless-stopped
     user: root
     ports:
       - "8090:8090"
@@ -56,6 +58,7 @@ services:
   certify-nginx:
     image: nginx:stable
     container_name: certify-nginx
+    restart: unless-stopped
     ports:
       - "8091:80"
     volumes:
@@ -71,6 +74,7 @@ services:
   mimoto-service:
     image: injistack/mimoto:0.21.0
     container_name: mimoto-service
+    restart: unless-stopped
     user: root
     ports:
       - "8099:8099"
@@ -100,6 +104,7 @@ services:
   inji-web:
     image: injistack/inji-web:0.16.0
     container_name: inji-web
+    restart: unless-stopped
     ports:
       - "3004:3004"
     environment:
@@ -118,6 +123,7 @@ services:
   verify-service:
     image: injistack/inji-verify-service:0.18.2
     container_name: verify-service
+    restart: unless-stopped
     user: root
     ports:
       - "8095:8080"
@@ -144,6 +150,7 @@ services:
   verify-ui:
     image: injistack/inji-verify-ui:0.18.2
     container_name: verify-ui
+    restart: unless-stopped
     ports:
       - "3000:8000"
     environment:

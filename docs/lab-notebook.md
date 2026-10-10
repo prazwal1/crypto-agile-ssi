@@ -12,6 +12,7 @@ Dated record of working sessions. Each entry states what was done, what was obse
 - Installed Temurin 17.0.20 and, through the Android Studio SDK Manager, SDK platform 35, build-tools 35.0.0, NDK 21.4.7075529, command-line tools and platform-tools.
 - `setup-wallet.ps1` completed (20:50): Inji Wallet v0.22.1 cloned to `C:\dev\inji-wallet`, branch `thesis/crypto-agility` and tag `thesis-baseline` created on the release commit, `.env` pointed at the local Mimoto tunnel, npm dependencies installed.
 - First `run-wallet.ps1` started.
+- After a laptop restart, `refresh-tunnels` (20:53) produced new tunnels (issuer DID `did:web:boot-obligation-pope-acrobat.trycloudflare.com`); Certify endpoints OK, Mimoto tunnel 502. `check` (21:09) showed Mimoto, Inji Web and Verify not running: no restart policy. Added `restart: unless-stopped` to all services and made `refresh-tunnels` start the full stack.
 
 ---
 

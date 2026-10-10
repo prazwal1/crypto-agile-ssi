@@ -42,7 +42,8 @@ function Test-TunnelDead($name) {
 }
 
 Write-Section "Tunnels"
-docker compose up -d tunnel-certify tunnel-mimoto | Out-Null
+# Make sure every service is running (containers stopped by a reboot are started again).
+docker compose up -d | Out-Null
 $certifyUrl = Get-TunnelUrl "tunnel-certify"
 $mimotoUrl  = Get-TunnelUrl "tunnel-mimoto"
 
