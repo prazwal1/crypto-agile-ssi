@@ -9,7 +9,10 @@ param(
 $ErrorActionPreference = "Continue"
 $sdk = if ($env:ANDROID_HOME) { $env:ANDROID_HOME } else { "$env:LOCALAPPDATA\Android\Sdk" }
 $env:ANDROID_HOME = $sdk
-if (-not $env:JAVA_HOME -and (Test-Path "C:\Program Files\Android\Android Studio\jbr")) { $env:JAVA_HOME = "C:\Program Files\Android\Android Studio\jbr" }
+. "$PSScriptRoot\find-jdk.ps1"
+$jdk = Find-SupportedJdk
+if (-not $jdk) { Write-Host "No JDK 17 or 21 found. Run setup-wallet.ps1 first." -ForegroundColor Red; exit 1 }
+$env:JAVA_HOME = $jdk.Home
 $adb = "$sdk\platform-tools\adb.exe"
 
 & "$PSScriptRoot\sync-wallet-env.ps1" -WalletDir $WalletDir -StackDir $StackDir

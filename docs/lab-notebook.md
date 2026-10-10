@@ -4,6 +4,14 @@ Dated record of working sessions. Each entry states what was done, what was obse
 
 ---
 
+## 2026-10-10 (Sat)
+
+### Wallet toolchain
+- Installed Node 22.23.2 and Android Studio (winget). Setup check: Git and Node OK; Android SDK not yet present (first-run wizard not completed); Android Studio's bundled JDK is 25.
+- JDK 25 is outside what Gradle 8.6 (wallet build) supports. Added `env/wallet/find-jdk.ps1` to select a JDK 17 to 21 explicitly; the setup now fails with an actionable message instead of a warning. Temurin 17 to be installed.
+
+---
+
 ## 2026-10-09 (Fri)
 
 ### Stack moved to the repository

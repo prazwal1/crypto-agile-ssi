@@ -3,7 +3,7 @@
   One-time setup of the Inji Wallet working copy used for the experiments.
 
 .DESCRIPTION
-  Checks prerequisites (Git, Node 18-22, JDK 17, Android SDK packages), clones
+  Checks prerequisites (Git, Node 18-22, JDK 17 or 21, Android SDK packages), clones
   mosip/inji-wallet at the pinned tag into a short path (Windows 260-character limit),
   creates the working branch and the baseline tag, points the wallet at the local
   Mimoto, and installs npm dependencies.
@@ -38,15 +38,16 @@ if ($node) {
   if ($major -ge 18 -and $major -le 22) { Pass "Node $nv" } else { Fail "Node 18 to 22 required, found $nv (Node 22 LTS recommended)" }
 } else { Fail "Node.js 22 LTS (https://nodejs.org/en/download, choose v22)" }
 
-# JDK 17 (RN 0.74 / AGP 8.4). Fall back to Android Studio's bundled JBR.
-if (-not $env:JAVA_HOME) {
-  $jbr = "C:\Program Files\Android\Android Studio\jbr"
-  if (Test-Path "$jbr\bin\java.exe") { $env:JAVA_HOME = $jbr; Warn "JAVA_HOME not set, using Android Studio JBR for this session" }
+# JDK 17 or 21. Gradle 8.6 (used by the wallet) cannot run on Java 22+, and recent
+# Android Studio releases bundle a newer JBR, so look for a Temurin 17/21 install first.
+. "$PSScriptRoot\find-jdk.ps1"
+$jdk = Find-SupportedJdk
+if ($jdk) {
+  $env:JAVA_HOME = $jdk.Home
+  Pass "JDK $($jdk.Major) at $($jdk.Home)"
+} else {
+  Fail "JDK 17 or 21 (winget install -e --id EclipseAdoptium.Temurin.17.JDK). Android Studio's bundled JDK is too new for Gradle 8.6"
 }
-if ($env:JAVA_HOME -and (Test-Path "$env:JAVA_HOME\bin\java.exe")) {
-  $jv = (cmd /c "`"$env:JAVA_HOME\bin\java.exe`" -version 2>&1" | Select-Object -First 1)
-  if ($jv -match '"(17|21)\.') { Pass "JDK: $jv" } else { Warn "JDK 17 recommended, found: $jv" }
-} else { Fail "JDK 17 or 21 (Android Studio bundles one; or install Temurin 21 and set JAVA_HOME)" }
 
 # Android SDK
 $sdk = if ($env:ANDROID_HOME) { $env:ANDROID_HOME } elseif ($env:ANDROID_SDK_ROOT) { $env:ANDROID_SDK_ROOT } else { "$env:LOCALAPPDATA\Android\Sdk" }
@@ -67,7 +68,7 @@ if (Test-Path $sdk) {
     cmd /c "echo y| `"$($sdkmanager.FullName)`" --licenses" | Out-Null
     & $sdkmanager.FullName @missing
   } else { Fail "SDK packages $($missing -join ', '). Install 'Android SDK Command-line Tools' in Android Studio > SDK Manager > SDK Tools, then rerun" }
-} else { Fail "Android SDK (install Android Studio, open it once to download the SDK)" }
+} else { Fail "Android SDK not found at $sdk. Open Android Studio once and finish the setup wizard (Standard install) to download it" }
 
 if (-not $ok) { Write-Host "`nFix the MISS items and rerun." -ForegroundColor Red; exit 1 }
 
