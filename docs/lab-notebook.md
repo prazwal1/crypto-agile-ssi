@@ -4,6 +4,15 @@ Dated record of working sessions. Each entry states what was done, what was obse
 
 ---
 
+## 2026-10-11 (Sun)
+
+### Full stack green
+- `start` (21:29) with the restart policy in place: all 8 local endpoints 200 (Certify, nginx, Mimoto, Verify UI, Inji Web); both tunnels registered; all public endpoints 200.
+- Issuer DID: `did:web:operator-breakfast-painting-favors.trycloudflare.com`. Mimoto: `https://unlimited-rebecca-display-though.trycloudflare.com`.
+- Next: rebuild the wallet against the new Mimoto URL and attempt the first issuance on the emulator.
+
+---
+
 ## 2026-10-10 (Sat)
 
 ### Wallet toolchain
