@@ -19,7 +19,7 @@ Scope and design decisions, with the reasoning at the time. Open items first.
 | ID | Decision | Date | Reasoning |
 |---|---|---|---|
 | C-01 | Prototype on MOSIP Inji rather than walt.id | 2026-08 | AIT hosts and uses MOSIP; realistic integration path |
-| C-02 | Physical Android phone, not emulator | 2026-10-01 | Hardware keystore behaviour (F3) is part of the findings |
+| C-02 | Physical Android phone, not emulator: Google Pixel 7, Android 17, StrongBox present | 2026-10-01, device fixed 2026-10-11 | Hardware keystore behaviour (F3) is part of the findings; StrongBox allows comparing TEE and StrongBox storage |
 | C-03 | Certify as its own OAuth server (pre-authorized code), no eSignet | 2026-10-04 | eSignet dependency in the reference compose was broken; pre-authorized flow is sufficient for crypto experiments |
 | C-04 | Certify and Verify run unmodified; Wallet and Mimoto are the modified side | 2026-10-04 | Unmodified counterparties are needed to demonstrate interoperability |
 | C-05 | Wallet v0.22.1 is the version anchor for all pinned repositories | 2026-10-08 | Its `build.gradle` fixes native library versions exactly |

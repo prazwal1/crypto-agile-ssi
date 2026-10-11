@@ -9,7 +9,17 @@ Dated record of working sessions. Each entry states what was done, what was obse
 ### Full stack green
 - `start` (21:29) with the restart policy in place: all 8 local endpoints 200 (Certify, nginx, Mimoto, Verify UI, Inji Web); both tunnels registered; all public endpoints 200.
 - Issuer DID: `did:web:operator-breakfast-painting-favors.trycloudflare.com`. Mimoto: `https://unlimited-rebecca-display-though.trycloudflare.com`.
-- Next: rebuild the wallet against the new Mimoto URL and attempt the first issuance on the emulator.
+### Test device
+| Property | Value |
+|---|---|
+| Model | Google Pixel 7 (serial 33010DLH2000KY) |
+| Android | 17 |
+| Security patch | 2026-09-05 |
+| StrongBox keystore | yes (`android.hardware.strongbox_keystore` = true) |
+| Connection | USB, ADB authorised |
+
+- The wallet targets API 35 (Android 15) and runs here under Android 17; platform behaviour changes between 15 and 17 are a possible confound for keystore observations and are noted for the analysis.
+- Next: build and install the wallet on the Pixel 7 against the new Mimoto URL, then attempt the first issuance.
 
 ---
 
