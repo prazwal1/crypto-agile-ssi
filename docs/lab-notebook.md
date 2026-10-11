@@ -19,7 +19,8 @@ Dated record of working sessions. Each entry states what was done, what was obse
 | Connection | USB, ADB authorised |
 
 - The wallet targets API 35 (Android 15) and runs here under Android 17; platform behaviour changes between 15 and 17 are a possible confound for keystore observations and are noted for the analysis.
-- Next: build and install the wallet on the Pixel 7 against the new Mimoto URL, then attempt the first issuance.
+- Inji Wallet v0.22.1 debug build (`residentappDebug`) installed and running on the Pixel 7 (21:54), JavaScript served by Metro over USB.
+- Next: first issuance from the pre-authorized offer.
 
 ---
 
