@@ -36,6 +36,11 @@ Evidence: `evidence/2026-10-13-first-issuance/logcat.txt` (server logs for this 
 - Server side of the failed attempt captured as well (nginx shows offer, metadata and token 200, credential request 400); see the evidence README.
 - After `restart-issuer` with `PreAuthDataProviderPlugin` (about 15:10): FarmerCredential downloaded and shown in the wallet. First end-to-end issuance on this stack. Not captured; capture on the next run.
 
+### First verification (about 15:12)
+Evidence: `evidence/2026-10-13-first-verification/`
+- Wallet QR uploaded to Inji Verify: "the given credential is valid". All 14 claims shown, so patch 001 holds end to end.
+- Unmodified Certify, wallet and Verify interoperate with Ed25519Signature2020 over `did:web`. Phase 1 runtime baseline complete. D-07 (`assertionMethod` lists the DID) did not stop Inji Verify; still to test against an external verifier (D-03).
+
 ---
 
 ## 2026-10-11 (Sun)
