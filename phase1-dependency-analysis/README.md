@@ -11,6 +11,7 @@ Answers RQ1: where, and how tightly, the Inji stack binds to specific cryptograp
 | `results/hits.csv` | Every match, including tests (raw, generated) |
 | `results/summary.csv` | Production matches per repository, surface and algorithm |
 | `results/inventory.csv` | Seeded inventory, one row per repository, file and rule; hand-scored columns blank |
+| `issuer-signing-path.md` | Certify to keymanager signing trace: call chain, key types, key hierarchy, registries |
 | `findings.md` | Findings confirmed by reading source or captured at runtime |
 | `repos/` | Pinned clones (not versioned; recreate with `clone-baseline`) |
 
@@ -42,4 +43,4 @@ Only `verified` rows are cited in the thesis or exported to the CBOM.
 - Regex matching locates candidate bindings; it does not follow data flow. Each cited finding is confirmed by reading the code.
 - Surface assignment is a path-based guess; 364 of 919 rows have no guess and are assigned during review.
 - iOS paths are scanned, but the prototype is Android only.
-- Certify signs through MOSIP keymanager, which is a Maven dependency and not yet in `repos/`.
+- Certify signs through MOSIP keymanager (Maven dependency, v1.4.0 per Certify's pom). Pinned in `manifest.tsv` and traced by hand in `issuer-signing-path.md`; the scanner inventory predates it and does not include keymanager.

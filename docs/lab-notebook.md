@@ -10,6 +10,11 @@ Dated record of working sessions. Each entry states what was done, what was obse
 - Mimoto image set to 0.22.0 to match the analysed source (C-07). Named Cloudflare tunnel on `arlabsnepal.com` (C-08): issuer DID now fixed at `did:web:ssi-issuer.arlabsnepal.com`, Mimoto at `https://ssi-mimoto.arlabsnepal.com`. Offer creation and actuator blocked on the public host (C-09).
 - `start` (20:13): named tunnel registered; all local and public endpoints 200. Wallet rebuilt against the new Mimoto host.
 
+### Issuer signing path (20:40)
+- Traced Certify 0.14.0 signing through MOSIP keymanager 1.4.0 (version from Certify's pom). Added keymanager to `manifest.tsv` and `repos/`. Write-up: `phase1-dependency-analysis/issuer-signing-path.md`.
+- New findings F12 to F15: 12 issuer-side registries per algorithm, key type encoded in reference-id strings with silent PS256/RS256 fallbacks, an RSA-2048 key hierarchy beneath the Ed25519 VC key, and the DID document's hard-coded `assertionMethod` (root cause of D-07).
+- To confirm: that the Certify image actually bundles keymanager 1.4.0.
+
 ### Reference run (20:22)
 Evidence: `evidence/2026-10-13-reference-run/`, issuer baseline re-captured in `evidence/2026-10-13-issuer-baseline/`
 - Issuance and verification succeeded end to end; Inji Verify reports the credential valid with all 14 claims.

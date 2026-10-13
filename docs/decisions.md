@@ -10,7 +10,7 @@ Scope and design decisions, with the reasoning at the time. Open items first.
 | D-02 | Is SD-JWT VC supported end to end in Inji? | Decides whether the commitment-based credential family is in scope | Certify validates `vc+sd-jwt` claims separately from `ldp_vc`; wallet support not yet checked |
 | D-03 | Which unmodified external verifier for P3 | Needed for the interoperability evaluation | Decide by M2 rather than M5 |
 | D-04 | ML-DSA library for Android/JVM | Phase 4 provider choice | BouncyCastle PQC classes are already a transitive dependency of Inji Verify (F8) |
-| D-07 | `assertionMethod` in the issuer DID document lists the DID, not the verification method id | May affect strict verifiers | Check against DID Core and the chosen external verifier |
+| D-07 | `assertionMethod` in the issuer DID document lists the DID, not the verification method id | May affect strict verifiers | Check against DID Core and the chosen external verifier. Root cause: hard-coded in `DIDDocumentUtil.java:62-63` (F15). Accepted by both Inji verifiers (F11) |
 
 ## Closed
 
