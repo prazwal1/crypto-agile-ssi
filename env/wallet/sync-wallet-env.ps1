@@ -3,7 +3,7 @@
   Copies MIMOTO_HOST from ..\stack\wallet.env (written by refresh-tunnels) into the wallet's .env.
 #>
 param(
-  [string]$WalletDir = "C:\dev\inji-wallet",
+  [string]$WalletDir = (Join-Path (Split-Path (Split-Path (Split-Path $PSScriptRoot))) "inji-wallet"),
   [string]$StackDir = (Join-Path (Split-Path -Parent $PSScriptRoot) "stack")
 )
 $src = Join-Path $StackDir "wallet.env"

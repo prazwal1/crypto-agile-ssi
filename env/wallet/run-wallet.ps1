@@ -3,7 +3,7 @@
   Builds and launches the Inji Wallet debug build on a USB phone (preferred) or emulator.
 #>
 param(
-  [string]$WalletDir = "C:\dev\inji-wallet",
+  [string]$WalletDir = (Join-Path (Split-Path (Split-Path (Split-Path $PSScriptRoot))) "inji-wallet"),
   [string]$StackDir = (Join-Path (Split-Path -Parent $PSScriptRoot) "stack")
 )
 $ErrorActionPreference = "Continue"
@@ -13,6 +13,8 @@ $env:ANDROID_HOME = $sdk
 $jdk = Find-SupportedJdk
 if (-not $jdk) { Write-Host "No JDK 17 or 21 found. Run setup-wallet.ps1 first." -ForegroundColor Red; exit 1 }
 $env:JAVA_HOME = $jdk.Home
+. "$PSScriptRoot\build-env.ps1"
+Set-WalletBuildEnv
 $adb = "$sdk\platform-tools\adb.exe"
 
 & "$PSScriptRoot\sync-wallet-env.ps1" -WalletDir $WalletDir -StackDir $StackDir

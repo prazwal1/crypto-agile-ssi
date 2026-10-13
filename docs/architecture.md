@@ -1,6 +1,6 @@
 # Local Environment Architecture
 
-The experimental environment runs on a Windows laptop (Docker Desktop with WSL2). Server components live in `env/stack`; the wallet working copy is set up by `env/wallet` at `C:\dev\inji-wallet` and runs on a physical Android phone.
+The experimental environment runs on a Windows laptop (Docker Desktop with WSL2). Server components live in `env/stack`; the wallet working copy is set up by `env/wallet` at `<thesis root>\inji-wallet` (currently `F:\thesis\inji-wallet`) and runs on a physical Android phone.
 
 ## Diagram
 

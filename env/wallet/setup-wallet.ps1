@@ -10,10 +10,10 @@
 
 .EXAMPLE
   .\setup-wallet.ps1
-  .\setup-wallet.ps1 -WalletDir D:\dev\inji-wallet
+  .\setup-wallet.ps1 -WalletDir D:\dev\inji-wallet   # default: <thesis root>\inji-wallet
 #>
 param(
-  [string]$WalletDir = "C:\dev\inji-wallet",
+  [string]$WalletDir = (Join-Path (Split-Path (Split-Path (Split-Path $PSScriptRoot))) "inji-wallet"),
   [string]$Tag = "v0.22.1",
   [string]$Branch = "thesis/crypto-agility",
   [string]$StackDir = (Join-Path (Split-Path -Parent $PSScriptRoot) "stack")
@@ -91,6 +91,9 @@ Set-Location $WalletDir
 
 # .env -> local Mimoto through the tunnel
 & "$PSScriptRoot\sync-wallet-env.ps1" -WalletDir $WalletDir -StackDir $StackDir
+
+. "$PSScriptRoot\build-env.ps1"
+Set-WalletBuildEnv
 
 # npm install. postinstall needs sh (from Git); GITHUB_ACTIONS skips the talisman hook download.
 Write-Host "`nInstalling npm dependencies (several minutes)" -ForegroundColor Cyan
