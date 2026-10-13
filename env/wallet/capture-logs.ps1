@@ -28,16 +28,22 @@ if (-not $dev) { Write-Host "No phone connected (adb devices shows none). Check 
 
 $start = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
 & $adb logcat -c
-Write-Host "Recording to $out  (started $start UTC). Do the test on the phone, then press Ctrl+C." -ForegroundColor Cyan
+Write-Host "Recording to $out  (started $start UTC)." -ForegroundColor Cyan
+Write-Host "Now: run issue-offer, scan in the wallet, WAIT for the result on the phone, then press Ctrl+C here." -ForegroundColor Cyan
 try {
   # ReactNativeJS carries the wallet's JS logs (state machines, network errors);
   # warnings and errors from everything else catch keystore and native failures.
-  & $adb logcat -v threadtime ReactNativeJS:V ReactNative:V '*:W' | Tee-Object -FilePath (Join-Path $out "logcat.txt")
+  # USF (Pixel sensor service) floods the log with flicker warnings and is silenced.
+  # Written as UTF-8 (Tee-Object in Windows PowerShell 5.1 writes UTF-16).
+  $writer = New-Object System.IO.StreamWriter((Join-Path $out "logcat.txt"), $false, (New-Object System.Text.UTF8Encoding($false)))
+  $writer.AutoFlush = $true
+  & $adb logcat -v threadtime ReactNativeJS:V ReactNative:V USF:S '*:W' | ForEach-Object { $writer.WriteLine($_); $_ }
 } finally {
+  if ($writer) { $writer.Close() }
   foreach ($c in "certify", "certify-nginx", "mimoto-service") {
-    docker logs --since $start --timestamps $c *> (Join-Path $out "$c.log")
+    docker logs --since $start --timestamps $c 2>&1 | ForEach-Object { "$_" } | Out-File (Join-Path $out "$c.log") -Encoding utf8
   }
-  & $adb shell getprop ro.product.model  | Out-File (Join-Path $out "device.txt")
-  & $adb shell getprop ro.build.version.release | Out-File (Join-Path $out "device.txt") -Append
+  & $adb shell getprop ro.product.model  | Out-File (Join-Path $out "device.txt") -Encoding utf8
+  & $adb shell getprop ro.build.version.release | Out-File (Join-Path $out "device.txt") -Append -Encoding utf8
   Write-Host "`nSaved logcat and server logs to $out" -ForegroundColor Green
 }
