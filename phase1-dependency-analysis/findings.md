@@ -20,22 +20,34 @@ Baseline: `manifest.tsv`. Static findings (F1 to F8) were confirmed by reading t
 | F14 | S1 | Issuer keys sit in a classical hierarchy: application master keys are RSA-2048 with `SHA256withRSA` certificates; the Ed25519 VC signing key is generated in software and stored in the database encrypted under the RSA master key | keymanager `KeymanagerServiceImpl.java:372`, `:393`, `:415`; `env/stack/config/certify-default.properties:82-102` | Swapping the VC signature to ML-DSA would leave key protection and key certification on RSA, so a quantum attacker holding the database could recover signing keys. Also a second precedent, after F3, for a non-hardware key path that a PQ key would follow |
 | F15 | S2 | The issuer DID document is generated with `authentication` and `assertionMethod` hard-coded to the DID itself, and the verification-method type chosen by a switch over four algorithms (Ed25519VerificationKey2020, EcdsaSecp256r1VerificationKey2019, EcdsaSecp256k1VerificationKey2019, RsaVerificationKey2018) | `inji-certify/.../utils/DIDDocumentUtil.java:62-63`, `:109-125` | Root cause of D-07. A PQ verification method (e.g. Multikey for ML-DSA) needs a new case here; Controlled Identifiers v1.0 expects method references, not the DID, in verification relationships |
 | F16 | S1/S3 | The deployed issuer JVM carries three BouncyCastle copies: `bcprov-jdk18on-1.78.1`, `bcprov-jdk15on-1.70` and an unversioned shaded copy inside the mock plugin jar. None contains final ML-DSA (FIPS 204) or SLH-DSA (FIPS 205); only 1.78.1 has the pre-standard Dilithium and SPHINCS+ classes | `../evidence/2026-10-13-certify-image-libs/` (`bouncycastle-check.txt`, `crypto-libs.txt`) | A PQ issuer needs a newer provider, and with three copies on the classpath which one the JCA resolves is a deployment detail the design must pin down (provider selection, RQ2; D-04) |
+| F17 | S3 | On iOS the wallet does not verify Ed25519Signature2020, mdoc or SD-JWT credentials: it returns a successful verification result without checking the signature (comment: the bundled library cannot verify Ed25519Signature2020) | `inji-wallet/shared/vcjs/verifyCredential.ts:82-95`; `../evidence/2026-10-13-inventory-review/excerpts.md` R1 | A suite the code cannot handle is treated as valid (fail open). Out of the Android prototype's scope, but direct evidence that unsupported algorithms are a security risk, not only a feature gap (RQ2: fail closed) |
+| F18 | S3 | The issuer and the wallet's verifier library disagree on what is valid. Certify can issue EcdsaSecp256r1Signature2019 (ES256) and Data Integrity cryptosuites; vc-verifier accepts only 4 JWS algorithms (PS256, RS256, EdDSA, ES256K) and 4 proof types (RsaSignature2018, Ed25519Signature2018/2020, EcdsaSecp256k1Signature2019) and rejects the rest before checking signatures. Separately, any `proofValue` proof is verified as Ed25519 whatever its type. Static result, not run | `../evidence/2026-10-13-inventory-review/excerpts.md` R2 to R6; `env/stack/config/certify-default.properties:197-208` | Even among classical algorithms the registries are not in step; a credential the issuer offers may be refused by the wallet. Adding ML-DSA must update the verifier's allow-lists, its dispatch on proof shape, and the issuer together (F6, F12) |
+| F19 | S1/S3 | Mimoto (and the wallet, F9) negotiate the holder-proof algorithm from issuer metadata: Mimoto takes the first match of a configured priority list (ED25519, ES256K, ES256, RS256) against `proof_signing_alg_values_supported`, and if nothing matches it still sends an Ed25519 proof. Mimoto pre-generates a proof key for each of its four algorithms per wallet | `../evidence/2026-10-13-inventory-review/excerpts.md` R7, R8 | A working negotiation precedent the CSL can reuse, with a fail-open fallback to remove. Pre-generating one key per algorithm grows linearly with the algorithm list (relevant to ML-DSA key and storage size) |
+| F20 | S2/S3/S4 | Fixed single-algorithm choices outside the credential itself: OpenID4VP request objects are verified with Ed25519 keys only (others fail closed); Inji Verify requires its own request-signing key to be Ed25519; OpenID4VP response encryption uses ECDH-ES with X25519; Certify accepts external access tokens only as ES256, RS256 or PS256 and signs its own as RS256 | `excerpts.md` R9, R10, R14; `inji-verify/.../P12KeyExtractor.java:55-64`; issuer-signing-path C8 | The presentation channel and OAuth layer carry their own classical algorithms. A PQ credential still travels inside an Ed25519-signed request and an X25519-encrypted response |
 
 ## Open scope question
 
 The wallet supports RS256 and ES256K as well as Ed25519 and ES256; the proposal baseline covers Ed25519 and P-256. Tracked as D-01 in `../docs/decisions.md`. F9 is relevant: the deployed credential accepts RS256.
 
-## First-pass scan numbers (production code, tests excluded)
+## Inventory review (2026-10-13)
 
-Scanner output after excluding SBOMs: 3,269 production hits, 919 seeded inventory rows across 10 repositories (`results/`).
-These are locations to review, not dependencies. Expect a large share of VC-FORMAT, LIB and
-DID-METHOD rows in Certify to be config or seed data that collapses into a few real bindings.
+All 919 scanner rows scored in two passes (scripted triage by path, then hand review of 245
+production files); method and evidence in `../evidence/2026-10-13-inventory-review/`.
+
+| Measure | Value |
+|---|---|
+| Verified rows | 446 of 919 |
+| Bindings (distinct places that depend on an algorithm choice) | 35 across 9 repositories (`results/bindings.csv`) |
+| Verified rows by surface | S3 248, S1 110, S2 68, S4 20 |
+| Verified rows by coupling type | operation 243, creation 170, provider 33 |
+| Verified rows crossing a trust boundary | 241 |
+| Excluded or not a dependency | test 249, upstream deployment config 58, sample 50, format-only 39, false positive 29, build declaration 26, non-signature 13, dead code 9 |
 
 ## Remaining Phase 1 work
 
 - [x] Runtime trace of one issuance and one verification (`../evidence/2026-10-13-reference-run/`): the default flow uses ES256 (F3, F9)
 - [x] Mimoto image matches the analysed source (C-07, closes D-05)
-- [ ] Hand-score `results/inventory.csv` (coupling type, trust boundary, status)
+- [x] Hand-score `results/inventory.csv` (`results/inventory-scored.csv`, `results/bindings.csv`; F17 to F20). Spot-check by PB pending (`review/spot-check.csv`)
 - [ ] Confirm whether Inji supports SD-JWT VC end to end (D-02)
 - [x] Map Certify's signing path through MOSIP keymanager (`issuer-signing-path.md`, F12 to F15)
 - [ ] Decide the classical baseline algorithm set (D-01)

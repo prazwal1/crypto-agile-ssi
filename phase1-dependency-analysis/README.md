@@ -9,11 +9,17 @@ Answers RQ1: where, and how tightly, the Inji stack binds to specific cryptograp
 | `tools/rules.yaml` | Scanner rule catalog: algorithm identifiers, proof suites, verification-method encodings, crypto API call sites, libraries |
 | `tools/scan.py` | Runs the rules with ripgrep and writes `results/` |
 | `tools/cite.py` | Extracts cited file:line ranges from the pinned clones into an evidence Markdown file |
+| `tools/score_inventory.py` | Two-pass scoring: path rules, then `review/judgements.tsv`; fails on any unreviewed row |
 | `tools/inspect-jar.py` | Lists bundled libraries in a deployed jar and checks BouncyCastle for PQ classes |
 | `results/hits.csv` | Every match, including tests (raw, generated) |
 | `results/summary.csv` | Production matches per repository, surface and algorithm |
 | `results/inventory.csv` | Seeded inventory, one row per repository, file and rule; hand-scored columns blank |
 | `issuer-signing-path.md` | Certify to keymanager signing trace: call chain, key types, key hierarchy, registries |
+| `review/judgements.tsv` | Hand-review verdict per production file (pass 2) |
+| `review/bindings.tsv` | The 35 bindings: id, component, name, description |
+| `review/spot-check.csv` | Seeded sample of 20 rows for independent checking |
+| `results/inventory-scored.csv` | All 919 rows with file class, status, binding and scores |
+| `results/bindings.csv` | One row per binding with counts, surfaces, coupling, trust boundary |
 | `findings.md` | Findings confirmed by reading source or captured at runtime |
 | `repos/` | Pinned clones (not versioned; recreate with `clone-baseline`) |
 
@@ -35,7 +41,9 @@ Answers RQ1: where, and how tightly, the Inji stack binds to specific cryptograp
 | `coupling_type` | hand | creation, operation or provider (Rameshan and Messmer) |
 | `crosses_trust_boundary` | hand | yes or no |
 | `external_party` | scanner default per surface, confirmed by hand | who must understand the algorithm |
-| `status` | hand | auto, verified, false-positive |
+| `status` | pass 1 or hand | verified, non-signature, format-only, false-positive, dead-code, excluded-test, excluded-sample, build-dependency, upstream-deployment-config |
+| `file_class`, `review_pass` | script | source, app-config, test, build, deploy-config, doc; 1 or 2 |
+| `binding` | hand | B-xx id from `review/bindings.tsv` |
 | `notes` | hand | |
 
 Only `verified` rows are cited in the thesis or exported to the CBOM.

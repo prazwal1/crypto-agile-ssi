@@ -1,0 +1,247 @@
+# repo	file	rule	status	binding	coupling_type	surface	crosses_trust_boundary	external_party	notes
+# rule: * = every inventory row for the file; otherwise the rule id it overrides. status: verified | dead-code | false-positive | format-only | non-signature
+inji-wallet	android/app/src/main/java/io/mosip/residentapp/InjiOpenID4VPModule.java	*	format-only	B-W4	operation	S3	yes	verifier	Declares supported VP formats to the OpenID4VP library; no algorithm
+inji-wallet	android/app/src/main/java/io/mosip/residentapp/InjiVCIClientCallback.kt	*	verified	B-W4	operation	S3	yes	verifier	Bridge callback that asks JS to sign the VP token
+inji-wallet	android/app/src/main/java/io/mosip/residentapp/RNSecureKeystoreModule.java	*	verified	B-W2	creation	S1	no	none (wallet internal)	Native keystore bridge: RS256 to SHA256withRSA, ES256 to SHA256withECDSA mapping (lines 148-153); generateKeyPair by type
+inji-wallet	android/app/src/main/java/io/mosip/residentapp/RNVCVerifierModule.java	*	verified	B-W5	provider	S3	no	issuer	Android verification delegated to vc-verifier
+inji-wallet	android/app/src/main/java/io/mosip/residentapp/VCIClientBridge.kt	*	verified	B-W4	operation	S3	yes	verifier	Bridge for VP token signing
+inji-wallet	components/VC/Views/VCDetailView.tsx	*	format-only	-	-	-	-	-	UI branch on format
+inji-wallet	components/VC/common/VCProcessor.ts	*	non-signature	B-W7	provider	S3	no	none (wallet internal)	@noble/hashes SHA-2 for mdoc digest check; hash, not signature
+inji-wallet	components/VC/common/VCUtils.tsx	*	verified	B-W5	operation	S3	no	issuer	mdoc deviceKey decoded only if EC2/P-256 (ES256); COSE -7 to ES256 map (lines 735-750); other format branches are UI
+inji-wallet	ios/RNSecureKeystoreModule.m	*	verified	B-W2	creation	S1	no	none (wallet internal)	iOS bridge declaration (iOS out of prototype scope)
+inji-wallet	ios/RNSecureKeystoreModule.swift	*	verified	B-W2	creation	S1	no	none (wallet internal)	iOS: RS256 to tag RSA (iOS out of prototype scope)
+inji-wallet	ios/Utils/OpenId4VPUtils.swift	*	format-only	B-W4	operation	S3	yes	verifier	iOS VP result shaping by format (iOS out of prototype scope)
+inji-wallet	ios/vcverifier/constants/CredentialFormat.swift	*	format-only	-	-	-	-	-	Format enum
+inji-wallet	lib/jsonld-signatures/purposes/ControllerProofPurpose.ts	*	verified	B-W5	operation	S2	no	issuer	Vendored jsonld-signatures, used only by the iOS verification path
+inji-wallet	lib/jsonld-signatures/purposes/ProofPurpose.ts	*	false-positive	-	-	-	-	-	Comment only
+inji-wallet	lib/jsonld-signatures/suites/JwsLinkedDataSignature.ts	*	verified	B-W5	operation	S3	no	issuer	Vendored JWS LD suite base (iOS verification path)
+inji-wallet	lib/jsonld-signatures/suites/ed255192018/Ed25519Signature2018.ts	*	verified	B-W5	operation	S3	no	issuer	Vendored Ed25519Signature2018 suite (iOS verification path)
+inji-wallet	lib/jsonld-signatures/suites/ed255192018/Ed25519VerificationKey2018.ts	*	verified	B-W5	operation	S2	no	issuer	Vendored key class with multicodec encoding (iOS verification path)
+inji-wallet	lib/jsonld-signatures/suites/ed255192018/ed25519.ts	*	verified	B-W5	provider	S3	no	issuer	Ed25519 via node-forge (iOS verification path)
+inji-wallet	lib/jsonld-signatures/suites/rsa2018/RsaSignature2018.ts	*	verified	B-W5	operation	S3	no	issuer	Vendored RsaSignature2018 (iOS verification path)
+inji-wallet	machines/Issuers/IssuersActions.ts	*	verified	B-W2	creation	S1	no	none (wallet internal)	storeKeyPair: only ES256/RS256 stay in hardware; other types (and all iOS keys) stored with storeGenericKey (line 156)
+inji-wallet	machines/Issuers/IssuersMachine.ts	*	false-positive	-	-	-	-	-	State names that invoke the key generation service; no algorithm
+inji-wallet	machines/Issuers/IssuersModel.ts	*	verified	B-W1	creation	S1	no	none (wallet internal)	Default keyType RS256 in the issuance model
+inji-wallet	machines/Issuers/IssuersService.ts	*	verified	B-W2	creation	S1	no	none (wallet internal)	generateKeyPair(context.keyType); @noble/secp256k1 import
+inji-wallet	machines/QrLogin/QrLoginServices.ts	*	verified	B-W6	operation	S3	yes	relying party (QR login)	QR login JWT alg = keyType (lines 40, 94)
+inji-wallet	machines/VerifiableCredential/VCItemMachine/VCItemMachine.ts	*	false-positive	-	-	-	-	-	State names
+inji-wallet	machines/VerifiableCredential/VCItemMachine/VCItemMachine.typegen.ts	*	false-positive	-	-	-	-	-	Generated state-machine types
+inji-wallet	machines/VerifiableCredential/VCItemMachine/VCItemServices.ts	*	verified	B-W2	creation	S1	no	none (wallet internal)	Wallet binding: same hardware/software split as IssuersActions (line 87)
+inji-wallet	machines/VerifiableCredential/VCMetaMachine/vc.d.ts	*	verified	B-W5	operation	S3	no	issuer	Proof type union names RsaSignature2018 explicitly
+inji-wallet	machines/openID4VP/openID4VPActions.ts	*	verified	B-W4	operation	S3	yes	verifier	alg extracted from SD-JWT for VP; other branches are format dispatch
+inji-wallet	machines/openID4VP/openID4VPModel.ts	*	verified	B-W1	creation	S1	no	none (wallet internal)	VP signing key type defaults to ED25519 (line 80)
+inji-wallet	machines/openID4VP/openID4VPServices.ts	*	verified	B-W4	operation	S2	yes	verifier	VP proof suite constant JsonWebSignature2020; holder id built as did:jwk (lines 17, 107)
+inji-wallet	machines/store.ts	*	non-signature	B-W8	creation	S1	no	none (wallet internal)	Generates the storage encryption key and HMAC key in the keystore (lines 575-580); symmetric
+inji-wallet	machines/vcItem.typegen.ts	*	false-positive	-	-	-	-	-	Generated types
+inji-wallet	shared/Utils.ts	*	non-signature	B-W7	provider	S3	no	none (wallet internal)	@noble/hashes SHA-256
+inji-wallet	shared/VCFormat.ts	*	format-only	-	-	-	-	-	Format enum
+inji-wallet	shared/VCMetadata.ts	*	format-only	-	-	-	-	-	Default format
+inji-wallet	shared/commonUtil.ts	*	non-signature	B-W8	provider	S1	no	none (wallet internal)	node-forge PBKDF2 for backup key derivation (line 44)
+inji-wallet	shared/constants.ts	*	verified	B-W1	creation	S1	no	none (wallet internal)	Key type labels and KeyType to JWS alg map (lines 85-100)
+inji-wallet	shared/cryptoutil/KeyTypes.ts	*	verified	B-W1	creation	S1	no	none (wallet internal)	Closed enum of four key types (F1)
+inji-wallet	shared/cryptoutil/cryptoUtil.ts	*	verified	B-W2	creation	S1	no	none (wallet internal)	Per-type keygen and sign functions; RSA and P-256 in hardware, K1 and Ed25519 in software (F3); also AES (forge) storage encryption and HMAC
+inji-wallet	shared/openID4VP/OpenID4VP.ts	*	verified	B-W4	operation	S3	yes	verifier	VP proof algorithm constant EdDSA (line 13)
+inji-wallet	shared/openID4VP/OpenID4VPHelper.ts	*	verified	B-W4	operation	S3	yes	verifier	Builds and signs VP proof with EdDSA (createSignatureED), ES256 for mdoc
+inji-wallet	shared/openID4VP/openid4vp.types.ts	*	format-only	-	-	-	-	-	Type union of formats
+inji-wallet	shared/openID4VP/walletMetadata.ts	*	verified	B-W4	creation	S3	yes	verifier	Wallet metadata advertised to verifiers: supported proof suites and algs per format (negotiation surface)
+inji-wallet	shared/openId4VCI/Utils.ts	*	verified	B-W3	operation	S3	yes	issuer	Issuance proof JWT via node-jose; alg chosen from issuer proofSigningAlgos; did:jwk holder binding
+inji-wallet	shared/vcjs/createVerifiablePresentation.ts	*	dead-code	-	-	-	-	-	Not imported anywhere in production code
+inji-wallet	shared/vcjs/verifyCredential.ts	*	verified	B-W5	operation	S3	no	issuer	Android: vc-verifier. iOS: jsonld-signatures for RSA/Ed25519-2018; Ed25519Signature2020, mdoc and SD-JWT return success without verification (lines 87, 94-95)
+inji-wallet	shared/vcjs/verifyPresentation.ts	*	dead-code	-	-	-	-	-	Not imported anywhere in production code
+inji-certify	certify-core/src/main/java/io/mosip/certify/core/constants/Constants.java	*	verified	B-I2	creation	S1	no	none (issuer internal)	ED25519_SIGN reference id constant (encodes key type, F13); did:jwk prefix
+inji-certify	certify-core/src/main/java/io/mosip/certify/core/constants/ErrorConstants.java	*	format-only	-	-	-	-	-	Error code strings
+inji-certify	certify-core/src/main/java/io/mosip/certify/core/constants/SignatureAlg.java	*	verified	B-I1	creation	S3	yes	verifier	Closed list of proof suite names (legacy and Data Integrity)
+inji-certify	certify-core/src/main/java/io/mosip/certify/core/constants/VCFormats.java	*	format-only	-	-	-	-	-	Format constants
+inji-certify	certify-core/src/main/java/io/mosip/certify/core/dto/CredentialRequest.java	*	format-only	-	-	-	-	-	Javadoc
+inji-certify	certify-core/src/main/java/io/mosip/certify/core/dto/VerifiableClaimsConfig.java	*	format-only	-	-	-	-	-	JSON property name
+inji-certify	certify-core/src/main/java/io/mosip/certify/core/util/CommonUtil.java	*	non-signature	B-I5	operation	S3	yes	wallet	at_hash style SHA-256 of access token (hash, not signature)
+inji-certify	certify-integration-api/src/main/java/io/mosip/certify/api/dto/VCResult.java	*	format-only	-	-	-	-	-	Javadoc
+inji-certify	certify-integration-api/src/main/java/io/mosip/certify/api/spi/VCIssuancePlugin.java	*	format-only	-	-	-	-	-	Javadoc
+inji-certify	certify-service/src/main/java/io/mosip/certify/CertifyServiceApplication.java	*	verified	B-I6	provider	S1	no	none (issuer internal)	Component scan pulls keymanager packages into Certify (signing backend, F12)
+inji-certify	certify-service/src/main/java/io/mosip/certify/controller/SystemInfoController.java	*	verified	B-I6	provider	S1	no	none (issuer internal)	Keymanager key and CSR administration endpoints
+inji-certify	certify-service/src/main/java/io/mosip/certify/credential/Credential.java	*	verified	B-I1	operation	S3	yes	verifier	Passes signAlgorithm to keymanager; also CWT QR signing (F10)
+inji-certify	certify-service/src/main/java/io/mosip/certify/credential/SDJWT.java	*	verified	B-I1	operation	S3	yes	verifier	SD-JWT built unsigned (PlainJWT) then signed by keymanager jwsSignV2 with the configured alg
+inji-certify	certify-service/src/main/java/io/mosip/certify/credential/W3CJsonLD.java	*	verified	B-I1	operation	S3	yes	verifier	Branch between Data Integrity cryptosuites and legacy proof generators (issuer-signing-path C4)
+inji-certify	certify-service/src/main/java/io/mosip/certify/entity/CredentialConfig.java	*	format-only	-	-	-	-	-	Column name
+inji-certify	certify-service/src/main/java/io/mosip/certify/enums/CredentialFormat.java	*	format-only	-	-	-	-	-	Format enum
+inji-certify	certify-service/src/main/java/io/mosip/certify/filter/AccessTokenValidationFilter.java	*	verified	B-I5	operation	S3	yes	authorization server	External access tokens accepted only as ES256, RS256 or PS256 (lines 68-71)
+inji-certify	certify-service/src/main/java/io/mosip/certify/proof/DIDjwkProofManager.java	*	verified	B-I3	operation	S2	yes	wallet	Holder key from did:jwk; other DID methods unsupported (comment line 31)
+inji-certify	certify-service/src/main/java/io/mosip/certify/proof/DIDkeysProofManager.java	*	verified	B-I3	operation	S2	yes	wallet	did:key decoding with fixed curve cases: secp256k1, P-256, Ed25519, RSA (BouncyCastle ASN.1)
+inji-certify	certify-service/src/main/java/io/mosip/certify/proof/JwtProofKeyManager.java	*	verified	B-I3	provider	S3	yes	wallet	Nimbus JWK handling for holder proof
+inji-certify	certify-service/src/main/java/io/mosip/certify/proof/JwtProofValidator.java	*	verified	B-I3	operation	S3	yes	wallet	Holder proof JWT check: Nimbus signature family, special cases ES256K and EdDSA (lines 142-151); allowed list per credential from proof_signing_alg_values_supported (line 114, F9)
+inji-certify	certify-service/src/main/java/io/mosip/certify/proof/ProofValidator.java	*	false-positive	-	-	-	-	-	Javadoc
+inji-certify	certify-service/src/main/java/io/mosip/certify/proofgenerators/EcdsaKoblitzSignature2016ProofGenerator.java	*	verified	B-I1	operation	S3	yes	verifier	Suite class hard-codes ES256K
+inji-certify	certify-service/src/main/java/io/mosip/certify/proofgenerators/EcdsaSecp256k1Signature2019ProofGenerator.java	*	verified	B-I1	operation	S3	yes	verifier	Suite class hard-codes ES256K
+inji-certify	certify-service/src/main/java/io/mosip/certify/proofgenerators/EcdsaSecp256r1Signature2019ProofGenerator.java	*	verified	B-I1	operation	S3	yes	verifier	Suite class hard-codes ES256
+inji-certify	certify-service/src/main/java/io/mosip/certify/proofgenerators/Ed25519Signature2018ProofGenerator.java	*	verified	B-I1	operation	S3	yes	verifier	Suite class hard-codes EdDSA
+inji-certify	certify-service/src/main/java/io/mosip/certify/proofgenerators/Ed25519Signature2020ProofGenerator.java	*	verified	B-I1	operation	S3	yes	verifier	Suite class hard-codes EdDSA (issuer-signing-path C5)
+inji-certify	certify-service/src/main/java/io/mosip/certify/proofgenerators/RSASignature2018ProofGenerator.java	*	verified	B-I1	operation	S3	yes	verifier	Suite class hard-codes RS256; empty reference id means RSA key
+inji-certify	certify-service/src/main/java/io/mosip/certify/proofgenerators/dataintegrity/KeymanagerByteSigner.java	*	verified	B-I1	provider	S3	yes	verifier	Adapter that lets danubetech Data Integrity signers sign through keymanager
+inji-certify	certify-service/src/main/java/io/mosip/certify/services/CertifyIssuanceServiceImpl.java	*	format-only	B-I1	-	-	-	-	Rows are the format switch; the signing calls in this file are covered by issuer-signing-path (C3, C6)
+inji-certify	certify-service/src/main/java/io/mosip/certify/services/CredentialConfigurationServiceImpl.java	*	format-only	B-I2	-	-	-	-	Rows are format validation messages; key-alias validation in this file is covered by issuer-signing-path (C2)
+inji-certify	certify-service/src/main/java/io/mosip/certify/services/CredentialUtils.java	*	verified	B-I1	provider	S2	yes	verifier	Multibase encoding of proof values
+inji-certify	certify-service/src/main/java/io/mosip/certify/services/JwksServiceImpl.java	*	verified	B-I4	operation	S2	yes	wallet, verifier	Publishes issuer JWKS; Ed25519 keys rebuilt as OKP (lines 172-198)
+inji-certify	certify-service/src/main/java/io/mosip/certify/services/KeyManagerConstants.java	*	verified	B-I2	creation	S1	no	none (issuer internal)	Duplicate ED25519_SIGN reference id constant
+inji-certify	certify-service/src/main/java/io/mosip/certify/services/PreAuthorizedCodeService.java	*	format-only	-	-	-	-	-	Comments
+inji-certify	certify-service/src/main/java/io/mosip/certify/services/StatusListCredentialService.java	*	verified	B-I8	creation	S3	yes	verifier	Status list credentials signed with their own configurable suite, alg and key (defaults Ed25519Signature2020, EdDSA, ED25519_SIGN; lines 53-71): a third issuer-signed artefact
+inji-certify	certify-service/src/main/java/io/mosip/certify/services/VCIssuanceServiceImpl.java	*	format-only	-	-	-	-	-	Format switch (VCIssuance plugin mode)
+inji-certify	certify-service/src/main/java/io/mosip/certify/utils/AccessTokenJwtUtil.java	*	verified	B-I5	operation	S3	yes	wallet	Access tokens signed RS256, hard-coded (C8)
+inji-certify	certify-service/src/main/java/io/mosip/certify/utils/CredentialUtils.java	*	verified	B-I1	operation	S3	yes	verifier	Builds Data Integrity proof and calls the signer
+inji-certify	certify-service/src/main/java/io/mosip/certify/utils/DIDDocumentUtil.java	*	verified	B-I4	operation	S2	yes	verifier	DID document generation, VM type switch (F15, C9, C10)
+inji-certify	certify-service/src/main/java/io/mosip/certify/utils/MDocProcessor.java	*	verified	B-I1	operation	S3	yes	verifier	mdoc device key COSE alg fixed to -7 (ES256); curves P-256, P-384 (lines 426-438)
+inji-certify	certify-service/src/main/java/io/mosip/certify/utils/VCIssuanceUtil.java	*	format-only	-	-	-	-	-	Error messages
+inji-certify	certify-service/src/main/resources/application-local.properties	*	verified	B-I2	creation	S3	yes	wallet, verifier	Default suite, binding methods per format, suite-to-alg and alg-to-key maps (packaged defaults; deployed values in env/stack/config)
+inji-certify	certify-service/src/main/resources/credential-configurations/farmer-local-config.json	*	verified	B-I2	creation	S3	yes	verifier	Sample credential config: ED25519_SIGN, EdDSA, Ed25519Signature2020
+inji-certify	certify-service/src/main/resources/vp_request_config.json	*	verified	B-I7	creation	S3	yes	wallet	Presentation-during-issuance request asks for RsaSignature2018 proofs
+mimoto	src/main/java/io/mosip/mimoto/MimotoServiceApplication.java	*	verified	B-M5	provider	S1	no	none (wallet backend internal)	Component scan pulls keymanager packages into Mimoto
+mimoto	src/main/java/io/mosip/mimoto/constant/CredentialFormat.java	*	format-only	-	-	-	-	-	Format enum
+mimoto	src/main/java/io/mosip/mimoto/constant/OpenID4VPConstants.java	*	verified	B-M3	operation	S3	yes	verifier	VP algorithm constants ES256 and EdDSA; did:jwk prefix
+mimoto	src/main/java/io/mosip/mimoto/constant/SigningAlgorithm.java	*	verified	B-M1	creation	S1	no	none (wallet backend internal)	Closed enum of four algorithms mapped to Nimbus JWSAlgorithm and key family (F4)
+mimoto	src/main/java/io/mosip/mimoto/constant/SigningAlgorithmConstants.java	*	verified	B-M1	creation	S1	no	none (wallet backend internal)	Key family and curve names
+mimoto	src/main/java/io/mosip/mimoto/dto/CredentialDTO.java	*	format-only	-	-	-	-	-	Schema description
+mimoto	src/main/java/io/mosip/mimoto/dto/mimoto/VCCredentialResponseProof.java	*	verified	B-M4	operation	S2	no	issuer	verificationMethod field of received proof (data model only)
+mimoto	src/main/java/io/mosip/mimoto/dto/mimoto/WalletBindingInnerRequestDto.java	*	verified	B-M6	provider	S2	yes	authorization server	Wallet binding carries a Nimbus JWK
+mimoto	src/main/java/io/mosip/mimoto/service/CredentialPDFGeneratorService.java	*	false-positive	-	-	-	-	-	Base64URL utility and a format comment
+mimoto	src/main/java/io/mosip/mimoto/service/DataProtectionService.java	*	non-signature	B-M5	operation	S1	no	none (wallet backend internal)	AES-GCM encryption of stored wallet keys; RSA KeyFactory for decoding stored public keys
+mimoto	src/main/java/io/mosip/mimoto/service/PresentationSubmissionService.java	*	verified	B-M3	provider	S3	yes	verifier	Nimbus exception handling in VP submission
+mimoto	src/main/java/io/mosip/mimoto/service/impl/CredentialMatchingServiceImpl.java	*	format-only	-	-	-	-	-	Format constant
+mimoto	src/main/java/io/mosip/mimoto/service/impl/CredentialRequestServiceImpl.java	*	verified	B-M2	creation	S3	yes	issuer	Holder proof algorithm negotiated as first match of a configured priority list against the issuer's proof_signing_alg_values_supported; if nothing matches it falls back to ED25519 anyway (lines 81-101)
+mimoto	src/main/java/io/mosip/mimoto/service/impl/CredentialServiceImpl.java	*	verified	B-M4	provider	S3	no	issuer	Calls credential verification
+mimoto	src/main/java/io/mosip/mimoto/service/impl/CredentialVerifierServiceImpl.java	*	verified	B-M4	provider	S3	no	issuer	Verification delegated to vc-verifier
+mimoto	src/main/java/io/mosip/mimoto/service/impl/DcSdJwtCredentialFormatHandler.java	*	format-only	-	-	-	-	-	Handler registration by format
+mimoto	src/main/java/io/mosip/mimoto/service/impl/KeyPairRetrievalServiceImpl.java	*	verified	B-M2	creation	S1	no	none (wallet backend internal)	Rebuilds stored key pair for the negotiated algorithm
+mimoto	src/main/java/io/mosip/mimoto/service/impl/LdpVcCredentialFormatHandler.java	*	format-only	-	-	-	-	-	Handler registration by format
+mimoto	src/main/java/io/mosip/mimoto/service/impl/VcSdJwtCredentialFormatHandler.java	*	format-only	-	-	-	-	-	Handler registration by format
+mimoto	src/main/java/io/mosip/mimoto/service/impl/WalletPresentationServiceImpl.java	*	verified	B-M3	operation	S3	yes	verifier	ldp_vc VP signed with EdDSA hard-coded (line 320, F5), bypassing the algorithm factory
+mimoto	src/main/java/io/mosip/mimoto/util/AttestationOfflineVerify.java	*	false-positive	-	-	-	-	-	TLS hostname verifier, not credential crypto
+mimoto	src/main/java/io/mosip/mimoto/util/CredentialIssuerWellknownResponseValidator.java	*	format-only	-	-	-	-	-	Format constants
+mimoto	src/main/java/io/mosip/mimoto/util/DerivedKeyCryptoUtil.java	*	non-signature	B-M5	operation	S1	no	none (wallet backend internal)	AES-GCM with derived keys
+mimoto	src/main/java/io/mosip/mimoto/util/JoseUtil.java	*	verified	B-M6	operation	S3	yes	authorization server, issuer	OAuth client assertion signed RS256 (getJWT); legacy issuance proof with a fresh RSA-2048 key and RS256 (generateJwt, lines 161-168, F5)
+mimoto	src/main/java/io/mosip/mimoto/util/P12KeyStoreManager.java	*	verified	B-M5	operation	S1	no	none (wallet backend internal)	RSA-OAEP (BouncyCastle) unwrapping of symmetric keys from a PKCS12 keystore; RSA-2048 key version marker
+mimoto	src/main/java/io/mosip/mimoto/util/SigningKeyUtil.java	*	verified	B-M2	creation	S1	yes	issuer	Key generation and proof JWT creation per SigningAlgorithm through the handler factory
+mimoto	src/main/java/io/mosip/mimoto/util/WalletUtil.java	*	verified	B-M2	creation	S1	no	none (wallet backend internal)	Wallet creation pre-generates one proof key per algorithm (RS256, ES256, ES256K, Ed25519), stored AES-encrypted (line 86)
+mimoto	src/main/java/io/mosip/mimoto/util/factory/BouncyCastleProviderUtil.java	*	verified	B-M1	provider	S1	no	none (wallet backend internal)	Registers BouncyCastle provider
+mimoto	src/main/java/io/mosip/mimoto/util/factory/ES256AlgorithmHandler.java	*	verified	B-M1	operation	S1	no	none (wallet backend internal)	P-256 handler (keygen, JWK, signer)
+mimoto	src/main/java/io/mosip/mimoto/util/factory/ES256KAlgorithmHandler.java	*	verified	B-M1	operation	S1	no	none (wallet backend internal)	secp256k1 handler
+mimoto	src/main/java/io/mosip/mimoto/util/factory/Ed25519AlgorithmHandler.java	*	verified	B-M1	operation	S1	no	none (wallet backend internal)	Ed25519 handler
+mimoto	src/main/java/io/mosip/mimoto/util/factory/RS256AlgorithmHandler.java	*	verified	B-M1	operation	S1	no	none (wallet backend internal)	RSA handler
+mimoto	src/main/java/io/mosip/mimoto/util/factory/SigningAlgorithmHandler.java	*	verified	B-M1	provider	S1	no	none (wallet backend internal)	Strategy interface (F4)
+mimoto	src/main/java/io/mosip/mimoto/util/factory/SigningAlgorithmHandlerFactory.java	*	verified	B-M1	creation	S1	no	none (wallet backend internal)	Static handler registration, one per enum value
+mimoto	src/main/resources/application-default.properties	*	verified	B-M2	creation	S3	yes	issuer	Proof algorithm priority order ED25519,ES256K,ES256,RS256 (line 235); keymanager RSA-OAEP and RSA keygen settings
+inji-openid4vp	kotlin/openID4VP/src/commonMain/kotlin/io/mosip/openID4VP/authorizationRequest/WalletMetadataDefaults.kt	*	verified	B-P2	creation	S3	yes	verifier	Default wallet metadata advertises request signing EdDSA only, response encryption ECDH-ES with A256GCM
+inji-openid4vp	kotlin/openID4VP/src/commonMain/kotlin/io/mosip/openID4VP/authorizationRequest/authorizationRequestHandler/ClientIdSchemeBasedAuthorizationRequestHandler.kt	*	verified	B-P2	operation	S3	yes	verifier	Verifies signed authorization request via JWSHandler
+inji-openid4vp	kotlin/openID4VP/src/commonMain/kotlin/io/mosip/openID4VP/authorizationRequest/authorizationRequestHandler/types/PreRegisteredSchemeAuthorizationRequestHandler.kt	*	verified	B-P2	operation	S2	yes	verifier	Selects only EdDSA signing keys from verifier JWKS; builds Ed25519 SubjectPublicKeyInfo with BouncyCastle
+inji-openid4vp	kotlin/openID4VP/src/commonMain/kotlin/io/mosip/openID4VP/authorizationRequest/clientMetadata/Jwk.kt	*	verified	B-P2	operation	S2	yes	verifier	JWK support check: EdDSA means crv Ed25519
+inji-openid4vp	kotlin/openID4VP/src/commonMain/kotlin/io/mosip/openID4VP/authorizationRequest/presentationDefinition/PresentationDefinitionUtil.kt	*	format-only	-	-	-	-	-	Format and response-mode rule
+inji-openid4vp	kotlin/openID4VP/src/commonMain/kotlin/io/mosip/openID4VP/authorizationResponse/AuthorizationResponseHandler.kt	*	verified	B-P1	operation	S3	yes	verifier	VP proof suite defaults to Ed25519Signature2020 when caller passes none (lines 83, 407)
+inji-openid4vp	kotlin/openID4VP/src/commonMain/kotlin/io/mosip/openID4VP/authorizationResponse/CredentialInputDescriptorMapping.kt	*	format-only	-	-	-	-	-	Comment
+inji-openid4vp	kotlin/openID4VP/src/commonMain/kotlin/io/mosip/openID4VP/authorizationResponse/unsignedVPToken/types/ldp/UnsignedLdpVPTokenBuilder.kt	*	verified	B-P1	operation	S3	yes	verifier	JSON-LD context chosen per suite (Ed25519Signature2020, JsonWebSignature2020)
+inji-openid4vp	kotlin/openID4VP/src/commonMain/kotlin/io/mosip/openID4VP/authorizationResponse/unsignedVPToken/types/sdJwt/UnsignedSdJwtVPTokenBuilder.kt	*	verified	B-P1	operation	S3	yes	verifier	Key type to alg map: Ed25519 to EdDSA, EC to ES256, RSA to RS256; ES256K not distinguishable (comment line 80)
+inji-openid4vp	kotlin/openID4VP/src/commonMain/kotlin/io/mosip/openID4VP/authorizationResponse/vpToken/types/ldp/Proof.kt	*	verified	B-P1	operation	S2	yes	verifier	VP proof verificationMethod field
+inji-openid4vp	kotlin/openID4VP/src/commonMain/kotlin/io/mosip/openID4VP/authorizationResponse/vpTokenSigningResult/types/ldp/LdpVPTokenSigningResult.kt	*	verified	B-P1	operation	S3	yes	verifier	Validates signing result per suite; closed set of four suites
+inji-openid4vp	kotlin/openID4VP/src/commonMain/kotlin/io/mosip/openID4VP/common/CborUtils.kt	*	verified	B-P3	operation	S3	yes	verifier	JWS name to COSE alg id map (ES256, ES384, EdDSA, PS256, PS384)
+inji-openid4vp	kotlin/openID4VP/src/commonMain/kotlin/io/mosip/openID4VP/common/Utils.kt	*	verified	B-P3	operation	S3	yes	verifier	mdoc device key: COSE alg -7 or -8 only, else fails (lines 379-395)
+inji-openid4vp	kotlin/openID4VP/src/commonMain/kotlin/io/mosip/openID4VP/constants/ContentEncryptionAlgorithm.kt	*	verified	B-P4	creation	S4	yes	verifier	A256GCM only
+inji-openid4vp	kotlin/openID4VP/src/commonMain/kotlin/io/mosip/openID4VP/constants/FormatType.kt	*	format-only	-	-	-	-	-	Format enum
+inji-openid4vp	kotlin/openID4VP/src/commonMain/kotlin/io/mosip/openID4VP/constants/KeyManagementAlgorithm.kt	*	verified	B-P4	creation	S4	yes	verifier	ECDH-ES only
+inji-openid4vp	kotlin/openID4VP/src/commonMain/kotlin/io/mosip/openID4VP/constants/RequestSigningAlgorithm.kt	*	verified	B-P2	creation	S3	yes	verifier	Closed enum with one value, EdDSA
+inji-openid4vp	kotlin/openID4VP/src/commonMain/kotlin/io/mosip/openID4VP/constants/SignatureSuiteAlgorithm.kt	*	verified	B-P1	creation	S3	yes	verifier	Closed enum of four VP proof suites
+inji-openid4vp	kotlin/openID4VP/src/commonMain/kotlin/io/mosip/openID4VP/constants/SigningAlgorithm.kt	*	verified	B-P1	creation	S3	yes	verifier	Closed enum EdDSA, ES256, RS256, PS256
+inji-openid4vp	kotlin/openID4VP/src/commonMain/kotlin/io/mosip/openID4VP/exceptions/openId4VPExceptions.kt	*	verified	B-P2	operation	S2	yes	verifier	Error text: only publicKeyMultibase keys supported
+inji-openid4vp	kotlin/openID4VP/src/commonMain/kotlin/io/mosip/openID4VP/jwt/jwe/JWEHandler.kt	*	verified	B-P4	provider	S4	yes	verifier	Nimbus JWE for encrypted responses
+inji-openid4vp	kotlin/openID4VP/src/commonMain/kotlin/io/mosip/openID4VP/jwt/jwe/encryption/EncryptionProvider.kt	*	verified	B-P4	operation	S4	yes	verifier	Response encryption with X25519 (ECDH-ES), quantum-vulnerable key agreement
+inji-openid4vp	kotlin/openID4VP/src/commonMain/kotlin/io/mosip/openID4VP/jwt/jws/JWSHandler.kt	*	verified	B-P2	operation	S3	yes	verifier	Request object verification supports Ed25519 keys only; anything else fails closed (lines 34-46); verifier from vc-verifier
+inji-openid4vp	kotlin/openID4VP/src/commonMain/kotlin/io/mosip/openID4VP/responseModeHandler/types/DirectPostJwtResponseModeHandler.kt	*	verified	B-P4	operation	S4	yes	verifier	Encryption key chosen from verifier JWKS by advertised alg
+inji-openid4vp	kotlin/sampleovpwallet/src/main/java/io/mosip/sampleapp/data/HardcodedOVPData.kt	*	excluded-sample	-	-	-	-	-	Sample wallet app, not shipped in the library
+inji-openid4vp	kotlin/sampleovpwallet/src/main/java/io/mosip/sampleapp/data/HardcodedVC.kt	*	excluded-sample	-	-	-	-	-	Sample wallet app
+inji-openid4vp	kotlin/sampleovpwallet/src/main/java/io/mosip/sampleapp/utils/DetachedJwtKeyManager.kt	*	excluded-sample	-	-	-	-	-	Sample wallet app
+inji-openid4vp	kotlin/sampleovpwallet/src/main/java/io/mosip/sampleapp/utils/KeyManager.kt	*	excluded-sample	-	-	-	-	-	Sample wallet app
+inji-openid4vp	kotlin/sampleovpwallet/src/main/java/io/mosip/sampleapp/utils/OpenID4VPManager.kt	*	excluded-sample	-	-	-	-	-	Sample wallet app
+inji-verify	inji-verify-sdk/src/components/openid4vp-verification/OpenID4VPVerification.tsx	*	verified	B-V3	creation	S3	yes	wallet	Verifier SDK advertises accepted proof suites (Ed25519 2018/2020, RSA 2018) and SD-JWT algs RS256, ES256, ES256K, EdDSA
+inji-verify	inji-verify-sdk/src/components/openid4vp-verification/OpenID4VPVerification.types.ts	*	format-only	-	-	-	-	-	Type shape
+inji-verify	inji-verify-sdk/src/utils/api.ts	*	format-only	-	-	-	-	-	Content type
+inji-verify	inji-verify-sdk/src/utils/constants.ts	*	format-only	-	-	-	-	-	SD-JWT type set
+inji-verify	verify-service/src/main/java/io/inji/verify/controller/VCVerificationController.java	*	verified	B-V1	provider	S3	no	issuer	Entry point to credential verification
+inji-verify	verify-service/src/main/java/io/inji/verify/controller/VPSubmissionController.java	*	false-positive	-	-	-	-	-	Gson annotation imported from Nimbus's shaded copy; JSON only
+inji-verify	verify-service/src/main/java/io/inji/verify/dto/client/ClientMetadataDto.java	*	false-positive	-	-	-	-	-	Gson annotation imported from Nimbus's shaded copy; JSON only
+inji-verify	verify-service/src/main/java/io/inji/verify/dto/client/LdpVp.java	*	false-positive	-	-	-	-	-	Gson annotation imported from Nimbus's shaded copy; JSON only
+inji-verify	verify-service/src/main/java/io/inji/verify/dto/client/SdJwt.java	*	false-positive	-	-	-	-	-	Gson annotation imported from Nimbus's shaded copy; JSON only
+inji-verify	verify-service/src/main/java/io/inji/verify/dto/client/VpFormats.java	*	false-positive	-	-	-	-	-	Gson annotation imported from Nimbus's shaded copy; JSON only
+inji-verify	verify-service/src/main/java/io/inji/verify/dto/presentation/FormatDto.java	*	false-positive	-	-	-	-	-	Gson annotation imported from Nimbus's shaded copy; JSON only
+inji-verify	verify-service/src/main/java/io/inji/verify/dto/presentation/LdpVcDto.java	*	false-positive	-	-	-	-	-	Gson annotation imported from Nimbus's shaded copy; JSON only
+inji-verify	verify-service/src/main/java/io/inji/verify/dto/presentation/VPDefinitionResponseDto.java	*	false-positive	-	-	-	-	-	Gson annotation imported from Nimbus's shaded copy; JSON only
+inji-verify	verify-service/src/main/java/io/inji/verify/dto/submission/DescriptorMapDto.java	*	false-positive	-	-	-	-	-	Gson annotation imported from Nimbus's shaded copy; JSON only
+inji-verify	verify-service/src/main/java/io/inji/verify/dto/submission/PresentationSubmissionDto.java	*	false-positive	-	-	-	-	-	Gson annotation imported from Nimbus's shaded copy; JSON only
+inji-verify	verify-service/src/main/java/io/inji/verify/key/impl/P12KeyExtractor.java	*	verified	B-V2	creation	S1	no	none (verifier internal)	Verifier's own request-signing key must be Ed25519/EdDSA in the PKCS12 file (lines 55-64)
+inji-verify	verify-service/src/main/java/io/inji/verify/models/VPSubmission.java	*	false-positive	-	-	-	-	-	Gson annotation imported from Nimbus's shaded copy; JSON only
+inji-verify	verify-service/src/main/java/io/inji/verify/services/impl/P12FileKeyManagementServiceImpl.java	*	verified	B-V2	operation	S2	yes	wallet	Publishes verifier's Ed25519 key as OKP JWK
+inji-verify	verify-service/src/main/java/io/inji/verify/services/impl/VCVerificationServiceImpl.java	*	verified	B-V1	provider	S3	no	issuer	Verification delegated to vc-verifier by format
+inji-verify	verify-service/src/main/java/io/inji/verify/services/impl/VerifiablePresentationRequestServiceImpl.java	*	verified	B-V2	operation	S3	yes	wallet	Signs authorization request objects with EdDSA (Nimbus)
+inji-verify	verify-service/src/main/java/io/inji/verify/shared/Constants.java	*	verified	B-V3	creation	S3	yes	wallet	Accepted algs RS256, ES256, ES256K, EdDSA and proof suite names
+inji-verify	verify-service/src/main/java/io/inji/verify/utils/DIDDocumentUtil.java	*	verified	B-V2	operation	S2	yes	wallet	Verifier DID document with a single Ed25519 verification method
+inji-verify	verify-service/src/main/java/io/inji/verify/utils/SecurityUtils.java	*	verified	B-V1	operation	S2	no	issuer	Reads RSA X.509 public keys from PEM
+inji-verify	verify-service/src/main/java/io/inji/verify/utils/Utils.java	*	format-only	-	-	-	-	-	Hex helper and SD-JWT type set
+inji-verify	verify-service/src/main/resources/application-local.properties	*	verified	B-V2	creation	S2	yes	wallet	Verifier did:web identifiers (key id)
+inji-verify	verify-service/src/main/resources/application.properties	*	verified	B-V2	creation	S2	yes	wallet	Verifier did:web identifiers (key id)
+inji-verify	verify-ui/public/env.config.js	*	verified	B-V2	creation	S2	yes	wallet	Client id DID
+inji-verify	verify-ui/src/types/data-types.ts	*	format-only	-	-	-	-	-	Type shape including verificationMethod string
+vc-verifier	vc-verifier/kotlin/example/src/main/java/io/mosip/vccred/example/MainActivity.kt	*	excluded-sample	-	-	-	-	-	Example app
+vc-verifier	vc-verifier/kotlin/sample-java-app/src/main/java/io/mosip/Main.java	*	excluded-sample	-	-	-	-	-	Sample app
+vc-verifier	vc-verifier/kotlin/sample-java-app/src/main/java/io/mosip/SampleConstants.java	*	excluded-sample	-	-	-	-	-	Sample app
+vc-verifier	vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/CredentialsVerifier.kt	*	verified	B-L1	provider	S3	no	issuer	Library entry point; dispatches by format
+vc-verifier	vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/PresentationVerifier.kt	*	verified	B-L2	operation	S3	no	wallet	VP verification: Ed25519 2018/2020 proof types, JWS via Nimbus, multibase keys
+vc-verifier	vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/constants/CredentialFormat.kt	*	format-only	-	-	-	-	-	Format enum
+vc-verifier	vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/constants/CredentialValidatorConstants.kt	*	verified	B-L1	creation	S3	no	issuer	Validation allow-lists: JWS algs PS256, RS256, EdDSA, ES256K; proof types RsaSignature2018, Ed25519Signature2018/2020, EcdsaSecp256k1Signature2019 (lines 102-114). ES256, EcdsaSecp256r1Signature2019 and DataIntegrityProof are absent
+vc-verifier	vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/constants/CredentialVerifierConstants.kt	*	verified	B-L1	creation	S2	no	issuer	Key encodings (publicKeyPem, Multibase, Jwk), JCA algorithm names, curve names
+vc-verifier	vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/credentialverifier/statusChecker/LdpStatusChecker.kt	*	verified	B-L1	operation	S3	no	issuer	Status list credential signature verified with the same verifier
+vc-verifier	vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/credentialverifier/validator/SdJwtValidator.kt	*	verified	B-L1	operation	S3	no	issuer	Reads alg from SD-JWT and KB-JWT headers
+vc-verifier	vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/credentialverifier/verifier/LdpVerifier.kt	*	verified	B-L1	operation	S3	no	issuer	JWS proofs: algorithm from the JWS header via SignatureFactory. proofValue proofs: always verified as Ed25519, whatever the proof type (comment: only Ed25519Signature2020 seen)
+vc-verifier	vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/credentialverifier/verifier/MsoMdocVerifier.kt	*	verified	B-L1	operation	S3	no	issuer	mdoc issuer signature through the COSE verifier
+vc-verifier	vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/credentialverifier/verifier/SdJwtVerifier.kt	*	verified	B-L1	provider	S3	no	issuer	SD-JWT via Nimbus
+vc-verifier	vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/keyResolver/PublicKeyResolverFactory.kt	*	verified	B-L3	operation	S2	no	issuer	Key resolution by verificationMethod scheme: did: or https:
+vc-verifier	vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/keyResolver/Utils.kt	*	verified	B-L3	operation	S2	no	issuer	Public key decoding per key type (Ed25519 2018/2020, secp256k1, RSA) from PEM, multibase, JWK, hex
+vc-verifier	vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/keyResolver/types/did/DidKeyPublicKeyResolver.kt	*	verified	B-L3	operation	S2	no	issuer	did:key decoding: Ed25519 only, via BouncyCastle SubjectPublicKeyInfo
+vc-verifier	vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/keyResolver/types/did/DidWebPublicKeyResolver.kt	*	verified	B-L3	operation	S2	no	issuer	did:web: picks the verification method and decodes by key encoding
+vc-verifier	vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/signature/SignatureFactory.kt	*	verified	B-L1	creation	S3	no	issuer	Closed switch of five JWS algs; ES256 is served by the ES256K class (line 22); unknown alg throws (fail closed)
+vc-verifier	vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/signature/SignatureVerifier.kt	*	verified	B-L1	provider	S3	no	issuer	Verifier interface with BouncyCastle default provider
+vc-verifier	vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/signature/impl/CoseSignatureVerifierImpl.kt	*	verified	B-L1	provider	S3	no	issuer	COSE verification with BouncyCastle
+vc-verifier	vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/signature/impl/ED25519SignatureVerifierImpl.kt	*	verified	B-L1	operation	S3	no	issuer	Ed25519 verification (BouncyCastle)
+vc-verifier	vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/signature/impl/ES256KSignatureVerifierImpl.kt	*	verified	B-L1	operation	S3	no	issuer	ECDSA verification, used for both ES256K and ES256
+vc-verifier	vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/signature/impl/PS256SignatureVerifierImpl.kt	*	verified	B-L1	operation	S3	no	issuer	RSA-PSS verification
+vc-verifier	vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/signature/impl/RS256SignatureVerifierImpl.kt	*	verified	B-L1	operation	S3	no	issuer	RSA PKCS#1 v1.5 verification
+vc-verifier	vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/utils/LocalDocumentLoader.kt	*	verified	B-L1	operation	S3	no	issuer	Bundled JSON-LD context for the Ed25519-2020 suite
+vc-verifier	vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/utils/Util.kt	*	verified	B-L1	operation	S3	no	issuer	Generic verify helper
+vc-verifier	vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/utils/ValidationHelper.kt	*	verified	B-L1	operation	S3	no	issuer	validateProof rejects any JWS alg or proof type outside the allow-lists before signature checking (lines 58-76)
+tuvali	kotlin/android/src/main/java/io/mosip/tuvali/ble/central/state/StateHandler.kt	*	false-positive	-	-	-	-	-	BouncyCastle Hex encoder only
+tuvali	kotlin/android/src/main/java/io/mosip/tuvali/common/advertisementPayload/AdvertisementPayload.kt	*	false-positive	-	-	-	-	-	BouncyCastle Hex encoder only
+tuvali	kotlin/android/src/main/java/io/mosip/tuvali/cryptography/CipherBox.java	*	verified	B-T1	provider	S4	yes	verifier (BLE peer)	BouncyCastle exception type in the BLE encryption path
+tuvali	kotlin/android/src/main/java/io/mosip/tuvali/cryptography/CipherBoxImpl.java	*	verified	B-T1	operation	S4	yes	verifier (BLE peer)	AES-GCM via BouncyCastle lightweight API (F7)
+tuvali	kotlin/android/src/main/java/io/mosip/tuvali/cryptography/CryptoBoxImpl.java	*	verified	B-T1	creation	S4	yes	verifier (BLE peer)	X25519 key pair and agreement (F7); quantum-vulnerable key agreement
+tuvali	kotlin/android/src/main/java/io/mosip/tuvali/cryptography/KeyGenerator.java	*	verified	B-T1	operation	S4	yes	verifier (BLE peer)	HKDF-SHA256 key derivation (F7)
+tuvali	kotlin/android/src/main/java/io/mosip/tuvali/cryptography/SecretsTranslator.java	*	verified	B-T1	provider	S4	yes	verifier (BLE peer)	BouncyCastle exception type in the BLE encryption path
+tuvali	kotlin/android/src/main/java/io/mosip/tuvali/cryptography/SenderTransfersOwnershipOfData.java	*	verified	B-T1	provider	S4	yes	verifier (BLE peer)	BouncyCastle exception type in the BLE encryption path
+tuvali	kotlin/android/src/main/java/io/mosip/tuvali/transfer/Assembler.kt	*	false-positive	-	-	-	-	-	CRC check, not cryptographic
+tuvali	kotlin/android/src/main/java/io/mosip/tuvali/transfer/Util.kt	*	false-positive	-	-	-	-	-	BouncyCastle Hex encoder only
+tuvali	kotlin/android/src/main/java/io/mosip/tuvali/verifier/Verifier.kt	*	verified	B-T1	creation	S4	yes	wallet (BLE peer)	Verifier side triggers X25519 key generation
+tuvali	kotlin/android/src/main/java/io/mosip/tuvali/verifier/VerifierBleCommunicator.kt	*	verified	B-T1	creation	S4	yes	wallet (BLE peer)	Generates the verifier's X25519 key pair
+tuvali	kotlin/android/src/main/java/io/mosip/tuvali/wallet/WalletBleCommunicator.kt	*	false-positive	-	-	-	-	-	BouncyCastle Hex encoder only
+secure-keystore	kotlin/android/src/main/java/com/reactnativesecurekeystore/CipherBox.kt	*	verified	B-S1	operation	S1	no	none (wallet internal)	Signature by JCA algorithm name passed in
+secure-keystore	kotlin/android/src/main/java/com/reactnativesecurekeystore/CipherBoxImpl.kt	*	verified	B-S1	operation	S1	no	none (wallet internal)	Signature.getInstance(signAlgorithm) on a keystore key (line 60)
+secure-keystore	kotlin/android/src/main/java/com/reactnativesecurekeystore/DeviceCapability.kt	*	non-signature	B-S1	creation	S1	no	none (wallet internal)	Probe key to test hardware support
+secure-keystore	kotlin/android/src/main/java/com/reactnativesecurekeystore/KeyGenerator.kt	*	verified	B-S1	creation	S1	no	none (wallet internal)	Key generation interface
+secure-keystore	kotlin/android/src/main/java/com/reactnativesecurekeystore/KeyGeneratorImpl.kt	*	verified	B-S1	creation	S1	no	none (wallet internal)	AndroidKeyStore generators for RSA and EC only; EC fixed to secp256r1 (line 103, F3)
+secure-keystore	kotlin/android/src/main/java/com/reactnativesecurekeystore/SecureKeystore.kt	*	verified	B-S1	creation	S1	no	none (wallet internal)	Interface: generateKeyPair(type), sign
+secure-keystore	kotlin/android/src/main/java/com/reactnativesecurekeystore/SecureKeystoreImpl.kt	*	verified	B-S1	creation	S1	no	none (wallet internal)	Type switch RS256 versus EC; generic key store for software keys
+secure-keystore	kotlin/android/src/main/java/com/reactnativesecurekeystore/common/Constants.kt	*	verified	B-S1	provider	S1	no	none (wallet internal)	AndroidKeyStore provider name
+secure-keystore	kotlin/example-app/app/src/main/java/com/example/kotlin_example_app/MainActivity.kt	*	excluded-sample	-	-	-	-	-	Example app
+inji-vci-client	kotlin/example/src/main/java/com/example/vciclient/util/VCIClientWrapper.kt	*	excluded-sample	-	-	-	-	-	Example app
+inji-vci-client	kotlin/vci-client/src/main/java/io/mosip/vciclient/constants/CredentialFormat.kt	*	format-only	-	-	-	-	-	Format enum
+inji-vci-client	kotlin/vci-client/src/main/java/io/mosip/vciclient/constants/JWTProofType.kt	*	verified	B-C1	creation	S3	yes	issuer	Algorithm enum with RS256 only (legacy proof builder)
+inji-vci-client	kotlin/vci-client/src/main/java/io/mosip/vciclient/proof/Proof.kt	*	verified	B-C1	operation	S2	yes	issuer	Legacy proof interface takes a PEM public key
+inji-vci-client	kotlin/vci-client/src/main/java/io/mosip/vciclient/proof/jwt/JWTProof.kt	*	verified	B-C1	operation	S3	yes	issuer	Legacy constructor builds an RS256 proof from PEM; current flows pass a wallet-signed JWT through (PreAuthCodeFlowService line 61) with the issuer's algorithm list handed to the wallet callback
+inji-vci-client	kotlin/vci-client/src/main/java/io/mosip/vciclient/proof/jwt/JWTProofHeader.kt	*	verified	B-C1	operation	S2	yes	issuer	PEM to JWK, alg fixed RS256 (legacy path)
+pixelpass	kotlin/examplejavaapp/src/main/java/io/mosip/Main.java	*	excluded-sample	-	-	-	-	-	Example app
+inji-certify	certify-service/src/main/java/io/mosip/certify/config/AppConfig.java	*	verified	B-I6	creation	S1	no	none (issuer internal)	Start-up key bootstrap: root, service, partner and per-algorithm master keys via keymanager generateMasterKey (lines 95-135); masters are RSA (F14)
+inji-certify	certify-service/src/main/java/io/mosip/certify/config/SecurityConfig.java	*	verified	B-I5	operation	S3	yes	authorization server	Resource-server JWT decoder accepts ES256, RS256, PS256 only (lines 86-88)
+inji-verify	verify-service/src/main/java/io/inji/verify/config/AppConfig.java	*	false-positive	-	-	-	-	-	Gson from Nimbus's shaded copy
+mimoto	src/main/java/io/mosip/mimoto/config/KeyManagerConfig.java	*	verified	B-M5	creation	S1	no	none (wallet backend internal)	Start-up keymanager master key generation (RSA by configuration)

@@ -1,0 +1,36 @@
+# binding	component	name	description
+B-W1	inji-wallet	Wallet key-type registry	Closed KeyTypes enum, labels, KeyType to JWS alg map, per-flow default key types (RS256 for issuance, Ed25519 for VP)
+B-W2	inji-wallet	Wallet key generation and storage	Per-type keygen and sign; RSA and P-256 in the Android hardware keystore, secp256k1 and Ed25519 in software and stored as generic keys
+B-W3	inji-wallet	Issuance holder proof (OpenID4VCI)	Proof JWT built with node-jose; alg chosen from the issuer's proof_signing_alg_values_supported; did:jwk holder binding
+B-W4	inji-wallet	Presentation signing (OpenID4VP)	VP proof suite JsonWebSignature2020 and EdDSA constants; wallet metadata advertised to verifiers; native bridges to the OpenID4VP library
+B-W5	inji-wallet	Credential verification in the wallet	Android delegates to vc-verifier; iOS uses vendored jsonld-signatures and skips verification for Ed25519Signature2020, mdoc and SD-JWT
+B-W6	inji-wallet	QR login signing	QR login JWT signed with the wallet key type
+B-W7	inji-wallet	Hashing	@noble/hashes SHA-2 for digests (non-signature)
+B-W8	inji-wallet	Local storage protection	Keystore AES and HMAC keys, PBKDF2 for backup (non-signature)
+B-I1	inji-certify	Credential proof generation	Legacy proof generator classes, Data Integrity via danubetech, SD-JWT and mdoc signing, all through keymanager
+B-I2	inji-certify	Issuer algorithm and key configuration	credential_config, suite-to-alg and alg-to-key maps, reference-id constants
+B-I3	inji-certify	Holder proof validation	JWT proof validation (Nimbus), did:jwk and did:key decoding with fixed curve sets
+B-I4	inji-certify	Issuer key publication	DID document and JWKS generation
+B-I5	inji-certify	OAuth token signing and validation	Access tokens signed RS256; external tokens accepted as ES256, RS256, PS256
+B-I6	inji-certify	Keymanager integration	Component scan, key bootstrap at start-up, key administration endpoints
+B-I7	inji-certify	Presentation during issuance request	VP request config asks for RsaSignature2018
+B-I8	inji-certify	Status list signing	Status list credentials signed with separately configured suite, alg and key
+B-M1	mimoto	Mimoto algorithm strategy	SigningAlgorithm enum, handler factory, one handler per algorithm (F4)
+B-M2	mimoto	Mimoto issuance proof negotiation and keys	Priority-list negotiation against issuer metadata with Ed25519 fallback; per-wallet keys for all four algorithms
+B-M3	mimoto	Mimoto presentation signing	ldp_vc VP signed EdDSA, bypassing the factory (F5)
+B-M4	mimoto	Mimoto credential verification	Delegates to vc-verifier
+B-M5	mimoto	Mimoto key protection	RSA-OAEP key unwrapping, AES-GCM, keymanager master keys
+B-M6	mimoto	Mimoto OAuth client and legacy proof	RS256 client assertion; legacy RS256 issuance proof with a fresh RSA key (F5)
+B-P1	inji-openid4vp	VP proof construction	Closed suite and alg enums, default suite Ed25519Signature2020, key type to alg map for SD-JWT
+B-P2	inji-openid4vp	Authorization request verification	Request objects verified with Ed25519 keys only; wallet advertises EdDSA only
+B-P3	inji-openid4vp	mdoc COSE algorithm mapping	COSE alg ids for ES256 and EdDSA only
+B-P4	inji-openid4vp	Response encryption	ECDH-ES with X25519 and A256GCM (key agreement, S4)
+B-V1	inji-verify	Credential verification service	Delegates to vc-verifier; RSA PEM reader
+B-V2	inji-verify	Verifier identity and request signing	Verifier key must be Ed25519; request objects signed EdDSA; verifier DID document
+B-V3	inji-verify	Verifier accepted algorithms	Accepted algs and proof suites advertised to wallets
+B-L1	vc-verifier	Signature verification library	Allow-lists, SignatureFactory (5 algs), per-alg verifier classes, LD/SD-JWT/mdoc verifiers
+B-L2	vc-verifier	Presentation verification	VP proof verification for Ed25519 suites and JWS
+B-L3	vc-verifier	Key resolution	did:web, did:key (Ed25519 only), https keys; decoding per key encoding
+B-T1	tuvali	BLE transfer encryption	X25519 key agreement, HKDF-SHA256, AES-GCM (F7)
+B-S1	secure-keystore	Android hardware keystore	RSA and EC (secp256r1) keys only in AndroidKeyStore; signing by JCA name
+B-C1	inji-vci-client	VCI client proof	Legacy RS256 proof builder; current flow passes a wallet-signed JWT

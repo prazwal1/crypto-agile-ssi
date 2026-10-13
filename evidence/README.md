@@ -14,3 +14,4 @@ SHA-256.
 | `2026-10-13-reference-run/` | Phase 1 reference run: issuance and verification, logs both sides, image list | F3, F9, F10, F11 |
 | `2026-10-13-issuer-signing-trace/` | Cited source excerpts for the Certify to keymanager trace | F12 to F16 |
 | `2026-10-13-certify-image-libs/` | Libraries bundled in the deployed Certify jar | F16, D-04 |
+| `2026-10-13-inventory-review/` | Two-pass scoring of the 919 inventory rows; excerpts for F17 to F20 | F17 to F20, `results/bindings.csv` |

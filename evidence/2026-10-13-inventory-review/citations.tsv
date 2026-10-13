@@ -1,0 +1,17 @@
+# id	repo	path	start	end	note
+R1	inji-wallet	shared/vcjs/verifyCredential.ts	77	100	iOS verification: mdoc, SD-JWT and Ed25519Signature2020 return success without verifying
+R2	vc-verifier	vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/constants/CredentialValidatorConstants.kt	102	114	Verifier allow-lists: 4 JWS algs, 4 proof types
+R3	vc-verifier	vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/utils/ValidationHelper.kt	58	76	validateProof rejects algs and proof types outside the allow-lists
+R4	vc-verifier	vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/credentialverifier/verifier/LdpVerifier.kt	45	61	JWS proofs dispatch on header alg; proofValue proofs always verified as Ed25519
+R5	vc-verifier	vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/signature/SignatureFactory.kt	16	25	Closed switch; ES256 served by the ES256K class; unknown alg throws
+R6	inji-certify	certify-service/src/main/java/io/mosip/certify/proofgenerators/EcdsaSecp256r1Signature2019ProofGenerator.java	40	50	Issuer can produce EcdsaSecp256r1Signature2019 (ES256)
+R7	mimoto	src/main/java/io/mosip/mimoto/service/impl/CredentialRequestServiceImpl.java	76	102	Proof algorithm negotiation: priority list against issuer metadata, Ed25519 fallback when nothing matches
+R8	mimoto	src/main/java/io/mosip/mimoto/util/WalletUtil.java	83	95	Mimoto pre-generates proof keys for all four algorithms
+R9	inji-openid4vp	kotlin/openID4VP/src/commonMain/kotlin/io/mosip/openID4VP/jwt/jws/JWSHandler.kt	34	47	Request object verification: Ed25519 only, others fail closed
+R10	inji-openid4vp	kotlin/openID4VP/src/commonMain/kotlin/io/mosip/openID4VP/jwt/jwe/encryption/EncryptionProvider.kt	1	40	Response encryption with X25519 ECDH-ES
+R11	inji-certify	certify-service/src/main/java/io/mosip/certify/services/StatusListCredentialService.java	50	72	Status list signing with its own suite, alg and key
+R12	inji-certify	certify-service/src/main/java/io/mosip/certify/config/AppConfig.java	92	136	Key bootstrap at start-up: master keys per application id
+R13	inji-certify	certify-service/src/main/java/io/mosip/certify/proof/JwtProofValidator.java	110	155	Holder proof validation: allowed algs from config, special cases ES256K and EdDSA
+R14	inji-certify	certify-service/src/main/java/io/mosip/certify/config/SecurityConfig.java	82	90	External access tokens: ES256, RS256, PS256
+R15	inji-wallet	machines/Issuers/IssuersActions.ts	154	161	Only ES256 and RS256 keys stay in hardware; other types and all iOS keys stored as generic keys
+R16	secure-keystore	kotlin/android/src/main/java/com/reactnativesecurekeystore/KeyGeneratorImpl.kt	15	30	AndroidKeyStore generators for RSA and EC only

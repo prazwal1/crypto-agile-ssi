@@ -1,0 +1,46 @@
+rows: 919
+
+file_class:
+  source: 560
+  test: 249
+  deploy-config: 58
+  build: 26
+  app-config: 25
+  doc: 1
+
+status:
+  verified: 446
+  excluded-test: 249
+  upstream-deployment-config: 58
+  excluded-sample: 50
+  format-only: 39
+  false-positive: 29
+  build-dependency: 26
+  non-signature: 13
+  dead-code: 9
+
+files hand-reviewed (pass 2): 245
+bindings (verified or non-signature): 35
+
+verified rows by surface:
+  S3: 248
+  S1: 110
+  S2: 68
+  S4: 20
+verified rows by coupling type:
+  operation: 243
+  creation: 170
+  provider: 33
+verified rows crossing a trust boundary:
+  yes: 241
+  no: 205
+verified rows by repo:
+  inji-certify: 101
+  inji-wallet: 101
+  mimoto: 80
+  vc-verifier: 54
+  inji-openid4vp: 44
+  inji-verify: 31
+  secure-keystore: 14
+  tuvali: 14
+  inji-vci-client: 7

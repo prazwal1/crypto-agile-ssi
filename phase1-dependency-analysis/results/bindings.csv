@@ -1,0 +1,36 @@
+binding,component,name,status,files,rows,surfaces,coupling_types,crosses_trust_boundary,external_parties,algorithms_matched,description
+B-I1,inji-certify,Credential proof generation,verified,14,41,S2 S3,creation operation provider,yes,verifier,ECDSA-P256 ECDSA-P384 Ed25519 RSA secp256k1,"Legacy proof generator classes, Data Integrity via danubetech, SD-JWT and mdoc signing, all through keymanager"
+B-I2,inji-certify,Issuer algorithm and key configuration,verified,4,18,S1 S3,creation,yes,"none (issuer internal); verifier; wallet, verifier",ECDSA-P256 Ed25519 RSA secp256k1,"credential_config, suite-to-alg and alg-to-key maps, reference-id constants"
+B-I3,inji-certify,Holder proof validation,verified,4,15,S2 S3,operation provider,yes,wallet,ECDSA-P256 Ed25519 RSA secp256k1,"JWT proof validation (Nimbus), did:jwk and did:key decoding with fixed curve sets"
+B-I4,inji-certify,Issuer key publication,verified,2,12,S2,operation,yes,"verifier; wallet, verifier",ECDSA-P256 Ed25519 RSA secp256k1,DID document and JWKS generation
+B-I5,inji-certify,OAuth token signing and validation,non-signature/verified,4,8,S3,operation,yes,authorization server; wallet,ECDSA-P256 RSA,"Access tokens signed RS256; external tokens accepted as ES256, RS256, PS256"
+B-I6,inji-certify,Keymanager integration,verified,3,5,S1,creation provider,no,none (issuer internal),Ed25519 RSA,"Component scan, key bootstrap at start-up, key administration endpoints"
+B-I7,inji-certify,Presentation during issuance request,verified,1,3,S3,creation,yes,wallet,RSA,VP request config asks for RsaSignature2018
+B-I8,inji-certify,Status list signing,verified,1,2,S3,creation,yes,verifier,Ed25519,"Status list credentials signed with separately configured suite, alg and key"
+B-P1,inji-openid4vp,VP proof construction,verified,7,19,S2 S3,creation operation,yes,verifier,ECDSA-P256 Ed25519 RSA,"Closed suite and alg enums, default suite Ed25519Signature2020, key type to alg map for SD-JWT"
+B-P2,inji-openid4vp,Authorization request verification,verified,7,10,S2 S3,creation operation,yes,verifier,Ed25519,Request objects verified with Ed25519 keys only; wallet advertises EdDSA only
+B-P3,inji-openid4vp,mdoc COSE algorithm mapping,verified,2,9,S3,operation,yes,verifier,ECDSA-P256 ECDSA-P384 Ed25519 RSA,COSE alg ids for ES256 and EdDSA only
+B-P4,inji-openid4vp,Response encryption,verified,5,6,S4,creation operation provider,yes,verifier,X25519,"ECDH-ES with X25519 and A256GCM (key agreement, S4)"
+B-C1,inji-vci-client,VCI client proof,verified,4,7,S2 S3,creation operation,yes,issuer,RSA,Legacy RS256 proof builder; current flow passes a wallet-signed JWT
+B-V1,inji-verify,Credential verification service,verified,3,5,S2 S3,operation provider,no,issuer,RSA,Delegates to vc-verifier; RSA PEM reader
+B-V2,inji-verify,Verifier identity and request signing,verified,7,14,S1 S2 S3,creation operation,yes,none (verifier internal); wallet,Ed25519,Verifier key must be Ed25519; request objects signed EdDSA; verifier DID document
+B-V3,inji-verify,Verifier accepted algorithms,verified,2,12,S3,creation,yes,wallet,ECDSA-P256 Ed25519 RSA secp256k1,Accepted algs and proof suites advertised to wallets
+B-W1,inji-wallet,Wallet key-type registry,verified,4,10,S1,creation,no,none (wallet internal),ECDSA-P256 Ed25519 RSA secp256k1,"Closed KeyTypes enum, labels, KeyType to JWS alg map, per-flow default key types (RS256 for issuance, Ed25519 for VP)"
+B-W2,inji-wallet,Wallet key generation and storage,verified,7,23,S1,creation,no,none (wallet internal),ECDSA-P256 Ed25519 RSA secp256k1,"Per-type keygen and sign; RSA and P-256 in the Android hardware keystore, secp256k1 and Ed25519 in software and stored as generic keys"
+B-W3,inji-wallet,Issuance holder proof (OpenID4VCI),verified,1,8,S3,operation,yes,issuer,ECDSA-P256 Ed25519 RSA secp256k1,Proof JWT built with node-jose; alg chosen from the issuer's proof_signing_alg_values_supported; did:jwk holder binding
+B-W4,inji-wallet,Presentation signing (OpenID4VP),verified,7,19,S2 S3,creation operation,yes,verifier,ECDSA-P256 Ed25519 RSA,VP proof suite JsonWebSignature2020 and EdDSA constants; wallet metadata advertised to verifiers; native bridges to the OpenID4VP library
+B-W5,inji-wallet,Credential verification in the wallet,verified,10,40,S2 S3,operation provider,no,issuer,ECDSA-P256 Ed25519 RSA,"Android delegates to vc-verifier; iOS uses vendored jsonld-signatures and skips verification for Ed25519Signature2020, mdoc and SD-JWT"
+B-W6,inji-wallet,QR login signing,verified,1,1,S3,operation,yes,relying party (QR login),,QR login JWT signed with the wallet key type
+B-W7,inji-wallet,Hashing,non-signature,2,4,S3,provider,no,none (wallet internal),,@noble/hashes SHA-2 for digests (non-signature)
+B-W8,inji-wallet,Local storage protection,non-signature,2,2,S1,creation provider,no,none (wallet internal),,"Keystore AES and HMAC keys, PBKDF2 for backup (non-signature)"
+B-M1,mimoto,Mimoto algorithm strategy,verified,9,34,S1,creation operation provider,no,none (wallet backend internal),ECDSA-P256 Ed25519 RSA secp256k1,"SigningAlgorithm enum, handler factory, one handler per algorithm (F4)"
+B-M2,mimoto,Mimoto issuance proof negotiation and keys,verified,5,22,S1 S3,creation,yes,issuer; none (wallet backend internal),ECDSA-P256 Ed25519 RSA secp256k1,Priority-list negotiation against issuer metadata with Ed25519 fallback; per-wallet keys for all four algorithms
+B-M3,mimoto,Mimoto presentation signing,verified,3,10,S3,operation provider,yes,verifier,ECDSA-P256 Ed25519,"ldp_vc VP signed EdDSA, bypassing the factory (F5)"
+B-M4,mimoto,Mimoto credential verification,verified,3,3,S2 S3,operation provider,no,issuer,,Delegates to vc-verifier
+B-M5,mimoto,Mimoto key protection,non-signature/verified,5,9,S1,creation operation provider,no,none (wallet backend internal),RSA,"RSA-OAEP key unwrapping, AES-GCM, keymanager master keys"
+B-M6,mimoto,Mimoto OAuth client and legacy proof,verified,2,5,S2 S3,operation provider,yes,"authorization server; authorization server, issuer",RSA,RS256 client assertion; legacy RS256 issuance proof with a fresh RSA key (F5)
+B-S1,secure-keystore,Android hardware keystore,non-signature/verified,8,15,S1,creation operation provider,no,none (wallet internal),ECDSA-P256 Ed25519 RSA secp256k1,RSA and EC (secp256r1) keys only in AndroidKeyStore; signing by JCA name
+B-T1,tuvali,BLE transfer encryption,verified,8,14,S4,creation operation provider,yes,verifier (BLE peer); wallet (BLE peer),X25519,"X25519 key agreement, HKDF-SHA256, AES-GCM (F7)"
+B-L1,vc-verifier,Signature verification library,verified,18,40,S2 S3,creation operation provider,no,issuer,ECDSA-P256 Ed25519 RSA secp256k1,"Allow-lists, SignatureFactory (5 algs), per-alg verifier classes, LD/SD-JWT/mdoc verifiers"
+B-L2,vc-verifier,Presentation verification,verified,1,5,S3,operation,no,wallet,Ed25519,VP proof verification for Ed25519 suites and JWS
+B-L3,vc-verifier,Key resolution,verified,4,9,S2,operation,no,issuer,Ed25519 RSA secp256k1,"did:web, did:key (Ed25519 only), https keys; decoding per key encoding"
