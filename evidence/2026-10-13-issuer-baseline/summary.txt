@@ -1,0 +1,11 @@
+﻿Captured: 2026-10-13T14:27:07
+Source:   https://signing-regulated-grain-prior.trycloudflare.com
+
+Issuer DID: did:web:signing-regulated-grain-prior.trycloudflare.com
+  verificationMethod: Ed25519VerificationKey2020
+Credential FarmerCredential: format=ldp_vc signing=EdDSA binding=did:jwk proof(jwt)=RS256,ES256
+  jwk: kty=RSA crv=
+  jwk: kty=OKP crv=Ed25519
+  jwk: kty=EC crv=secp256k1
+  jwk: kty=EC crv=P-256
+  jwk: kty=RSA crv=

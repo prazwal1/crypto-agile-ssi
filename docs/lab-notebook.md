@@ -20,6 +20,20 @@ Dated record of working sessions. Each entry states what was done, what was obse
 - First build failed moving Gradle's `dependencies-accessors` workspace (two concurrent Gradle processes, rename blocked). After closing Android Studio, adding Defender exclusions and stopping daemons, `run-wallet.ps1` built and installed the debug build (14:24).
 - Next: first issuance into the wallet from a pre-authorized offer, then the wallet-side baseline.
 
+### First issuance attempt (15:05)
+Evidence: `evidence/2026-10-13-first-issuance/logcat.txt` (server logs for this window were not saved)
+
+| Step | Observed |
+|---|---|
+| Offer scan, metadata, issuer trust prompt | OK; issuer `https://signing-regulated-grain-prior.trycloudflare.com` |
+| Token request (pre-authorized code) | OK, Bearer token issued |
+| Key selection | `proofSigningAlgosSupported` from metadata; wallet picked a P-256 key (ES256) from the Android Keystore; private key not exportable |
+| First signature | `KeyStoreException: Key user not authenticated` (keystore code -26): the key requires user authentication; the keystore library then ran the biometric prompt and signing succeeded |
+| Credential request | Rejected by Certify: `ERROR_FETCHING_IDENTITY_DATA` |
+
+- Cause: Certify was configured with `MockCSVDataProviderPlugin`, which ignores the claims attached to the pre-authorized offer and looks the holder up in the CSV by token subject. Certify core ships `PreAuthDataProviderPlugin`, which returns the cached offer claims. Switched to it (configuration only).
+- Observation for F3/F9: the holder proof key is a hardware-backed P-256 key bound to user authentication; every proof needs a biometric or device credential. Algorithm choice is driven by the issuer's `proof_signing_alg_values_supported` (RS256, ES256).
+
 ---
 
 ## 2026-10-11 (Sun)
