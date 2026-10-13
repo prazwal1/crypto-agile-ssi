@@ -54,8 +54,7 @@ $sdk = if ($env:ANDROID_HOME) { $env:ANDROID_HOME } elseif ($env:ANDROID_SDK_ROO
 if (Test-Path $sdk) {
   Pass "Android SDK at $sdk"
   $env:ANDROID_HOME = $sdk
-  $sdkmanager = Get-ChildItem "$sdk\cmdline-tools" -Recurse -Filter sdkmanager.bat -ErrorAction SilentlyContinue | Select-Object -First 1
-  $need = @{
+  $need = [ordered]@{
     "platforms;android-35"     = "$sdk\platforms\android-35"
     "build-tools;35.0.0"       = "$sdk\build-tools\35.0.0"
     "ndk;21.4.7075529"         = "$sdk\ndk\21.4.7075529"
@@ -63,11 +62,26 @@ if (Test-Path $sdk) {
   }
   $missing = @($need.Keys | Where-Object { -not (Test-Path $need[$_]) })
   if ($missing.Count -eq 0) { Pass "SDK packages: android-35, build-tools 35.0.0, NDK 21.4.7075529, platform-tools" }
-  elseif ($sdkmanager) {
+  else {
     Warn "Installing SDK packages: $($missing -join ', ')"
-    cmd /c "echo y| `"$($sdkmanager.FullName)`" --licenses" | Out-Null
-    & $sdkmanager.FullName @missing
-  } else { Fail "SDK packages $($missing -join ', '). Install 'Android SDK Command-line Tools' in Android Studio > SDK Manager > SDK Tools, then rerun" }
+    # Newer cmdline-tools replace sdkmanager with the 'android' CLI, which names packages
+    # with '/' (platforms/android-35) instead of ';'. Prefer it when present.
+    $androidCli = Get-ChildItem "$sdk\cmdline-tools" -Recurse -Include android.exe, android.bat -ErrorAction SilentlyContinue | Select-Object -First 1
+    $sdkmanager = Get-ChildItem "$sdk\cmdline-tools" -Recurse -Filter sdkmanager.bat -ErrorAction SilentlyContinue | Select-Object -First 1
+    if ($androidCli) {
+      $pkgs = $missing | ForEach-Object { $_.Replace(';', '/') }
+      & $androidCli.FullName --sdk=$sdk sdk install @pkgs
+    } elseif ($sdkmanager) {
+      # Quote each package: cmd.exe treats ';' as an argument separator for .bat files
+      cmd /c "echo y| `"$($sdkmanager.FullName)`" --licenses" | Out-Null
+      $quoted = ($missing | ForEach-Object { "`"$_`"" }) -join ' '
+      cmd /c "`"$($sdkmanager.FullName)`" --sdk_root=`"$sdk`" $quoted"
+    }
+    $still = @($need.Keys | Where-Object { -not (Test-Path $need[$_]) })
+    if ($still.Count -eq 0) { Pass "SDK packages installed" }
+    else { Fail ("SDK packages still missing: $($still -join ', '). Install them in Android Studio > Settings > Languages & Frameworks > Android SDK: " +
+                 "'SDK Platforms' tab: Android 15 (API 35). 'SDK Tools' tab, tick 'Show Package Details': Android SDK Build-Tools 35.0.0 and NDK (Side by side) 21.4.7075529") }
+  }
 } else { Fail "Android SDK not found at $sdk. Open Android Studio once and finish the setup wizard (Standard install) to download it" }
 
 if (-not $ok) { Write-Host "`nFix the MISS items and rerun." -ForegroundColor Red; exit 1 }
