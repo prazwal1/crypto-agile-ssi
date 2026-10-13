@@ -1,0 +1,9 @@
+﻿CONTAINER           REPOSITORY                            TAG                 PLATFORM            IMAGE ID            SIZE                CREATED
+certify             injistack/inji-certify-with-plugins   0.14.0              linux/amd64         f6686f55f520        1.85GB              6 months ago
+certify-nginx       nginx                                 stable              linux/amd64         9bf97bd7714f        240MB               7 days ago
+inji-postgres       postgres                              15                  linux/amd64         c961aa287d86        628MB               7 days ago
+inji-web            injistack/inji-web                    0.16.0              linux/amd64         ceca61318e89        99.7MB              7 months ago
+mimoto-service      injistack/mimoto                      0.22.0              linux/amd64         89fc81eeb8c9        1.05GB              5 months ago
+tunnel-named        cloudflare/cloudflared                2026.9.3            linux/amd64         072c067d25cc        97.6MB              2 weeks ago
+verify-service      injistack/inji-verify-service         0.18.2              linux/amd64         2ed468e7e1f1        529MB               3 months ago
+verify-ui           injistack/inji-verify-ui              0.18.2              linux/amd64         14de0b09c9a3        41.7MB              3 months ago

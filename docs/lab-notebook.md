@@ -4,6 +4,20 @@ Dated record of working sessions. Each entry states what was done, what was obse
 
 ---
 
+## 2026-10-13 (Tue, evening)
+
+### Final Phase 1 stack
+- Mimoto image set to 0.22.0 to match the analysed source (C-07). Named Cloudflare tunnel on `arlabsnepal.com` (C-08): issuer DID now fixed at `did:web:ssi-issuer.arlabsnepal.com`, Mimoto at `https://ssi-mimoto.arlabsnepal.com`. Offer creation and actuator blocked on the public host (C-09).
+- `start` (20:13): named tunnel registered; all local and public endpoints 200. Wallet rebuilt against the new Mimoto host.
+
+### Reference run (20:22)
+Evidence: `evidence/2026-10-13-reference-run/`, issuer baseline re-captured in `evidence/2026-10-13-issuer-baseline/`
+- Issuance and verification succeeded end to end; Inji Verify reports the credential valid with all 14 claims.
+- Wallet selected ES256 from `[RS256, ES256]`; the P-256 key needs user authentication for every signature (F3, F9 updated).
+- New: Certify signs the Claim 169 QR payload as a CWT with a separately configured algorithm (F10). Two verifiers act on each credential, the wallet on receipt and Inji Verify on presentation (F11).
+
+---
+
 ## 2026-10-13 (Tue)
 
 ### Move to a second laptop
