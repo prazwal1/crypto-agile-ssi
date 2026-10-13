@@ -10,6 +10,11 @@ Dated record of working sessions. Each entry states what was done, what was obse
 - Mimoto image set to 0.22.0 to match the analysed source (C-07). Named Cloudflare tunnel on `arlabsnepal.com` (C-08): issuer DID now fixed at `did:web:ssi-issuer.arlabsnepal.com`, Mimoto at `https://ssi-mimoto.arlabsnepal.com`. Offer creation and actuator blocked on the public host (C-09).
 - `start` (20:13): named tunnel registered; all local and public endpoints 200. Wallet rebuilt against the new Mimoto host.
 
+### Workbook review columns (23:24 to 23:35)
+- Added reviewer columns (PB verdict and comment, Supervisor verdict and comment; verdict drop-down Agree / Partly / Disagree) to every sheet that makes a claim: RQ1 Answer, Findings, Requirements, Algorithm Matrix, Bindings, Issuer Registries, Runtime Evidence, Source Citations, Decisions, Spot-Check (181 items).
+- New Review Status sheet counts reviewed items and agreement per sheet by formula.
+- `build_workbook.py` now reads existing verdicts and comments before rebuilding and writes them back, keyed by each row's id; tested by entering sample reviews, rebuilding over them and checking they survived. 423 formulas recalculate with no errors.
+
 ### Phase 1 workbook (22:08 to 22:25)
 - Built `docs/phase1/Phase1-Workbook.xlsx` from the repository with `docs/phase1/build_workbook.py` (content in `workbook_data.py`): RQ1 answers, findings F1 to F21 with reasoning, design requirements R-01 to R-12, findings-to-requirements traceability, algorithm support matrix, bindings, issuer registries, scored inventory, runtime timeline, source citations with GitHub permalinks at the pinned commits, evidence index, environment, decisions, known issues, activity log, method and the spot-check sheet.
 - Checks: 308 formulas recalculated with no errors; all 1,195 GitHub links point to existing files and lines in the pinned clones; all 28 relative links resolve in the repository; the build re-run on the laptop gives identical cell content.
