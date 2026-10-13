@@ -1,0 +1,26 @@
+﻿**********************
+Windows PowerShell transcript start
+Start time: 20261013144822
+Username: PRAZWAL\acer
+RunAs User: PRAZWAL\acer
+Configuration Name: 
+Machine: PRAZWAL (Microsoft Windows NT 10.0.26200.0)
+Host Application: C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.exe
+Process ID: 30840
+PSVersion: 5.1.26100.9444
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.9444
+BuildVersion: 10.0.26100.9444
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+
+== Requesting credential offer
+  OK    Offer created
+  openid-credential-offer://?credential_offer_uri=https%3A%2F%2Fsigning-regulated-grain-prior.trycloudflare.com%2Fv1%2Fcertify%2Fcredential-offer-data%2F9329684e-10d5-4c7e-b9f1-efb759617c3e
+**********************
+Windows PowerShell transcript end
+End time: 20261013144822
+**********************

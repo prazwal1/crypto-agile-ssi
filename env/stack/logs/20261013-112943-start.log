@@ -1,0 +1,100 @@
+﻿**********************
+Windows PowerShell transcript start
+Start time: 20261013112944
+Username: PRAZWAL\acer
+RunAs User: PRAZWAL\acer
+Configuration Name: 
+Machine: PRAZWAL (Microsoft Windows NT 10.0.26200.0)
+Host Application: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
+Process ID: 12788
+PSVersion: 5.1.26100.9444
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.9444
+BuildVersion: 10.0.26100.9444
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+
+== Pulling images
+[+] pull 101/101
+ ✔ Image injistack/inji-verify-ui:0.18.2            Pulled                                                         11.3s
+ ✔ Image injistack/inji-web:0.16.0                  Pulled                                                         31.9s
+ ✔ Image postgres:15                                Pulled                                                         63.6s
+ ✔ Image cloudflare/cloudflared:2026.9.3            Pulled                                                         13.1s
+ ✔ Image injistack/mimoto:0.21.0                    Pulled                                                         58.4s
+ ✔ Image injistack/inji-certify-with-plugins:0.14.0 Pulled                                                         54.1s
+ ✔ Image injistack/inji-verify-service:0.18.2       Pulled                                                         67.1s
+ ✔ Image nginx:stable                               Pulled                                                         64.5s
+
+== Starting containers
+ ✔ Network mosip_network     Created                                                                                0.0s
+ ✔ Volume inji-thesis_pgdata Created                                                                                0.0s
+ ✔ Container inji-postgres   Healthy                                                                                9.0s
+ ✔ Container tunnel-mimoto   Started                                                                                3.7s
+ ✔ Container tunnel-certify  Started                                                                                4.0s
+ ✔ Container verify-service  Started                                                                                7.0s
+ ✔ Container certify         Started                                                                                6.4s
+ ✔ Container mimoto-service  Started                                                                                6.7s
+ ✔ Container verify-ui       Started                                                                                8.2s
+ ✔ Container inji-web        Started                                                                                7.7s
+ ✔ Container certify-nginx   Started                                                                                7.3s
+
+== Waiting for Certify and Mimoto
+  OK    Certify
+  OK    Mimoto
+
+== Tunnels
+  NOTE  Tunnels stale or missing; recreating them (issuer DID will change)
+  Certify: https://signing-regulated-grain-prior.trycloudflare.com
+  Mimoto : https://overview-library-assumptions-presenting.trycloudflare.com
+
+== Wiring public URLs
+
+== Public endpoints (Certify can take 1 to 3 minutes)
+  OK    mimoto issuers   https://overview-library-assumptions-presenting.trycloudflare.com/v1/mimoto/issuers
+  OK    issuer metadata  https://signing-regulated-grain-prior.trycloudflare.com/v1/certify/.well-known/openid-credential-issuer
+  OK    AS metadata      https://signing-regulated-grain-prior.trycloudflare.com/.well-known/oauth-authorization-server
+  OK    issuer DID       https://signing-regulated-grain-prior.trycloudflare.com/.well-known/did.json
+  Issuer DID: did:web:signing-regulated-grain-prior.trycloudflare.com
+  wallet.env: MIMOTO_HOST=https://overview-library-assumptions-presenting.trycloudflare.com
+
+== Containers
+NAME             STATUS
+certify          Up 17 seconds
+certify-nginx    Up 16 seconds
+inji-postgres    Up 2 minutes (healthy)
+inji-web         Up 2 minutes
+mimoto-service   Up 2 minutes
+tunnel-certify   Up About a minute
+tunnel-mimoto    Up About a minute
+verify-service   Up 2 minutes
+verify-ui        Up 2 minutes
+
+== Local endpoints
+  200  http://localhost:8090/v1/certify/actuator/health
+  200  http://localhost:8090/v1/certify/.well-known/oauth-authorization-server
+  200  http://localhost:8091/.well-known/did.json
+  200  http://localhost:8091/.well-known/openid-credential-issuer
+  200  http://localhost:8091/.well-known/oauth-authorization-server
+  200  http://localhost:8099/v1/mimoto/issuers
+  200  http://localhost:3000
+  200  http://localhost:3004
+
+== Public endpoints
+  200  https://signing-regulated-grain-prior.trycloudflare.com/.well-known/did.json
+  200  https://signing-regulated-grain-prior.trycloudflare.com/v1/certify/.well-known/openid-credential-issuer
+  200  https://signing-regulated-grain-prior.trycloudflare.com/.well-known/oauth-authorization-server
+  200  https://overview-library-assumptions-presenting.trycloudflare.com/v1/mimoto/issuers
+
+== Tunnel status
+  tunnel-certify  registered
+  tunnel-mimoto   registered
+
+== Recent Certify errors (last 15 min)
+{"@timestamp":"2026-10-13T04:33:37.525Z","@version":"1","message":"Unhandled exception encountered in handler advice","logger_name":"io.mosip.certify.advice.ExceptionHandlerAdvice","thread_name":"http-nio-8090-exec-5","level":"ERROR","level_value":40000,"stack_trace":"org.springframework.security.au
+**********************
+Windows PowerShell transcript end
+End time: 20261013113339
+**********************

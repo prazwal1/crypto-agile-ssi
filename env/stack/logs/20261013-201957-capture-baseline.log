@@ -1,0 +1,39 @@
+﻿**********************
+Windows PowerShell transcript start
+Start time: 20261013201957
+Username: PRAZWAL\acer
+RunAs User: PRAZWAL\acer
+Configuration Name: 
+Machine: PRAZWAL (Microsoft Windows NT 10.0.26200.0)
+Host Application: powershell
+Process ID: 40708
+PSVersion: 5.1.26100.9444
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.9444
+BuildVersion: 10.0.26100.9444
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+
+== Capturing issuer baseline from https://ssi-issuer.arlabsnepal.com
+  OK    did          561 bytes
+  OK    issuer-meta  2136 bytes
+  OK    as-meta      482 bytes
+  OK    jwks         7509 bytes
+Captured: 2026-10-13T20:20:00
+Source:   https://ssi-issuer.arlabsnepal.com
+
+Issuer DID: did:web:ssi-issuer.arlabsnepal.com
+  verificationMethod: Ed25519VerificationKey2020
+Credential FarmerCredential: format=ldp_vc signing=EdDSA binding=did:jwk proof(jwt)=RS256,ES256
+  jwk: kty=RSA crv=
+  jwk: kty=OKP crv=Ed25519
+  jwk: kty=EC crv=secp256k1
+  jwk: kty=EC crv=P-256
+  jwk: kty=RSA crv=
+**********************
+Windows PowerShell transcript end
+End time: 20261013202000
+**********************

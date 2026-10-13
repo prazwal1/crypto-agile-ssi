@@ -1,0 +1,91 @@
+﻿**********************
+Windows PowerShell transcript start
+Start time: 20261013201312
+Username: PRAZWAL\acer
+RunAs User: PRAZWAL\acer
+Configuration Name: 
+Machine: PRAZWAL (Microsoft Windows NT 10.0.26200.0)
+Host Application: powershell
+Process ID: 40708
+PSVersion: 5.1.26100.9444
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.9444
+BuildVersion: 10.0.26100.9444
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+
+== Pulling images
+[+] pull 15/15
+ ✔ Image injistack/inji-verify-service:0.18.2       Pulled                                                          2.3s
+ ✔ Image injistack/inji-verify-ui:0.18.2            Pulled                                                          2.4s
+ ✔ Image nginx:stable                               Pulled                                                          2.7s
+ ✔ Image injistack/inji-web:0.16.0                  Pulled                                                          2.4s
+ ✔ Image injistack/mimoto:0.22.0                    Pulled                                                         21.8s
+ ✔ Image postgres:15                                Pulled                                                          2.6s
+ ✔ Image injistack/inji-certify-with-plugins:0.14.0 Pulled                                                          2.2s
+
+== Starting containers
+ ✔ Container inji-web       Running                                                                                 0.0s
+ ✔ Container verify-ui      Running                                                                                 0.0s
+ ✔ Container certify-nginx  Running                                                                                 0.0s
+ ✔ Container mimoto-service Started                                                                                 5.0s
+
+== Waiting for Certify and Mimoto
+  OK    Certify
+  OK    Mimoto
+
+== Tunnels
+  Mode: named tunnel (fixed hostnames)
+  OK    tunnel-named registered
+  Certify: https://ssi-issuer.arlabsnepal.com
+  Mimoto : https://ssi-mimoto.arlabsnepal.com
+
+== Wiring public URLs
+
+== Public endpoints (Certify can take 1 to 3 minutes)
+  OK    mimoto issuers   https://ssi-mimoto.arlabsnepal.com/v1/mimoto/issuers
+  OK    AS metadata      https://ssi-issuer.arlabsnepal.com/.well-known/oauth-authorization-server
+  OK    issuer DID       https://ssi-issuer.arlabsnepal.com/.well-known/did.json
+  OK    issuer metadata  https://ssi-issuer.arlabsnepal.com/v1/certify/.well-known/openid-credential-issuer
+  Issuer DID: did:web:ssi-issuer.arlabsnepal.com
+  wallet.env: MIMOTO_HOST=https://ssi-mimoto.arlabsnepal.com
+
+== Containers
+NAME             STATUS
+certify          Up 33 seconds
+certify-nginx    Up 32 seconds
+inji-postgres    Up 9 hours (healthy)
+inji-web         Up 9 hours
+mimoto-service   Up About a minute
+tunnel-named     Up 42 seconds
+verify-service   Up 9 hours
+verify-ui        Up 9 hours
+
+== Local endpoints
+  200  http://localhost:8090/v1/certify/actuator/health
+  200  http://localhost:8090/v1/certify/.well-known/oauth-authorization-server
+  200  http://localhost:8091/.well-known/did.json
+  200  http://localhost:8091/.well-known/openid-credential-issuer
+  200  http://localhost:8091/.well-known/oauth-authorization-server
+  200  http://localhost:8099/v1/mimoto/issuers
+  200  http://localhost:3000
+  200  http://localhost:3004
+
+== Public endpoints
+  200  https://ssi-issuer.arlabsnepal.com/.well-known/did.json
+  200  https://ssi-issuer.arlabsnepal.com/v1/certify/.well-known/openid-credential-issuer
+  200  https://ssi-issuer.arlabsnepal.com/.well-known/oauth-authorization-server
+  200  https://ssi-mimoto.arlabsnepal.com/v1/mimoto/issuers
+
+== Tunnel status
+  tunnel-named    registered
+
+== Recent Certify errors (last 15 min)
+{"@timestamp":"2026-10-13T13:14:52.849Z","@version":"1","message":"Unhandled exception encountered in handler advice","logger_name":"io.mosip.certify.advice.ExceptionHandlerAdvice","thread_name":"http-nio-8090-exec-5","level":"ERROR","level_value":40000,"stack_trace":"org.springframework.security.au
+**********************
+Windows PowerShell transcript end
+End time: 20261013201458
+**********************

@@ -2,7 +2,7 @@
 env/stack/.env
 env/stack/wallet.env
 env/stack/tunnel.env
-env/stack/logs/
+# env/stack/logs/ is tracked (2026-10-13): stack.ps1 transcripts are part of the activity record; they contain no secrets
 env/stack/data/
 env/stack/offer.html
 
