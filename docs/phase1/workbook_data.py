@@ -1,0 +1,202 @@
+"""Content of the Phase 1 workbook (findings, requirements, matrix, timeline). Edit here, then run build_workbook.py."""
+# Content for the Phase 1 workbook. Every row cites code (repo, path, lines) or evidence in the repo.
+SHA = {}
+import csv, os
+ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))  # repo root (docs/phase1/..)
+for r in csv.reader(open(os.path.join(ROOT, 'phase1-dependency-analysis/manifest.tsv')), delimiter='\t'):
+    if r: SHA[r[0]] = (r[1], r[2], r[3], r[4], r[5] if len(r) > 5 else '')
+
+def gh(repo, path, a=None, b=None):
+    tag, sha = SHA[repo][0], SHA[repo][1]
+    u = f'https://github.com/mosip/{repo}/blob/{sha}/{path}'
+    if a: u += f'#L{a}' + (f'-L{b}' if b and b != a else '')
+    return u
+
+# (id, surface, component, finding, reasoning, implication, rq, evidence_type, confidence, code refs [(repo,path,a,b)], evidence refs [relpath])
+FINDINGS = [
+ ('F1','S1/S3','Wallet','Wallet key types are a closed enum of four: RS256, ES256, ES256K, Ed25519.',
+  'Read the enum and searched every use of KeyTypes; no other key type can be selected anywhere in the wallet.',
+  'Adding ML-DSA starts by extending this enum, and every switch on it.','RQ1, RQ2','Static (source)','High',
+  [('inji-wallet','shared/cryptoutil/KeyTypes.ts',1,6)],[]),
+ ('F2','S1','Wallet','Key-type selection is spread over 5 production files with 58 KeyTypes references.',
+  'Counted KeyTypes. references in production code (tests excluded) and grouped by file.',
+  'Baseline for the "files touched to add an algorithm" metric (P1).','RQ1, RQ4','Static (source)','High',
+  [('inji-wallet','shared/cryptoutil/cryptoUtil.ts',None,None),('inji-wallet','shared/constants.ts',85,100),('inji-wallet','shared/openId4VCI/Utils.ts',None,None)],[]),
+ ('F3','S1','Wallet, secure-keystore','Two key storage paths: RS256 and ES256 keys are generated in the Android hardware keystore (secp256r1 only); ES256K and Ed25519 are generated in JS (@noble) as software keys. At runtime the ES256 proof key is non-exportable and bound to user authentication: each signature first fails with KEY_USER_NOT_AUTHENTICATED and succeeds after a biometric prompt.',
+  'Static: followed generateKeyPair per type to the native keystore or @noble. Runtime: logcat of the reference run shows the keystore exception, the biometric prompt and an empty exported private key.',
+  'Android Keystore has no ML-DSA, so a PQ key must take the software path and would lose the hardware user-authentication binding. The architecture needs a provider split (hardware vs software), not just an algorithm switch.','RQ1, RQ2','Static + runtime','High',
+  [('inji-wallet','shared/cryptoutil/cryptoUtil.ts',48,110),('secure-keystore','kotlin/android/src/main/java/com/reactnativesecurekeystore/KeyGeneratorImpl.kt',100,103),('inji-wallet','machines/Issuers/IssuersActions.ts',154,161)],
+  ['evidence/2026-10-13-reference-run/README.md','evidence/2026-10-13-reference-run/logcat.txt']),
+ ('F4','S3','Mimoto','Mimoto already has a partial strategy pattern: SigningAlgorithmHandler plus SigningAlgorithmHandlerFactory, one handler per algorithm, backed by a closed SigningAlgorithm enum.',
+  'Read the factory, the four handlers and their callers.',
+  'An in-codebase precedent the CSL can extend rather than replace; relevant to honest baseline scoring.','RQ2','Static (source)','High',
+  [('mimoto','src/main/java/io/mosip/mimoto/util/factory/SigningAlgorithmHandlerFactory.java',None,None),('mimoto','src/main/java/io/mosip/mimoto/constant/SigningAlgorithm.java',None,None)],[]),
+ ('F5','S3','Mimoto','The Mimoto factory is bypassed: JWSAlgorithm.EdDSA is hard-coded for ldp_vc presentations, and RSA/RS256 is hard-coded in JoseUtil (client assertion and a legacy issuance proof with a fresh RSA-2048 key).',
+  'Searched for JWSAlgorithm and KeyPairGenerator uses outside the factory and read each.',
+  'Operation coupling that survives the existing abstraction; a concrete P1 target.','RQ1, RQ2','Static (source)','High',
+  [('mimoto','src/main/java/io/mosip/mimoto/service/impl/WalletPresentationServiceImpl.java',314,322),('mimoto','src/main/java/io/mosip/mimoto/util/JoseUtil.java',155,170)],[]),
+ ('F6','S3','vc-verifier','vc-verifier has its own SignatureFactory and proof-type constants, a second algorithm registry independent of the wallet.',
+  'Read SignatureFactory and the constants; compared with the wallet enum (F1).',
+  'Wallet and verifier library must agree: a new algorithm has at least two registries to update.','RQ1, RQ2','Static (source)','High',
+  [('vc-verifier','vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/signature/SignatureFactory.kt',16,25),('vc-verifier','vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/constants/CredentialVerifierConstants.kt',None,None)],[]),
+ ('F7','S4','Tuvali','Tuvali (BLE offline transfer) uses X25519 key agreement, HKDF-SHA256 and AES-GCM via the BouncyCastle lightweight API.',
+  'Read the cryptography package.',
+  'X25519 is quantum-vulnerable; out of prototype scope (signatures only) but recorded in the CBOM.','RQ1','Static (source)','High',
+  [('tuvali','kotlin/android/src/main/java/io/mosip/tuvali/cryptography/CryptoBoxImpl.java',None,None)],[]),
+ ('F8','n/a','Inji Verify','BouncyCastle with pre-standard PQC classes (Dilithium, Falcon, Kyber) is already on Inji Verify\'s classpath per its SBOM.',
+  'Searched the published SBOM for BouncyCastle components and PQC class names (77 Dilithium mentions).',
+  'Not used by code, but a JVM PQ provider is already a transitive dependency; input to D-04.','RQ2 (provider choice)','Static (SBOM)','Medium',
+  [('inji-verify','sbom-clean.json',None,None)],[]),
+ ('F9','S1/S3','Certify config, Wallet','The deployed FarmerCredential accepts holder proofs signed with RS256 or ES256 only and binds the holder with did:jwk; these are exactly the wallet\'s hardware key types. At runtime the wallet received [RS256, ES256] and signed with a P-256 key (ES256).',
+  'Config: credential_config.proof_types_supported in the seed and the published issuer metadata. Runtime: logcat shows proofSigningAlgosSupported and the P-256 SPKI prefix.',
+  'Algorithm choice is constrained by the counterparty\'s published metadata, not only wallet code. A PQ holder key needs issuer-side configuration to be accepted (negotiation).','RQ1, RQ2','Config + runtime','High',
+  [],['evidence/2026-10-13-issuer-baseline/summary.txt','evidence/2026-10-13-reference-run/README.md','env/stack/sql/certify_init.sql']),
+ ('F10','S3','Certify','Certify signs a second artefact at issuance: the Claim 169 QR payload, as a CWT, with its own per-credential-type algorithm (qr_signature_algo, EdDSA in the seed), separate from the VC proof.',
+  'Read signQrEntries; confirmed at runtime in certify.log ("Using QR specific signature algorithm: EdDSA").',
+  'A credential carries two issuer signatures with independently configured algorithms; migrating only the VC proof leaves a classical signature inside it.','RQ1','Static + runtime','High',
+  [('inji-certify','certify-service/src/main/java/io/mosip/certify/services/CertifyIssuanceServiceImpl.java',345,370),('inji-certify','db_scripts/inji_certify/ddl/certify-credential_config.sql',42,42)],['evidence/2026-10-13-reference-run/certify.log']),
+ ('F11','S2/S3','Wallet, Inji Verify','Two independent verifiers act on every credential: the wallet verifies on receipt and Inji Verify on presentation; each fetches the issuer did:web document at verification time. Both accepted an assertionMethod that lists the DID itself (D-07).',
+  'nginx log shows did.json fetched at 20:22:48 (wallet) and 20:23:33 (Inji Verify); wallet logs isVerified true; Inji Verify screenshot shows valid.',
+  'A new proof suite must be supported by both verifiers before the wallet will even store the credential.','RQ1','Runtime','High',
+  [],['evidence/2026-10-13-reference-run/certify-nginx.log','evidence/2026-10-13-reference-run/inji-verify-result.png']),
+ ('F12','S1/S3','Certify, keymanager','On the issuer, one signature algorithm is spread over 12 registries in two repositories: 3 data or config, 8 code, and the JCA provider library. Keymanager is a Maven artifact, so an issuer-side addition needs a keymanager release first.',
+  'Traced one ldp_vc issuance from credential_config through Certify to keymanager and listed every place that names or maps an algorithm.',
+  'Issuer-side counterpart of F2; baseline for "registries touched" and "repositories touched".','RQ1, RQ4','Static (source)','High',
+  [],['phase1-dependency-analysis/issuer-signing-path.md','evidence/2026-10-13-issuer-signing-trace/excerpts.md']),
+ ('F13','S1','keymanager','Keymanager encodes key type in the reference-id string (ED25519_SIGN, EC_SECP256R1_SIGN, EC_SECP256K1_SIGN, blank = RSA) and falls back silently: missing alg becomes PS256, unknown refId maps to RS256/PS256, unknown COSE input becomes PS256, unknown appId switches to the default signing key.',
+  'Read every switch and enum that maps refId or alg, and the default branches.',
+  'Algorithm identity is implicit in a naming convention and errors degrade to a classical default instead of failing.','RQ1, RQ2','Static (source)','High',
+  [('keymanager','kernel/kernel-keymanager-service/src/main/java/io/mosip/kernel/signature/service/impl/SignatureServiceImpl.java',660,681),('keymanager','kernel/kernel-keymanager-service/src/main/java/io/mosip/kernel/signature/util/SignatureUtil.java',217,225),('keymanager','kernel/kernel-keymanager-service/src/main/java/io/mosip/kernel/signature/service/impl/CoseSignatureServiceImpl.java',404,422)],['evidence/2026-10-13-issuer-signing-trace/excerpts.md']),
+ ('F14','S1','keymanager, Certify','Issuer keys sit in a classical hierarchy: application master keys are RSA-2048 with SHA256withRSA certificates; the Ed25519 VC signing key is generated in software and stored in the database encrypted under the RSA master key.',
+  'Read the Ed25519 generation branch and the encryption call; matched with the deployed keygen settings.',
+  'Swapping the VC signature to ML-DSA leaves key protection and certification on RSA; a quantum attacker holding the database could recover signing keys.','RQ1, RQ2','Static + config','High',
+  [('keymanager','kernel/kernel-keymanager-service/src/main/java/io/mosip/kernel/keymanagerservice/service/impl/KeymanagerServiceImpl.java',368,416),('inji-certify','certify-service/src/main/java/io/mosip/certify/config/AppConfig.java',92,136)],['env/stack/config/certify-default.properties']),
+ ('F15','S2','Certify','The issuer DID document is generated with authentication and assertionMethod hard-coded to the DID itself, and the verification-method type chosen by a switch over four algorithms.',
+  'Read DIDDocumentUtil; matched against the captured did.json.',
+  'Root cause of D-07. A PQ verification method needs a new case; Controlled Identifiers v1.0 expects method references in verification relationships.','RQ1, RQ2','Static + runtime','High',
+  [('inji-certify','certify-service/src/main/java/io/mosip/certify/utils/DIDDocumentUtil.java',60,64),('inji-certify','certify-service/src/main/java/io/mosip/certify/utils/DIDDocumentUtil.java',105,131)],['evidence/2026-10-13-issuer-baseline/did.json']),
+ ('F16','S1/S3','Certify image','The deployed issuer JVM carries three BouncyCastle copies (1.78.1, 1.70, and an unversioned shaded copy in the mock plugin). None contains final ML-DSA or SLH-DSA; only 1.78.1 has pre-standard Dilithium and SPHINCS+.',
+  'Copied the jars out of the running container and inspected their contents with tools/inspect-jar.py.',
+  'A PQ issuer needs a newer provider, and which of three copies the JCA resolves must be pinned.','RQ2 (D-04)','Artefact inspection','High',
+  [],['evidence/2026-10-13-certify-image-libs/bouncycastle-check.txt','evidence/2026-10-13-certify-image-libs/crypto-libs.txt']),
+ ('F17','S3','Wallet (iOS)','On iOS the wallet does not verify Ed25519Signature2020, mdoc or SD-JWT credentials: it returns a successful result without checking the signature.',
+  'Read verifyCredentialForIos; the code comment states the bundled library cannot verify Ed25519Signature2020.',
+  'An unsupported suite is treated as valid (fail open). Out of the Android prototype\'s scope, but evidence that unsupported algorithms are a security risk.','RQ1, RQ2','Static (source)','High',
+  [('inji-wallet','shared/vcjs/verifyCredential.ts',78,100)],['evidence/2026-10-13-inventory-review/excerpts.md']),
+ ('F18','S3','Certify, vc-verifier','Issuer and the wallet\'s verifier library disagree on what is valid: Certify can issue EcdsaSecp256r1Signature2019 (ES256) and Data Integrity cryptosuites; vc-verifier accepts only PS256, RS256, EdDSA, ES256K and four proof types, and verifies any proofValue proof as Ed25519.',
+  'Compared the issuer suite map and proof generators with the verifier allow-lists, validateProof and LdpVerifier. Static; not executed.',
+  'Registries are out of step even among classical algorithms; a credential the issuer offers may be refused by the wallet.','RQ1, RQ2','Static (not run)','Medium',
+  [('vc-verifier','vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/utils/ValidationHelper.kt',58,76),('vc-verifier','vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/credentialverifier/verifier/LdpVerifier.kt',45,61),('inji-certify','certify-service/src/main/java/io/mosip/certify/proofgenerators/EcdsaSecp256r1Signature2019ProofGenerator.java',40,50)],['evidence/2026-10-13-inventory-review/excerpts.md']),
+ ('F19','S1/S3','Mimoto','Mimoto negotiates the holder-proof algorithm: first match of a priority list (ED25519, ES256K, ES256, RS256) against the issuer\'s list, and sends an Ed25519 proof anyway if nothing matches. It pre-generates one proof key per algorithm per wallet.',
+  'Read resolveAlgorithm and createProofSigningKeys.',
+  'A negotiation precedent the CSL can reuse, with a fail-open fallback to remove; per-algorithm key generation grows with the algorithm list.','RQ2','Static (source)','High',
+  [('mimoto','src/main/java/io/mosip/mimoto/service/impl/CredentialRequestServiceImpl.java',79,101),('mimoto','src/main/java/io/mosip/mimoto/util/WalletUtil.java',83,95)],['evidence/2026-10-13-inventory-review/excerpts.md']),
+ ('F20','S2/S3/S4','OpenID4VP, Inji Verify, Certify','Single-algorithm choices outside the credential: OpenID4VP request objects verified with Ed25519 keys only (fail closed); Inji Verify\'s request-signing key must be Ed25519; response encryption uses ECDH-ES with X25519; Certify accepts external access tokens only as ES256/RS256/PS256 and signs its own as RS256.',
+  'Read JWSHandler, P12KeyExtractor, EncryptionProvider, SecurityConfig and AccessTokenJwtUtil.',
+  'A PQ credential still travels inside an Ed25519-signed request and an X25519-encrypted response.','RQ1','Static (source)','High',
+  [('inji-openid4vp','kotlin/openID4VP/src/commonMain/kotlin/io/mosip/openID4VP/jwt/jws/JWSHandler.kt',34,47),('inji-verify','verify-service/src/main/java/io/inji/verify/key/impl/P12KeyExtractor.java',55,64),('inji-certify','certify-service/src/main/java/io/mosip/certify/utils/AccessTokenJwtUtil.java',119,131)],['evidence/2026-10-13-inventory-review/excerpts.md']),
+ ('F21','S3','Certify config','The same cryptosuite is mapped to different algorithms in two configs shipped by the Certify project: the packaged default maps ecdsa-rdfc-2019 and ecdsa-jcs-2019 to ES256, the injistack docker-compose config (copied into our stack) maps them to ES256K. The W3C ECDSA cryptosuites are defined for P-256 and P-384, not secp256k1.',
+  'Compared the suite-to-algorithm map in application-local.properties with the injistack and deployed certify-default.properties.',
+  'Algorithm meaning lives in hand-maintained config maps that already drift; a registry needs one authoritative definition (F12).','RQ1, RQ2','Config','High',
+  [('inji-certify','certify-service/src/main/resources/application-local.properties',40,41),('inji-certify','docker-compose/docker-compose-injistack/config/certify-default.properties',194,195)],['env/stack/config/certify-default.properties']),
+]
+
+# Requirements derived for RQ2
+REQS = [
+ ('R-01','Explicit algorithm identity','Every key, proof and signed artefact carries an explicit algorithm identifier; no component infers the algorithm from a naming convention (reference id) or from data shape (proofValue).','F1, F13, F18','Must','Zero code paths that derive the algorithm from a refId string or proof shape (static check).','Agility needs a stable name to dispatch on; inference breaks as soon as a second algorithm shares the shape.'),
+ ('R-02','Fail closed','An unknown or unsupported algorithm is rejected with an explicit error; no fallback to a default algorithm and no "valid" result without verification.','F13, F17, F19, F20','Must','Negative tests: unknown alg at keygen, sign, verify and negotiation each return an error (count of fallback branches = 0).','Silent fallback turns a migration into a downgrade; fail-open verification turns it into a vulnerability.'),
+ ('R-03','Single registry per component','Each component has one place that defines its supported algorithms and maps them to key types, providers, JOSE/COSE ids and verification-method types.','F2, F4, F5, F6, F12, F21','Must','Registries touched to add one algorithm (baseline: wallet 5 files, issuer 12 registries) and files touched.','The count of registries is the cost of agility; F21 shows duplicated maps already drift.'),
+ ('R-04','Provider abstraction with capabilities','Key generation, storage and signing go through providers (hardware keystore, software, HSM) that report which algorithms and protections they support; algorithm choice is checked against provider capability.','F3, F14, F16','Must','A new algorithm is added by registering a provider, without editing callers; capability query used before keygen.','No hardware or current BouncyCastle copy supports ML-DSA; the design must route PQ keys to a software provider deliberately.'),
+ ('R-05','Metadata-driven negotiation','The algorithm used toward a counterparty is chosen by intersecting own capabilities with the counterparty\'s published metadata (issuer proof_signing_alg_values_supported, verifier vp_formats); no match means fail (R-02).','F9, F19, F20','Must','Negotiation outcome matches metadata in tests with and without overlap.','The issuer already constrains the wallet (F9) and Mimoto already negotiates (F19); the CSL generalises this.'),
+ ('R-06','Coverage of all signed artefacts','The agility mechanism covers every signature the system produces or checks: VC proof, Claim 169 QR (CWT), status list credential, holder proof, VP proof, request objects, access tokens.','F10, F11, F20','Must','Inventory of signed artefacts with algorithm source for each; none hard-coded.','Migrating only the VC proof leaves classical signatures inside and around the credential.'),
+ ('R-07','Verifier readiness before issuance','A new algorithm is enabled for issuance only after the wallet\'s verifier and target verifiers accept it; allow-lists are derived from the same registry (R-03).','F6, F11, F18','Must','Issuance with a new suite succeeds end to end only when both verifiers pass; mismatch detected by a check.','Two verifiers act on every credential and already disagree with the issuer (F18).'),
+ ('R-08','Agile key hierarchy','Key protection (wrapping) and key certification are migratable on the same terms as signing algorithms.','F14','Should','Master/wrapping algorithm configurable; documented PQ or hybrid option.','A PQ signature over an RSA-protected key is only as strong as RSA.'),
+ ('R-09','Deterministic provider selection','The JCA provider (and its version) used for each algorithm is pinned and recorded; one BouncyCastle version per process.','F8, F16','Should','Provider name and version logged per operation; dependency check finds a single bcprov.','Three BC copies in one JVM make provider resolution implicit.'),
+ ('R-10','Standards-conformant key publication','New key types are published as conforming verification methods (e.g. Multikey) and referenced by id in verification relationships.','F15, D-07','Must','Issuer DID document validates against Controlled Identifiers v1.0 / DID Core; external verifier accepts it (D-03).','Interoperability with unmodified counterparties is a thesis requirement (C-04).'),
+ ('R-11','Explicit protection trade-off for software keys','When a key cannot be hardware-backed, the loss of hardware binding is explicit: user-authentication gate kept where possible and the trade-off recorded per key.','F3','Should','Per-key record of storage class (hardware, StrongBox, software) and auth requirement.','A PQ holder key moves from StrongBox-backed P-256 to software (F3).'),
+ ('R-12','Bounded key provisioning','Keys are generated per negotiated algorithm on demand, not pre-generated for every supported algorithm.','F19','Could','Keys per wallet independent of the number of supported algorithms.','ML-DSA keys are large; pre-generating one per algorithm scales poorly.'),
+]
+
+RQ1 = [
+ ('Q1','Where in the stack do algorithm choices live?','In 35 bindings across 9 repositories plus keymanager, on all four surfaces: key generation and storage (S1), key publication (S2), proofs and formats (S3), transport (S4).','Bindings','F1, F6, F12, F20','phase1-dependency-analysis/results/bindings.csv'),
+ ('Q2','How tightly are they coupled?','Mostly by closed enums and switches (wallet, Mimoto, vc-verifier, OpenID4VP, keymanager); operation coupling dominates. Some algorithm identity is implicit (refId names, proof shape) and failures fall back to classical defaults.','Share of verified rows that are operation coupling','F1, F4, F5, F6, F13','phase1-dependency-analysis/results/inventory-scored.csv'),
+ ('Q3','Which bindings involve other parties?','About half of verified rows cross a trust boundary: holder proofs (issuer), credential proofs (two verifiers), presentations and request objects (verifier), tokens (authorization server).','Share of verified rows crossing a trust boundary','F9, F11, F18, F20','phase1-dependency-analysis/results/bindings.csv'),
+ ('Q4','What does the running system actually use?','ES256 holder proof from a StrongBox-backed key with user authentication; Ed25519Signature2020 VC proof; EdDSA QR CWT; RS256 access token; did:web key resolution by two verifiers.','-','F3, F9, F10, F11','evidence/2026-10-13-reference-run/README.md'),
+ ('Q5','What specifically blocks a PQ migration?','No hardware ML-DSA (F3); no final ML-DSA in any deployed BouncyCastle (F16); 12 issuer registries in two repos (F12); classical key hierarchy (F14); verifier allow-lists out of step (F18); classical presentation channel (F20).','-','F3, F12, F14, F16, F18, F20','-'),
+ ('Q6','What agility already exists to build on?','Mimoto strategy factory (F4) and negotiation (F19); Certify\'s Data Integrity branch and per-type config (F12); fail-closed request verification in OpenID4VP (F20).','-','F4, F19, F20','-'),
+]
+
+REGISTRIES = [
+ (1,'credential_config row','data','Certify DB','env/stack/sql/certify_init.sql',None),
+ (2,'credential-signing-alg-values-supported (suite to alg)','config','Certify properties','env/stack/config/certify-default.properties',None),
+ (3,'signature-algo.key-alias-mapper (alg to appId/refId)','config','Certify properties','env/stack/config/certify-default.properties',None),
+ (4,'Proof generator class or danubetech cryptosuite','code (Certify or external library)','proofgenerators/, W3CJsonLD.java:114',None,('inji-certify','certify-service/src/main/java/io/mosip/certify/credential/W3CJsonLD.java',112,140)),
+ (5,'Verification-method switch','code','DIDDocumentUtil.java:109',None,('inji-certify','certify-service/src/main/java/io/mosip/certify/utils/DIDDocumentUtil.java',105,131)),
+ (6,'Reference-id constant and curve name','code','KeyReferenceIdConsts, ECCurves, KeymanagerServiceImpl:169',None,('keymanager','kernel/kernel-keymanager-service/src/main/java/io/mosip/kernel/keymanagerservice/service/impl/KeymanagerServiceImpl.java',166,172)),
+ (7,'Key generation branches (three if-chains on refId)','code','KeymanagerServiceImpl:239-244, 709-717, 819-820',None,('keymanager','kernel/kernel-keymanager-service/src/main/java/io/mosip/kernel/keymanagerservice/service/impl/KeymanagerServiceImpl.java',238,252)),
+ (8,'SignatureProviderEnum and provider class','code','keymanager signature/constant, service/impl',None,('keymanager','kernel/kernel-keymanager-service/src/main/java/io/mosip/kernel/signature/constant/SignatureProviderEnum.java',12,36)),
+ (9,'AlgorithmInstanceEnum','code','keymanager',None,('keymanager','kernel/kernel-keymanager-service/src/main/java/io/mosip/kernel/signature/constant/AlgorithmInstanceEnum.java',8,30)),
+ (10,'SignatureAlgorithmIdentifyEnum, SignatureUtil.getSignAlgorithm','code','keymanager',None,('keymanager','kernel/kernel-keymanager-service/src/main/java/io/mosip/kernel/signature/util/SignatureUtil.java',217,225)),
+ (11,'COSE algorithm switch (QR path)','code','CoseSignatureServiceImpl.java:404',None,('keymanager','kernel/kernel-keymanager-service/src/main/java/io/mosip/kernel/signature/service/impl/CoseSignatureServiceImpl.java',404,422)),
+ (12,'JCA provider support','library','BouncyCastle 1.78.1','evidence/2026-10-13-certify-image-libs/bouncycastle-check.txt',None),
+]
+
+ALGS = ['RS256 (RSA)','PS256 (RSA-PSS)','ES256 (P-256)','ES256K (secp256k1)','EdDSA (Ed25519)','ML-DSA (FIPS 204)','SLH-DSA (FIPS 205)']
+# column: (header, source code ref or evidence, [values per alg])
+MATRIX = [
+ ('Wallet key types', ('inji-wallet','shared/cryptoutil/KeyTypes.ts',1,6), ['Yes (hardware)','No','Yes (hardware)','Yes (software)','Yes (software)','No','No']),
+ ('Android hardware keystore', ('secure-keystore','kotlin/android/src/main/java/com/reactnativesecurekeystore/KeyGeneratorImpl.kt',15,30), ['Yes','Not exposed','Yes (secp256r1 only)','No','No','No','No']),
+ ('Wallet VP (ldp_vc suites advertised)', ('inji-wallet','shared/openID4VP/walletMetadata.ts',1,22), ['Yes (RSASignature2018)','No','mdoc / SD-JWT only','No','Yes (Ed25519 2018/2020, default)','No','No']),
+ ('Mimoto proof algorithms', ('mimoto','src/main/java/io/mosip/mimoto/constant/SigningAlgorithm.java',None,None), ['Yes (priority 4)','No','Yes (priority 3)','Yes (priority 2)','Yes (priority 1, fallback)','No','No']),
+ ('Certify VC proof suites (deployed map)', 'env/stack/config/certify-default.properties', ['RsaSignature2018','No','EcdsaSecp256r1Signature2019','EcdsaKoblitzSignature2016, EcdsaSecp256k1Signature2019, ecdsa-rdfc/jcs-2019 (see F21)','Ed25519Signature2018/2020, eddsa-rdfc/jcs-2022','No','No']),
+ ('Keymanager signing providers', ('keymanager','kernel/kernel-keymanager-service/src/main/java/io/mosip/kernel/signature/constant/SignatureProviderEnum.java',12,36), ['Yes','Yes (default)','Yes','Yes','Yes','No','No']),
+ ('Certify holder proofs accepted (FarmerCredential)', 'evidence/2026-10-13-issuer-baseline/summary.txt', ['Yes','No','Yes','No','No','No','No']),
+ ('vc-verifier JWS allow-list', ('vc-verifier','vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/constants/CredentialValidatorConstants.kt',102,114), ['Yes','Yes','No (factory has it, validator rejects)','Yes','Yes','No','No']),
+ ('Inji Verify SD-JWT algorithms', ('inji-verify','verify-service/src/main/java/io/inji/verify/shared/Constants.java',15,19), ['Yes','No','Yes','Yes','Yes','No','No']),
+ ('OpenID4VP request-object signing', ('inji-openid4vp','kotlin/openID4VP/src/commonMain/kotlin/io/mosip/openID4VP/jwt/jws/JWSHandler.kt',34,47), ['No','No','No','No','Yes (only)','No','No']),
+ ('BouncyCastle in Certify image', 'evidence/2026-10-13-certify-image-libs/bouncycastle-check.txt', ['Yes','Yes','Yes','Yes','Yes','No (pre-standard Dilithium in 1.78.1 only)','No (pre-standard SPHINCS+ in 1.78.1 only)']),
+]
+
+RUNTIME = [
+ ('Reference run','20:20','capture-baseline','Issuer DID did:web:ssi-issuer.arlabsnepal.com; Ed25519VerificationKey2020; FarmerCredential ldp_vc EdDSA, binding did:jwk, proof jwt RS256/ES256','evidence/2026-10-13-issuer-baseline/summary.txt'),
+ ('Reference run','20:22:20','Wallet fetches offer /v1/certify/credential-offer-data/{id}','200','evidence/2026-10-13-reference-run/certify-nginx.log'),
+ ('Reference run','20:22:22','Issuer metadata, then OAuth AS metadata','200, 200','evidence/2026-10-13-reference-run/certify-nginx.log'),
+ ('Reference run','20:22:23 to :33','Trust-issuer consent; issuer added to trusted issuers','OK','evidence/2026-10-13-reference-run/logcat.txt'),
+ ('Reference run','20:22:35','Token, pre-authorized code grant','200','evidence/2026-10-13-reference-run/certify.log'),
+ ('Reference run','20:22:36','Wallet receives proofSigningAlgosSupported [RS256, ES256]; selects P-256 key','ES256 chosen','evidence/2026-10-13-reference-run/logcat.txt'),
+ ('Reference run','20:22:37 to :39','Proof signing: KEY_USER_NOT_AUTHENTICATED, biometric prompt, signature produced; private key not exported','OK','evidence/2026-10-13-reference-run/logcat.txt'),
+ ('Reference run','20:22:40','Certify: claims from PreAuthDataProviderPlugin; Claim 169 QR signed as CWT with EdDSA; stored in ledger','OK','evidence/2026-10-13-reference-run/certify.log'),
+ ('Reference run','20:22:43','POST /v1/certify/issuance/credential','200','evidence/2026-10-13-reference-run/certify-nginx.log'),
+ ('Reference run','20:22:45 to :50','Wallet verifies on receipt (did.json fetched 20:22:48)','isVerified true, isRevoked FALSE','evidence/2026-10-13-reference-run/logcat.txt'),
+ ('Reference run','20:23:33','Inji Verify fetches did.json, verifies','Valid, 14 claims','evidence/2026-10-13-reference-run/inji-verify-result.png'),
+ ('Failed attempt','15:05:36 to :40','Offer, metadata, token 200; ES256 proof signed after biometric prompt','OK','evidence/2026-10-13-first-issuance/README.md'),
+ ('Failed attempt','15:05:40','POST /v1/certify/issuance/credential','400 ERROR_FETCHING_IDENTITY_DATA (CSV plugin ignores pre-auth claims; fixed by PreAuthDataProviderPlugin)','evidence/2026-10-13-first-issuance/README.md'),
+ ('First verification','15:12','Inji Verify, quick-tunnel DID','Valid, 14 claims','evidence/2026-10-13-first-verification/README.md'),
+]
+
+EVIDENCE = [
+ ('evidence/2026-10-09-issuer-baseline/','First issuer DID and metadata capture (quick tunnel); offer failed unknown_claims','capture-baseline, PB','F9'),
+ ('evidence/2026-10-13-issuer-baseline/','Issuer DID and metadata on the final stack','stack.ps1 capture-baseline 20:20, PB','F9, F15'),
+ ('evidence/2026-10-13-first-issuance/','Failed issuance, logs both sides','capture-logs.ps1, PB','known issues; C-06 follow-up'),
+ ('evidence/2026-10-13-first-verification/','First successful verification (quick-tunnel DID)','Screenshot, PB','F11'),
+ ('evidence/2026-10-13-reference-run/','Reference run: issuance and verification, both sides, image list','capture-logs.ps1, docker compose images, PB','F3, F9, F10, F11'),
+ ('evidence/2026-10-13-issuer-signing-trace/','Source excerpts C1 to C24 for the Certify to keymanager trace','tools/cite.py','F12 to F16'),
+ ('evidence/2026-10-13-certify-image-libs/','Libraries in the deployed Certify jar; jar SHA-256','docker cp (PB), tools/inspect-jar.py','F16, D-04'),
+ ('evidence/2026-10-13-inventory-review/','Two-pass scoring of 919 rows; excerpts R1 to R16','tools/score_inventory.py, tools/cite.py','F17 to F20'),
+ ('F:\\thesis\\artifacts\\2026-10-13-certify-0.14.0\\','certify.jar (f53bbdf1...), mock-certify-plugin.jar (e3f67385...), outside git','docker cp, PB','F16'),
+]
+
+SESSIONS = [
+ ('2026-10-01','Planning','Mapped Inji crypto surfaces S1 to S4; chose physical phone (C-02)','-'),
+ ('2026-10-04','Environment design','Stack from Certify injistack compose; Certify as own OAuth server (C-03); quick tunnels; wallet scripts','-'),
+ ('2026-10-08','Phase 1 static baseline','Pinned 10 repos (C-05); scanner: 3,269 hits, 919 rows; findings F1 to F8; stack bring-up','manifest.tsv, results/'),
+ ('2026-10-09','Repository, issuer baseline','Single repo; issuer baseline; F9; patch 001 (C-06); cache config; keystore persistence','evidence/2026-10-09-issuer-baseline/'),
+ ('2026-10-10','Wallet toolchain','JDK selection, SDK setup, restart policy','-'),
+ ('2026-10-11','Stack green, test device','Pixel 7 Android 17 StrongBox; wallet installed','-'),
+ ('2026-10-13 am','Move to second laptop','F:\\thesis; build caps; SDK CLI and JDK finder fixes; Gradle accessor fix; wallet built','docs/known-issues.md'),
+ ('2026-10-13 pm','First issuance and verification','ERROR_FETCHING_IDENTITY_DATA diagnosed with capture-logs; PreAuthDataProviderPlugin; first issuance and verification','evidence/2026-10-13-first-*'),
+ ('2026-10-13 eve','Final Phase 1 stack and reference run','Mimoto 0.22.0 (C-07); named tunnel (C-08); public endpoint restriction (C-09); reference run; F10, F11','evidence/2026-10-13-reference-run/'),
+ ('2026-10-13 eve','Issuer signing trace','Certify to keymanager 1.4.0; F12 to F15; deployed jar check F16','evidence/2026-10-13-issuer-signing-trace/, -certify-image-libs/'),
+ ('2026-10-13 21:31 to 21:40','Inventory review','919 rows scored, 35 bindings; F17 to F20; spot-check sample','evidence/2026-10-13-inventory-review/'),
+ ('2026-10-13 22:10','Phase 1 workbook','This workbook; F21 recorded','docs/phase1/'),
+]

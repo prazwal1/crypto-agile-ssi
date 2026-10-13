@@ -67,9 +67,10 @@ an algorithm; both default to RS256/PS256 for anything they do not recognise.
 | 11 | COSE algorithm switch (QR path) | code | `CoseSignatureServiceImpl.java:404` |
 | 12 | JCA provider support | library | BouncyCastle 1.78.1 |
 
-Nine of the twelve are code in two repositories (Certify and keymanager), and keymanager is a
-library Certify consumes as a Maven artifact, so an issuer-side algorithm addition means a
-keymanager release first.
+Eight of the twelve are code in two repositories (Certify and keymanager), three are data or
+configuration and one is the provider library. Keymanager is a library Certify consumes as a
+Maven artifact, so an issuer-side algorithm addition means a keymanager release first.
+(Corrected 2026-10-13: earlier text said nine were code; the workbook's count formula caught it.)
 
 ## Limits
 

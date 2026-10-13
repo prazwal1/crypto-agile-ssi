@@ -10,6 +10,11 @@ Dated record of working sessions. Each entry states what was done, what was obse
 - Mimoto image set to 0.22.0 to match the analysed source (C-07). Named Cloudflare tunnel on `arlabsnepal.com` (C-08): issuer DID now fixed at `did:web:ssi-issuer.arlabsnepal.com`, Mimoto at `https://ssi-mimoto.arlabsnepal.com`. Offer creation and actuator blocked on the public host (C-09).
 - `start` (20:13): named tunnel registered; all local and public endpoints 200. Wallet rebuilt against the new Mimoto host.
 
+### Phase 1 workbook (22:08 to 22:25)
+- Built `docs/phase1/Phase1-Workbook.xlsx` from the repository with `docs/phase1/build_workbook.py` (content in `workbook_data.py`): RQ1 answers, findings F1 to F21 with reasoning, design requirements R-01 to R-12, findings-to-requirements traceability, algorithm support matrix, bindings, issuer registries, scored inventory, runtime timeline, source citations with GitHub permalinks at the pinned commits, evidence index, environment, decisions, known issues, activity log, method and the spot-check sheet.
+- Checks: 308 formulas recalculated with no errors; all 1,195 GitHub links point to existing files and lines in the pinned clones; all 28 relative links resolve in the repository; the build re-run on the laptop gives identical cell content.
+- Corrections found while building: F12 said 9 code registries, the table has 8 (plus 3 data/config and 1 library); fixed in findings and the signing-path write-up. New F21: the ECDSA cryptosuites map to ES256 in Certify's packaged default but to ES256K in the injistack compose config we deploy.
+
 ### Inventory review (21:31 to 21:40)
 - Scored all 919 scanner rows. Pass 1 by path rule: 341 rows in tests, build files, upstream deployment config, samples and docs. Pass 2 by hand: read the matched code in 245 production files at the pinned commits, one judgement per file (`phase1-dependency-analysis/review/judgements.tsv`).
 - Result: 446 verified rows collapse into 35 bindings across 9 repositories (`results/bindings.csv`). New `tools/score_inventory.py` refuses to run if any production row lacks a judgement; outputs reproduced identically on the laptop.
