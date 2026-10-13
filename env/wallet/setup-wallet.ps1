@@ -46,7 +46,8 @@ if ($jdk) {
   $env:JAVA_HOME = $jdk.Home
   Pass "JDK $($jdk.Major) at $($jdk.Home)"
 } else {
-  Fail "JDK 17 or 21 (winget install -e --id EclipseAdoptium.Temurin.17.JDK). Android Studio's bundled JDK is too new for Gradle 8.6"
+  Fail "JDK 17 or 21 (winget install -e --id EclipseAdoptium.Temurin.17.JDK). Android Studio's bundled JDK is too new for Gradle 8.6. Java installs found:"
+  Show-JdkCandidates
 }
 
 # Android SDK
