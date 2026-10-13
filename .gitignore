@@ -1,6 +1,7 @@
 # Runtime state and secrets
 env/stack/.env
 env/stack/wallet.env
+env/stack/tunnel.env
 env/stack/logs/
 env/stack/data/
 env/stack/offer.html

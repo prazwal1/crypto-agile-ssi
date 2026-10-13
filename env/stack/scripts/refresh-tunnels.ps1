@@ -1,8 +1,14 @@
 <#
 .SYNOPSIS
-  Ensures both Cloudflare quick tunnels are alive and wires their URLs into the stack.
+  Brings the public tunnel(s) up and wires their URLs into the stack.
 
 .DESCRIPTION
+  Two modes, chosen by the presence of tunnel.env (see tunnel.env.example):
+
+  Named (tunnel.env present, decision D-06): one Cloudflare named tunnel on an owned
+  domain. Hostnames are fixed, so the issuer DID does not change between runs.
+
+  Quick (no tunnel.env): two Cloudflare quick tunnels.
   Quick tunnels are deleted by Cloudflare after the host sleeps or loses connectivity,
   while the containers keep running. This script:
     1. reads the current tunnel URLs from the container logs;
@@ -41,39 +47,80 @@ function Test-TunnelDead($name) {
   return $recent -match "Tunnel not found"
 }
 
-Write-Section "Tunnels"
-# Make sure every service is running (containers stopped by a reboot are started again).
-docker compose up -d | Out-Null
-$certifyUrl = Get-TunnelUrl "tunnel-certify"
-$mimotoUrl  = Get-TunnelUrl "tunnel-mimoto"
-
-$dead = (-not $certifyUrl) -or (-not $mimotoUrl) -or
-        (Test-TunnelDead "tunnel-certify") -or (Test-TunnelDead "tunnel-mimoto") -or
-        (-not (Test-PublicDns $certifyUrl)) -or (-not (Test-PublicDns $mimotoUrl))
-if ($dead) {
-  Write-Note "Tunnels stale or missing; recreating them (issuer DID will change)"
-  $since = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
-  docker compose up -d --force-recreate tunnel-certify tunnel-mimoto | Out-Null
-  $certifyUrl = Get-TunnelUrl "tunnel-certify" $since
-  $mimotoUrl  = Get-TunnelUrl "tunnel-mimoto" $since
+function Read-TunnelEnv {
+  if (-not (Test-Path .\tunnel.env)) { return $null }
+  $t = @{}
+  Get-Content .\tunnel.env | Where-Object { $_ -match '^\s*[A-Z_]+=' } | ForEach-Object {
+    $k, $v = $_.Split('=', 2); $t[$k.Trim()] = $v.Trim()
+  }
+  return $t
 }
-if (-not $certifyUrl -or -not $mimotoUrl) { Write-Fail "Could not read tunnel URLs (docker logs tunnel-certify)"; exit 1 }
 
-$dnsDeadline = (Get-Date).AddSeconds(60)
-while (-not ((Test-PublicDns $certifyUrl) -and (Test-PublicDns $mimotoUrl)) -and (Get-Date) -lt $dnsDeadline) { Start-Sleep 5 }
-Clear-DnsClientCache -ErrorAction SilentlyContinue
+$named = Read-TunnelEnv
+Write-Section "Tunnels"
+if ($named) {
+  foreach ($k in "CF_TUNNEL_TOKEN", "CERTIFY_HOSTNAME", "MIMOTO_HOSTNAME") {
+    if (-not $named[$k]) { Write-Fail "tunnel.env is missing $k (see tunnel.env.example)"; exit 1 }
+  }
+  $certifyUrl = "https://$($named.CERTIFY_HOSTNAME)"
+  $mimotoUrl  = "https://$($named.MIMOTO_HOSTNAME)"
+  Write-Host "  Mode: named tunnel (fixed hostnames)"
+  $previous = Get-EnvValue "PUBLIC_CERTIFY_URL"
+  @(
+    "COMPOSE_PROFILES=named",
+    "CF_TUNNEL_TOKEN=$($named.CF_TUNNEL_TOKEN)",
+    "PUBLIC_CERTIFY_URL=$certifyUrl",
+    "PUBLIC_CERTIFY_HOST=$($named.CERTIFY_HOSTNAME)",
+    "PUBLIC_MIMOTO_URL=$mimotoUrl"
+  ) | Set-Content -Path .env -Encoding ascii
+  # Remove quick-tunnel containers left from the other mode, then start everything.
+  docker rm -f tunnel-certify tunnel-mimoto 2>&1 | Out-Null
+  docker compose up -d | Out-Null
+  $deadline = (Get-Date).AddSeconds(60)
+  do { Start-Sleep 3; $reg = (cmd /c "docker logs tunnel-named 2>&1") -match "Registered tunnel connection" } until ($reg -or (Get-Date) -gt $deadline)
+  if ($reg) { Write-Ok "tunnel-named registered" } else { Write-Fail "tunnel-named did not register (docker logs tunnel-named; check the token)" }
+} else {
+  Write-Host "  Mode: quick tunnels (hostnames change on recreate)"
+  $prevEnv = if (Test-Path .\.env) { Get-Content .\.env } else { @() }
+  if (-not ($prevEnv -contains "COMPOSE_PROFILES=quick")) {
+    "COMPOSE_PROFILES=quick" | Set-Content -Path .env -Encoding ascii
+    docker rm -f tunnel-named 2>&1 | Out-Null
+  }
+  # Make sure every service is running (containers stopped by a reboot are started again).
+  docker compose up -d | Out-Null
+  $certifyUrl = Get-TunnelUrl "tunnel-certify"
+  $mimotoUrl  = Get-TunnelUrl "tunnel-mimoto"
+
+  $dead = (-not $certifyUrl) -or (-not $mimotoUrl) -or
+          (Test-TunnelDead "tunnel-certify") -or (Test-TunnelDead "tunnel-mimoto") -or
+          (-not (Test-PublicDns $certifyUrl)) -or (-not (Test-PublicDns $mimotoUrl))
+  if ($dead) {
+    Write-Note "Tunnels stale or missing; recreating them (issuer DID will change)"
+    $since = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
+    docker compose up -d --force-recreate tunnel-certify tunnel-mimoto | Out-Null
+    $certifyUrl = Get-TunnelUrl "tunnel-certify" $since
+    $mimotoUrl  = Get-TunnelUrl "tunnel-mimoto" $since
+  }
+  if (-not $certifyUrl -or -not $mimotoUrl) { Write-Fail "Could not read tunnel URLs (docker logs tunnel-certify)"; exit 1 }
+
+  $dnsDeadline = (Get-Date).AddSeconds(60)
+  while (-not ((Test-PublicDns $certifyUrl) -and (Test-PublicDns $mimotoUrl)) -and (Get-Date) -lt $dnsDeadline) { Start-Sleep 5 }
+  Clear-DnsClientCache -ErrorAction SilentlyContinue
+
+  $previous = Get-EnvValue "PUBLIC_CERTIFY_URL"
+  @(
+    "COMPOSE_PROFILES=quick",
+    "PUBLIC_CERTIFY_URL=$certifyUrl",
+    "PUBLIC_CERTIFY_HOST=$(([uri]$certifyUrl).Host)",
+    "PUBLIC_MIMOTO_URL=$mimotoUrl"
+  ) | Set-Content -Path .env -Encoding ascii
+}
 
 $certifyHost = ([uri]$certifyUrl).Host
 Write-Host "  Certify: $certifyUrl"
 Write-Host "  Mimoto : $mimotoUrl"
 
 Write-Section "Wiring public URLs"
-$previous = Get-EnvValue "PUBLIC_CERTIFY_URL"
-@(
-  "PUBLIC_CERTIFY_URL=$certifyUrl",
-  "PUBLIC_CERTIFY_HOST=$certifyHost",
-  "PUBLIC_MIMOTO_URL=$mimotoUrl"
-) | Set-Content -Path .env -Encoding ascii
 "MIMOTO_HOST=$mimotoUrl" | Set-Content -Path wallet.env -Encoding ascii
 
 if ($previous -ne $certifyUrl) {

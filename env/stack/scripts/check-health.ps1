@@ -29,7 +29,8 @@ if ($pc) {
 } else { Write-Note ".env has no public URLs yet; run .\stack.ps1 refresh-tunnels" }
 
 Write-Section "Tunnel status"
-foreach ($t in @("tunnel-certify", "tunnel-mimoto")) {
+$tunnels = if (Test-Path .\tunnel.env) { @("tunnel-named") } else { @("tunnel-certify", "tunnel-mimoto") }
+foreach ($t in $tunnels) {
   $tail = cmd /c "docker logs --since 10m $t 2>&1"
   $state = if ($tail -match "Tunnel not found") { "DEAD (Tunnel not found)" } elseif ($tail -match "Registered tunnel connection") { "registered" } else { "no recent events" }
   Write-Host ("  {0,-15} {1}" -f $t, $state)

@@ -72,7 +72,7 @@ services:
 
   # ---------- Holder side (modified later in the thesis) ----------
   mimoto-service:
-    image: injistack/mimoto:0.21.0
+    image: injistack/mimoto:0.22.0   # matches analysed source v0.22.0 (D-05)
     container_name: mimoto-service
     restart: unless-stopped
     user: root
@@ -170,12 +170,25 @@ services:
     networks: [mosip]
 
   # ---------- Public HTTPS tunnels ----------
-  # The Android wallet requires HTTPS and did:web must resolve on a public domain,
-  # so Certify (via nginx) and Mimoto are exposed through Cloudflare quick tunnels.
-  # Quick-tunnel hostnames change whenever these containers are recreated.
+  # The Android wallet requires HTTPS and did:web must resolve on a public domain.
+  # Profile "named" (default once tunnel.env exists): one Cloudflare named tunnel on an
+  #   owned domain; hostnames and the issuer DID stay fixed (D-06).
+  # Profile "quick": two Cloudflare quick tunnels; hostnames change on every recreate.
+  # refresh-tunnels.ps1 selects the profile through COMPOSE_PROFILES in .env.
+  tunnel-named:
+    image: cloudflare/cloudflared:2026.9.3
+    container_name: tunnel-named
+    profiles: [named]
+    command: tunnel --no-autoupdate run
+    environment:
+      - TUNNEL_TOKEN=${CF_TUNNEL_TOKEN:-}
+    restart: unless-stopped
+    networks: [mosip]
+
   tunnel-certify:
     image: cloudflare/cloudflared:2026.9.3
     container_name: tunnel-certify
+    profiles: [quick]
     command: tunnel --no-autoupdate --url http://certify-nginx:80
     restart: unless-stopped
     networks: [mosip]
@@ -183,6 +196,7 @@ services:
   tunnel-mimoto:
     image: cloudflare/cloudflared:2026.9.3
     container_name: tunnel-mimoto
+    profiles: [quick]
     command: tunnel --no-autoupdate --url http://mimoto-service:8099
     restart: unless-stopped
     networks: [mosip]
