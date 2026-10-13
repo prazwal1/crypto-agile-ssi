@@ -1,0 +1,25 @@
+# id	repo	path	start	end	note
+C1	inji-certify	pom.xml	105	105	Keymanager version declared by Certify
+C2	inji-certify	certify-service/src/main/java/io/mosip/certify/services/CredentialConfigurationServiceImpl.java	160	195	Config validation: suite to alg, alg to appId/refId (key-alias-mapper)
+C3	inji-certify	certify-service/src/main/java/io/mosip/certify/services/CertifyIssuanceServiceImpl.java	302	302	addProof call with alg, appId, refId, didUrl, cryptosuite
+C4	inji-certify	certify-service/src/main/java/io/mosip/certify/credential/W3CJsonLD.java	112	140	Branch: Data Integrity cryptosuite vs legacy ProofGenerator
+C5	inji-certify	certify-service/src/main/java/io/mosip/certify/proofgenerators/Ed25519Signature2020ProofGenerator.java	40	52	Suite class hard-codes EdDSA and calls keymanager signv2
+C6	inji-certify	certify-service/src/main/java/io/mosip/certify/services/CertifyIssuanceServiceImpl.java	345	370	QR (Claim 169) signing: qr_signature_algo through key-alias-mapper
+C7	inji-certify	certify-service/src/main/java/io/mosip/certify/credential/Credential.java	125	135	CWT signing request to keymanager
+C8	inji-certify	certify-service/src/main/java/io/mosip/certify/utils/AccessTokenJwtUtil.java	119	131	Access token signing hard-coded RS256
+C9	inji-certify	certify-service/src/main/java/io/mosip/certify/utils/DIDDocumentUtil.java	60	64	DID document: authentication and assertionMethod set to the DID
+C10	inji-certify	certify-service/src/main/java/io/mosip/certify/utils/DIDDocumentUtil.java	105	131	Verification-method type switch over four algorithms
+C11	keymanager	kernel/kernel-keymanager-service/src/main/java/io/mosip/kernel/signature/service/impl/SignatureServiceImpl.java	660	681	signv2: default PS256, unknown appId fallback, provider lookup
+C12	keymanager	kernel/kernel-keymanager-service/src/main/java/io/mosip/kernel/signature/service/impl/SignatureServiceImpl.java	278	285	Unknown appId switches to default signing appId/refId
+C13	keymanager	kernel/kernel-keymanager-service/src/main/java/io/mosip/kernel/signature/constant/SignatureProviderEnum.java	12	36	Closed provider enum: PS256, RS256, ES256, ES256K, EdDSA
+C14	keymanager	kernel/kernel-keymanager-service/src/main/java/io/mosip/kernel/signature/constant/AlgorithmInstanceEnum.java	8	30	Closed algorithm-instance enum
+C15	keymanager	kernel/kernel-keymanager-service/src/main/java/io/mosip/kernel/signature/constant/SignatureAlgorithmIdentifyEnum.java	10	35	refId to algorithm, RS256 for blank or REF
+C16	keymanager	kernel/kernel-keymanager-service/src/main/java/io/mosip/kernel/signature/util/SignatureUtil.java	217	225	refId to JWS alg switch, PS256 default
+C17	keymanager	kernel/kernel-keymanager-service/src/main/java/io/mosip/kernel/signature/service/impl/CoseSignatureServiceImpl.java	404	422	COSE alg mapping, PS256 default
+C18	keymanager	kernel/kernel-keymanager-service/src/main/java/io/mosip/kernel/keymanagerservice/constant/KeyReferenceIdConsts.java	1	9	Reference ids that encode key type
+C19	keymanager	kernel/kernel-keymanager-service/src/main/java/io/mosip/kernel/keymanagerservice/service/impl/KeymanagerServiceImpl.java	123	125	Ed25519 HSM support flag, default false
+C20	keymanager	kernel/kernel-keymanager-service/src/main/java/io/mosip/kernel/keymanagerservice/service/impl/KeymanagerServiceImpl.java	166	172	refId to curve map
+C21	keymanager	kernel/kernel-keymanager-service/src/main/java/io/mosip/kernel/keymanagerservice/service/impl/KeymanagerServiceImpl.java	238	252	Key generation branch on refId; blank refId gives keystore default (RSA)
+C22	keymanager	kernel/kernel-keymanager-service/src/main/java/io/mosip/kernel/keymanagerservice/service/impl/KeymanagerServiceImpl.java	368	416	Ed25519 key generated in software, private key encrypted with RSA master key, stored in DB
+C23	keymanager	kernel/kernel-keymanager-service/pom.xml	51	52	BouncyCastle 1.78.1 declared
+C24	keymanager	kernel/kernel-keymanager-service/src/main/java/io/mosip/kernel/keymanager/hsm/impl/pkcs/PKCS12KeyStoreImpl.java	210	216	PKCS12 keystore uses BouncyCastle provider

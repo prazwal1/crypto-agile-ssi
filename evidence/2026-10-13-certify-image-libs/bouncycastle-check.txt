@@ -1,0 +1,19 @@
+bcprov-jdk18on-1.78.1.jar (classpath.idx 174): 5698 entries
+  ML-DSA (FIPS 204) JCA spec: absent
+  ML-DSA (FIPS 204) signer: absent
+  SLH-DSA (FIPS 205) JCA spec: absent
+  Dilithium (pre-standard) spec: present
+  SPHINCS+ (pre-standard) spec: present
+bcprov-jdk15on-1.70.jar (classpath.idx 233): 4576 entries
+  ML-DSA (FIPS 204) JCA spec: absent
+  ML-DSA (FIPS 204) signer: absent
+  SLH-DSA (FIPS 205) JCA spec: absent
+  Dilithium (pre-standard) spec: absent
+  SPHINCS+ (pre-standard) spec: absent
+mock-certify-plugin.jar: 4686 shaded org/bouncycastle entries, version metadata absent
+  ML-DSA (FIPS 204) JCA spec: absent
+  ML-DSA (FIPS 204) signer: absent
+  SLH-DSA (FIPS 205) JCA spec: absent
+  Dilithium (pre-standard) spec: absent
+  SPHINCS+ (pre-standard) spec: absent
+kernel-keymanager-service-1.4.0-lib.jar pom.properties: artifactId=kernel-keymanager-service; groupId=io.mosip.kernel; version=1.4.0

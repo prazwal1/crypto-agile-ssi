@@ -8,6 +8,8 @@ Answers RQ1: where, and how tightly, the Inji stack binds to specific cryptograp
 | `tools/clone-baseline.ps1`, `.sh` | Clone every repository at its tag into `repos/` and verify the commit |
 | `tools/rules.yaml` | Scanner rule catalog: algorithm identifiers, proof suites, verification-method encodings, crypto API call sites, libraries |
 | `tools/scan.py` | Runs the rules with ripgrep and writes `results/` |
+| `tools/cite.py` | Extracts cited file:line ranges from the pinned clones into an evidence Markdown file |
+| `tools/inspect-jar.py` | Lists bundled libraries in a deployed jar and checks BouncyCastle for PQ classes |
 | `results/hits.csv` | Every match, including tests (raw, generated) |
 | `results/summary.csv` | Production matches per repository, surface and algorithm |
 | `results/inventory.csv` | Seeded inventory, one row per repository, file and rule; hand-scored columns blank |

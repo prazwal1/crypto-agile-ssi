@@ -73,6 +73,8 @@ keymanager release first.
 
 ## Limits
 
-- Read from source at the pinned tags; that the `inji-certify-with-plugins:0.14.0` image bundles
-  keymanager 1.4.0 is taken from the pom, not yet confirmed inside the image.
+- Read from source at the pinned tags. The deployed image was checked separately: it bundles
+  `kernel-keymanager-service-1.4.0-lib.jar` and BouncyCastle 1.78.1 (plus 1.70 and a shaded copy),
+  see `../evidence/2026-10-13-certify-image-libs/`.
+- Every file:line cited here is reproduced in `../evidence/2026-10-13-issuer-signing-trace/excerpts.md`.
 - Production deployments may use PKCS11 HSMs; this trace covers the PKCS12 keystore used here.

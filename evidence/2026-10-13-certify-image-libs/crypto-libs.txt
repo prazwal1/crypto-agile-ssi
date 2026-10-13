@@ -1,0 +1,23 @@
+# crypto-relevant bundled jars, classpath.idx position
+0	jackson-dataformat-cbor-2.18.1.jar
+2	cbor-0.9.jar
+27	nimbus-jose-jwt-10.0.2.jar
+81	kernel-keymanager-service-1.4.0-lib.jar
+82	kernel-core-1.3.0.jar
+174	bcprov-jdk18on-1.78.1.jar
+175	bcpkix-jdk18on-1.78.1.jar
+176	bcutil-jdk18on-1.78.1.jar
+177	cbor-1.19.jar
+179	ld-signatures-java-1.0.0.jar
+181	data-integrity-java-1.17.0.jar
+183	titanium-json-ld-1.6.0.jar
+184	titanium-jcs-1.0.0.jar
+185	titanium-rdf-api-1.0.0.jar
+186	titanium-rdf-n-quads-1.0.0.jar
+187	titanium-rdfc-2.0.0.jar
+203	tink-1.13.0.jar
+232	pixelpass-jar-0.8.0.jar
+233	bcprov-jdk15on-1.70.jar
+234	cbor-4.5.2.jar
+236	eddsa-0.3.0.jar
+252	jose4j-0.6.5.jar

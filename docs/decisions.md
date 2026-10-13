@@ -9,7 +9,7 @@ Scope and design decisions, with the reasoning at the time. Open items first.
 | D-01 | Include RS256 and ES256K in the baseline, or justify excluding them | Wallet supports four key types (F1); the proposal baseline covers Ed25519 and P-256 | F9 shows the FarmerCredential accepts only RS256 and ES256 holder proofs, which argues for including RS256 |
 | D-02 | Is SD-JWT VC supported end to end in Inji? | Decides whether the commitment-based credential family is in scope | Certify validates `vc+sd-jwt` claims separately from `ldp_vc`; wallet support not yet checked |
 | D-03 | Which unmodified external verifier for P3 | Needed for the interoperability evaluation | Decide by M2 rather than M5 |
-| D-04 | ML-DSA library for Android/JVM | Phase 4 provider choice | BouncyCastle PQC classes are already a transitive dependency of Inji Verify (F8) |
+| D-04 | ML-DSA library for Android/JVM | Phase 4 provider choice | BouncyCastle PQC classes are already a transitive dependency of Inji Verify (F8). Certify image: BouncyCastle 1.78.1, 1.70 and a shaded copy, none with final ML-DSA (F16) |
 | D-07 | `assertionMethod` in the issuer DID document lists the DID, not the verification method id | May affect strict verifiers | Check against DID Core and the chosen external verifier. Root cause: hard-coded in `DIDDocumentUtil.java:62-63` (F15). Accepted by both Inji verifiers (F11) |
 
 ## Closed

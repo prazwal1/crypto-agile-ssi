@@ -10,6 +10,12 @@ Dated record of working sessions. Each entry states what was done, what was obse
 - Mimoto image set to 0.22.0 to match the analysed source (C-07). Named Cloudflare tunnel on `arlabsnepal.com` (C-08): issuer DID now fixed at `did:web:ssi-issuer.arlabsnepal.com`, Mimoto at `https://ssi-mimoto.arlabsnepal.com`. Offer creation and actuator blocked on the public host (C-09).
 - `start` (20:13): named tunnel registered; all local and public endpoints 200. Wallet rebuilt against the new Mimoto host.
 
+### Deployed Certify libraries and citation evidence (21:15)
+- Located the Certify application in the running container (`/home/inji/certify-service.jar`, plugins in `/home/inji/additional_jars/`) and copied it and the mock plugin out. Archived outside git in `F:\thesis\artifacts\2026-10-13-certify-0.14.0\` with SHA-256 recorded.
+- New `tools/inspect-jar.py`: keymanager 1.4.0 confirmed inside the image; three BouncyCastle copies in the issuer JVM, none with final ML-DSA or SLH-DSA (F16). Evidence: `evidence/2026-10-13-certify-image-libs/`.
+- New `tools/cite.py`: all 24 file:line citations of the signing trace extracted from the pinned clones into `evidence/2026-10-13-issuer-signing-trace/excerpts.md`, so each claim is checkable.
+- Added `evidence/README.md` (index and convention) and `F:\thesis\artifacts\README.md`.
+
 ### Issuer signing path (20:40)
 - Traced Certify 0.14.0 signing through MOSIP keymanager 1.4.0 (version from Certify's pom). Added keymanager to `manifest.tsv` and `repos/`. Write-up: `phase1-dependency-analysis/issuer-signing-path.md`.
 - New findings F12 to F15: 12 issuer-side registries per algorithm, key type encoded in reference-id strings with silent PS256/RS256 fallbacks, an RSA-2048 key hierarchy beneath the Ed25519 VC key, and the DID document's hard-coded `assertionMethod` (root cause of D-07).
