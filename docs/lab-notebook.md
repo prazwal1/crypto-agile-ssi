@@ -13,6 +13,13 @@ Dated record of working sessions. Each entry states what was done, what was obse
 - The wallet working copy now defaults to `<thesis root>\inji-wallet` (`F:\thesis\inji-wallet`) instead of `C:\dev\inji-wallet`; still short enough for the 260-character limit.
 - Added `env/wallet/build-env.ps1`: Gradle and npm caches under the thesis root, and a user-level `gradle.properties` that caps the daemon heap and worker count and builds only `arm64-v8a`. The wallet source is not modified.
 
+### Stack and wallet on the second laptop
+- `start` (11:29): all local endpoints 200 (Certify, nginx, Mimoto, Verify UI, Inji Web); both tunnels registered; public DID, issuer metadata, OAuth metadata and Mimoto 200. New issuer DID `did:web:signing-regulated-grain-prior.trycloudflare.com`; Mimoto `https://overview-library-assumptions-presenting.trycloudflare.com`. Certify generated a fresh keystore.
+- `apply-patches` (11:33): patch 001 applied, Certify back up. The `InsufficientAuthenticationException` seen on the first laptop appears here too right after start, so it is not machine specific.
+- Wallet toolchain: Temurin 17 not found at first (finder rewritten to search registry, vendor folders and PATH); SDK packages installed after the `sdkmanager` to `android` CLI change was handled.
+- First build failed moving Gradle's `dependencies-accessors` workspace (two concurrent Gradle processes, rename blocked). After closing Android Studio, adding Defender exclusions and stopping daemons, `run-wallet.ps1` built and installed the debug build (14:24).
+- Next: first issuance into the wallet from a pre-authorized offer, then the wallet-side baseline.
+
 ---
 
 ## 2026-10-11 (Sun)
