@@ -3941,3 +3941,116 @@
 10-13 15:08:33.441 13669 13712 W BluetoothMetrics: system/metrics/src/android/metrics.cc:105 LogBluetoothEvent: Failed BluetoothEvent Upload - Address is Empty
 10-13 15:08:33.501 13669 13712 W bluetooth: system/gd/hci/le_address_manager.cc:385 resume_registered_clients: client is not paused ClientState::RESUMED(0x3)
 10-13 15:08:33.501 13669 13712 W bluetooth: system/gd/hci/le_address_manager.cc:385 resume_registered_clients: client is not paused ClientState::RESUMED(0x3)
+10-13 15:08:35.272  1728  1728 E AOC     : A3:ERR: vd6282_device.cc, 1825: USF: VD6282: Recovery timed-out:1 ag:1 ic:1 als_ctrl:7 intr_clr:2!
+10-13 15:08:37.410  1728  1728 E AOC     : A3:ERR: vd6282_device.cc, 1825: USF: VD6282: Recovery timed-out:1 ag:1 ic:1 als_ctrl:7 intr_clr:2!
+10-13 15:08:39.548  1728  1728 E AOC     : A3:ERR: vd6282_device.cc, 1825: USF: VD6282: Recovery timed-out:1 ag:1 ic:1 als_ctrl:7 intr_clr:2!
+10-13 15:08:41.679  1728  1728 E AOC     : A3:ERR: vd6282_device.cc, 1825: USF: VD6282: Recovery timed-out:1 ag:1 ic:1 als_ctrl:7 intr_clr:2!
+10-13 15:08:43.817  1728  1728 E AOC     : A3:ERR: vd6282_device.cc, 1825: USF: VD6282: Recovery timed-out:1 ag:1 ic:1 als_ctrl:7 intr_clr:2!
+10-13 15:08:45.957  1728  1728 E AOC     : A3:ERR: vd6282_device.cc, 1825: USF: VD6282: Recovery timed-out:1 ag:1 ic:1 als_ctrl:7 intr_clr:2!
+10-13 15:08:48.096  1728  1728 E AOC     : A3:ERR: vd6282_device.cc, 1825: USF: VD6282: Recovery timed-out:1 ag:1 ic:1 als_ctrl:7 intr_clr:2!
+10-13 15:08:50.230  1728  1728 E AOC     : A3:ERR: vd6282_device.cc, 1825: USF: VD6282: Recovery timed-out:1 ag:1 ic:1 als_ctrl:7 intr_clr:2!
+10-13 15:08:51.081  1727  1727 W TracingMuxer: type=1400 audit(0.0:1050908): avc:  denied  { write } for  name="traced_producer" dev="tmpfs" ino=1549 scontext=u:r:gxp_logging:s0 tcontext=u:object_r:traced_producer_socket:s0 tclass=sock_file permissive=0
+10-13 15:08:52.365  1728  1728 E AOC     : A3:ERR: vd6282_device.cc, 1825: USF: VD6282: Recovery timed-out:1 ag:1 ic:1 als_ctrl:7 intr_clr:2!
+10-13 15:08:52.527 13669 13669 W HidDeviceService: unregisterAppUid(): caller UID doesn't match user UID
+10-13 15:08:54.506  1728  1728 E AOC     : A3:ERR: vd6282_device.cc, 1825: USF: VD6282: Recovery timed-out:1 ag:1 ic:1 als_ctrl:7 intr_clr:2!
+10-13 15:08:56.306  1952  4542 W ProcessStats: Tracking association SourceState{725799b app.revanced.android.youtube/10343 Fgs #1537183} whose proc state 3 is better than process ProcessState{446e56e app.revanced.android.gms/10578 pkg=app.revanced.android.gms} proc state 14 (0 skipped)
+10-13 15:08:56.639  1728  1728 E AOC     : A3:ERR: vd6282_device.cc, 1825: USF: VD6282: Recovery timed-out:1 ag:1 ic:1 als_ctrl:7 intr_clr:2!
+10-13 15:08:56.713  1721  1803 W YouTube : Empty persistent device token received from InnerTube.
+10-13 15:08:56.727  1952  4542 W ActivityManager: Unable to start service Intent { act=com.google.android.gms.phenotype.service.START xflg=0x4 pkg=app.revanced.android.gms } U=0: not found
+10-13 15:08:56.728  1952  4542 W ActivityManager: Unbind failed: could not find connection for android.os.BinderProxy@a784da
+10-13 15:08:56.730  1721  1754 W GmsClient: unable to connect to service: com.google.android.gms.phenotype.service.START on app.revanced.android.gms
+10-13 15:08:58.774  1728  1728 E AOC     : A3:ERR: vd6282_device.cc, 1825: USF: VD6282: Recovery timed-out:1 ag:1 ic:1 als_ctrl:7 intr_clr:2!
+10-13 15:09:00.906  1728  1728 E AOC     : A3:ERR: vd6282_device.cc, 1825: USF: VD6282: Recovery timed-out:1 ag:1 ic:1 als_ctrl:7 intr_clr:2!
+10-13 15:09:03.041  1728  1728 E AOC     : A3:ERR: vd6282_device.cc, 1825: USF: VD6282: Recovery timed-out:1 ag:1 ic:1 als_ctrl:7 intr_clr:2!
+10-13 15:09:03.245  1952  6116 W ActivityManager: Skipping manifest association check for null package. SourceUid: 10604, SourcePkg: null, TargetUid: 10604, TargetPkg: com.anthropic.claude
+10-13 15:09:04.293  1952  4542 W ApplicationInfo: Large ApplicationInfo parcel: size=23476 package=com.google.android.googlequicksearchbox splits=6 sharedLibs=6 resDirs=1 overlayPaths=1
+10-13 15:09:04.293  1952  4542 W ParceledListSlice: Element #11 is 23800 bytes.
+10-13 15:09:04.313  1952  4325 E RoleControllerServiceImpl: Default/fallback role holder package doesn't qualify for the role, package: com.google.android.retaildemo, role: android.app.role.RETAIL_DEMO, user: 0
+10-13 15:09:04.313  1952  4325 E RoleControllerServiceImpl: Default/fallback role holder package doesn't qualify for the role, package: com.google.android.gms.supervision, role: android.app.role.SYSTEM_SUPERVISION, user: 0
+10-13 15:09:04.318  1952  4325 E RoleControllerServiceImpl: Default/fallback role holder package doesn't qualify for the role, package: com.google.android.gms, role: android.app.role.SYSTEM_CALL_STREAMING, user: 0
+10-13 15:09:04.339  1952  4542 W ApplicationInfo: Large ApplicationInfo parcel: size=23476 package=com.google.android.googlequicksearchbox splits=6 sharedLibs=6 resDirs=1 overlayPaths=1
+10-13 15:09:04.339  1952  4542 W ParceledListSlice: Element #30 is 24644 bytes.
+10-13 15:09:04.339  1952  4325 E RoleControllerServiceImpl: Default/fallback role holder package doesn't qualify for the role, package: com.google.android.gms, role: android.app.role.SYSTEM_DEPENDENCY_INSTALLER, user: 0
+10-13 15:09:04.339  1952  4542 W ApplicationInfo: Large ApplicationInfo parcel: size=23476 package=com.google.android.googlequicksearchbox splits=6 sharedLibs=6 resDirs=1 overlayPaths=1
+10-13 15:09:04.339  1952  4542 W ParceledListSlice: Element #31 is 24808 bytes.
+10-13 15:09:04.339  1952  4542 W ApplicationInfo: Large ApplicationInfo parcel: size=23476 package=com.google.android.googlequicksearchbox splits=6 sharedLibs=6 resDirs=1 overlayPaths=1
+10-13 15:09:04.339  1952  4542 W ParceledListSlice: Element #32 is 24852 bytes.
+10-13 15:09:04.339  1952  4542 W ApplicationInfo: Large ApplicationInfo parcel: size=23476 package=com.google.android.googlequicksearchbox splits=6 sharedLibs=6 resDirs=1 overlayPaths=1
+10-13 15:09:04.339  1952  4542 W ParceledListSlice: Element #33 is 24272 bytes.
+10-13 15:09:04.340  1952  4542 W ApplicationInfo: Large ApplicationInfo parcel: size=23476 package=com.google.android.googlequicksearchbox splits=6 sharedLibs=6 resDirs=1 overlayPaths=1
+10-13 15:09:04.340  1952  4542 W ParceledListSlice: Element #34 is 24824 bytes.
+10-13 15:09:04.340  1952  4542 W ApplicationInfo: Large ApplicationInfo parcel: size=23476 package=com.google.android.googlequicksearchbox splits=6 sharedLibs=6 resDirs=1 overlayPaths=1
+10-13 15:09:04.340  1952  4542 W ParceledListSlice: Element #35 is 25036 bytes.
+10-13 15:09:04.340  1952  4542 W ApplicationInfo: Large ApplicationInfo parcel: size=23476 package=com.google.android.googlequicksearchbox splits=6 sharedLibs=6 resDirs=1 overlayPaths=1
+10-13 15:09:04.340  1952  4542 W ParceledListSlice: Element #36 is 24548 bytes.
+10-13 15:09:04.345  1952  4542 W ApplicationInfo: Large ApplicationInfo parcel: size=17576 package=com.mobile.legends splits=13 sharedLibs=1 resDirs=1 overlayPaths=1
+10-13 15:09:04.345  1952  4542 W ParceledListSlice: Element #116 is 18200 bytes.
+10-13 15:09:04.345  1952  4542 W ApplicationInfo: Large ApplicationInfo parcel: size=17576 package=com.mobile.legends splits=13 sharedLibs=1 resDirs=1 overlayPaths=1
+10-13 15:09:04.345  1952  4542 W ParceledListSlice: Element #117 is 18220 bytes.
+10-13 15:09:04.345  1952  4542 W ApplicationInfo: Large ApplicationInfo parcel: size=17576 package=com.mobile.legends splits=13 sharedLibs=1 resDirs=1 overlayPaths=1
+10-13 15:09:04.345  1952  4542 W ParceledListSlice: Element #118 is 18220 bytes.
+10-13 15:09:04.354  1952  2673 W MagnificationConnectionManager: requestConnection duplicated request: connect=false, mConnectionState=DISCONNECTED
+10-13 15:09:04.355  1952  1952 W MagnificationConnectionManager: requestConnection duplicated request: connect=false, mConnectionState=DISCONNECTED
+10-13 15:09:04.371  1952  4325 E ApduServiceInfo: Not adding <aid-group> with empty or invalid AIDs
+10-13 15:09:04.381  1952  4325 W SignedPackage: Cannot get ApplicationInfo for package: com.google.android.devicelockcontroller
+10-13 15:09:04.413  1952  2029 W PackageManager: Unable to load service info ResolveInfo{17dfe7d com.truelife.mobile.android.trueiservice/com.truedigital.authentication.service.silentlogin.SilentLoginService m=0x108000 userHandle=null}
+10-13 15:09:04.450  4548  4625 W ApplicationInfo: Large ApplicationInfo parcel: size=23476 package=com.google.android.googlequicksearchbox splits=6 sharedLibs=6 resDirs=1 overlayPaths=1
+10-13 15:09:04.454  4548  4625 W ApplicationInfo: Large ApplicationInfo parcel: size=23476 package=com.google.android.googlequicksearchbox splits=6 sharedLibs=6 resDirs=1 overlayPaths=1
+10-13 15:09:04.457  4548  4625 W ApplicationInfo: Large ApplicationInfo parcel: size=23476 package=com.google.android.googlequicksearchbox splits=6 sharedLibs=6 resDirs=1 overlayPaths=1
+10-13 15:09:04.460  4548  4625 W ApplicationInfo: Large ApplicationInfo parcel: size=23476 package=com.google.android.googlequicksearchbox splits=6 sharedLibs=6 resDirs=1 overlayPaths=1
+10-13 15:09:04.463  4548  4625 W ApplicationInfo: Large ApplicationInfo parcel: size=23476 package=com.google.android.googlequicksearchbox splits=6 sharedLibs=6 resDirs=1 overlayPaths=1
+10-13 15:09:04.467  4548  4625 W ApplicationInfo: Large ApplicationInfo parcel: size=23476 package=com.google.android.googlequicksearchbox splits=6 sharedLibs=6 resDirs=1 overlayPaths=1
+10-13 15:09:04.470  4548  4625 W ApplicationInfo: Large ApplicationInfo parcel: size=23476 package=com.google.android.googlequicksearchbox splits=6 sharedLibs=6 resDirs=1 overlayPaths=1
+10-13 15:09:04.758  4548  4625 W ApplicationInfo: Large ApplicationInfo parcel: size=17576 package=com.mobile.legends splits=13 sharedLibs=1 resDirs=1 overlayPaths=1
+10-13 15:09:04.759  4548  4625 W ApplicationInfo: Large ApplicationInfo parcel: size=17576 package=com.mobile.legends splits=13 sharedLibs=1 resDirs=1 overlayPaths=1
+10-13 15:09:04.759  4548  4625 W ApplicationInfo: Large ApplicationInfo parcel: size=17576 package=com.mobile.legends splits=13 sharedLibs=1 resDirs=1 overlayPaths=1
+10-13 15:09:04.948  4548  4625 W PackageManager: Failure retrieving text 0x7f0ff146 in package org.telegram.messenger
+10-13 15:09:04.948  4548  4625 W PackageManager: android.content.res.Resources$NotFoundException: String resource ID #0x7f0ff146
+10-13 15:09:04.948  4548  4625 W PackageManager: 	at android.content.res.Resources.getText(Resources.java:475)
+10-13 15:09:04.948  4548  4625 W PackageManager: 	at android.app.ApplicationPackageManager.getText(ApplicationPackageManager.java:2590)
+10-13 15:09:04.948  4548  4625 W PackageManager: 	at android.appwidget.AppWidgetProviderInfo.loadDescription(AppWidgetProviderInfo.java:500)
+10-13 15:09:04.948  4548  4625 W PackageManager: 	at com.android.launcher3.model.WidgetItem.<init>(go/retraceme df6afd6ddbfb97877b5bbd6671f1dcc462abdd74820aeec8fe554f5d5a0e7f88:17)
+10-13 15:09:04.948  4548  4625 W PackageManager: 	at com.android.launcher3.model.WidgetsModel.update(go/retraceme df6afd6ddbfb97877b5bbd6671f1dcc462abdd74820aeec8fe554f5d5a0e7f88:63)
+10-13 15:09:04.948  4548  4625 W PackageManager: 	at com.android.launcher3.LauncherModel$refreshAndBindWidgetsAndShortcuts$1.execute(go/retraceme df6afd6ddbfb97877b5bbd6671f1dcc462abdd74820aeec8fe554f5d5a0e7f88:4)
+10-13 15:09:04.948  4548  4625 W PackageManager: 	at com.android.launcher3.LauncherModel$rebindCallbacks$1.run(go/retraceme df6afd6ddbfb97877b5bbd6671f1dcc462abdd74820aeec8fe554f5d5a0e7f88:34)
+10-13 15:09:04.948  4548  4625 W PackageManager: 	at android.os.Handler.handleCallback(Handler.java:1082)
+10-13 15:09:04.948  4548  4625 W PackageManager: 	at android.os.Handler.dispatchMessageImpl(Handler.java:135)
+10-13 15:09:04.948  4548  4625 W PackageManager: 	at android.os.Handler.dispatchMessage(Handler.java:126)
+10-13 15:09:04.948  4548  4625 W PackageManager: 	at android.os.Looper.loopOnce(Looper.java:295)
+10-13 15:09:04.948  4548  4625 W PackageManager: 	at android.os.Looper.loop(Looper.java:398)
+10-13 15:09:04.948  4548  4625 W PackageManager: 	at android.os.HandlerThread.run(HandlerThread.java:140)
+10-13 15:09:04.952  4548  4625 W PackageManager: Failure retrieving text 0x7f0ff145 in package org.telegram.messenger
+10-13 15:09:04.952  4548  4625 W PackageManager: android.content.res.Resources$NotFoundException: String resource ID #0x7f0ff145
+10-13 15:09:04.952  4548  4625 W PackageManager: 	at android.content.res.Resources.getText(Resources.java:475)
+10-13 15:09:04.952  4548  4625 W PackageManager: 	at android.app.ApplicationPackageManager.getText(ApplicationPackageManager.java:2590)
+10-13 15:09:04.952  4548  4625 W PackageManager: 	at android.appwidget.AppWidgetProviderInfo.loadDescription(AppWidgetProviderInfo.java:500)
+10-13 15:09:04.952  4548  4625 W PackageManager: 	at com.android.launcher3.model.WidgetItem.<init>(go/retraceme df6afd6ddbfb97877b5bbd6671f1dcc462abdd74820aeec8fe554f5d5a0e7f88:17)
+10-13 15:09:04.952  4548  4625 W PackageManager: 	at com.android.launcher3.model.WidgetsModel.update(go/retraceme df6afd6ddbfb97877b5bbd6671f1dcc462abdd74820aeec8fe554f5d5a0e7f88:63)
+10-13 15:09:04.952  4548  4625 W PackageManager: 	at com.android.launcher3.LauncherModel$refreshAndBindWidgetsAndShortcuts$1.execute(go/retraceme df6afd6ddbfb97877b5bbd6671f1dcc462abdd74820aeec8fe554f5d5a0e7f88:4)
+10-13 15:09:04.952  4548  4625 W PackageManager: 	at com.android.launcher3.LauncherModel$rebindCallbacks$1.run(go/retraceme df6afd6ddbfb97877b5bbd6671f1dcc462abdd74820aeec8fe554f5d5a0e7f88:34)
+10-13 15:09:04.952  4548  4625 W PackageManager: 	at android.os.Handler.handleCallback(Handler.java:1082)
+10-13 15:09:04.952  4548  4625 W PackageManager: 	at android.os.Handler.dispatchMessageImpl(Handler.java:135)
+10-13 15:09:04.952  4548  4625 W PackageManager: 	at android.os.Handler.dispatchMessage(Handler.java:126)
+10-13 15:09:04.952  4548  4625 W PackageManager: 	at android.os.Looper.loopOnce(Looper.java:295)
+10-13 15:09:04.952  4548  4625 W PackageManager: 	at android.os.Looper.loop(Looper.java:398)
+10-13 15:09:04.952  4548  4625 W PackageManager: 	at android.os.HandlerThread.run(HandlerThread.java:140)
+10-13 15:09:05.093 14389 14389 W ConnectivityEventWriter: Failed to add tag: ConnectivityMonitorEventMetadata{eventTimestampMs=1791878945087, subscriptionId=Optional.empty, slotId=Optional.empty}
+10-13 15:09:05.174  1728  1728 E AOC     : A3:ERR: vd6282_device.cc, 1825: USF: VD6282: Recovery timed-out:1 ag:1 ic:1 als_ctrl:7 intr_clr:2!
+10-13 15:09:07.307  1728  1728 E AOC     : A3:ERR: vd6282_device.cc, 1825: USF: VD6282: Recovery timed-out:1 ag:1 ic:1 als_ctrl:7 intr_clr:2!
+10-13 15:09:09.442  1728  1728 E AOC     : A3:ERR: vd6282_device.cc, 1825: USF: VD6282: Recovery timed-out:1 ag:1 ic:1 als_ctrl:7 intr_clr:2!
+10-13 15:09:11.406  1952  4542 W ProcessStats: Tracking association SourceState{725799b app.revanced.android.youtube/10343 Fgs #1537192} whose proc state 3 is better than process ProcessState{446e56e app.revanced.android.gms/10578 pkg=app.revanced.android.gms} proc state 14 (6 skipped)
+10-13 15:09:11.577  1728  1728 E AOC     : A3:ERR: vd6282_device.cc, 1825: USF: VD6282: Recovery timed-out:1 ag:1 ic:1 als_ctrl:7 intr_clr:2!
+10-13 15:09:12.426 30142 30164 E TaskManager: <DWB> Alarm scheduled for PT-13166H-54M-12.424S from now
+10-13 15:09:13.710  1728  1728 E AOC     : A3:ERR: vd6282_device.cc, 1825: USF: VD6282: Recovery timed-out:1 ag:1 ic:1 als_ctrl:7 intr_clr:2!
+10-13 15:09:14.356 13669 13669 W HidDeviceService: unregisterAppUid(): caller UID doesn't match user UID
+10-13 15:09:15.842  1728  1728 E AOC     : A3:ERR: vd6282_device.cc, 1825: USF: VD6282: Recovery timed-out:1 ag:1 ic:1 als_ctrl:7 intr_clr:2!
+10-13 15:09:17.974  1728  1728 E AOC     : A3:ERR: vd6282_device.cc, 1825: USF: VD6282: Recovery timed-out:1 ag:1 ic:1 als_ctrl:7 intr_clr:2!
+10-13 15:09:20.107  1728  1728 E AOC     : A3:ERR: vd6282_device.cc, 1825: USF: VD6282: Recovery timed-out:1 ag:1 ic:1 als_ctrl:7 intr_clr:2!
+10-13 15:09:21.093  1727  1727 W TracingMuxer: type=1400 audit(0.0:1050909): avc:  denied  { write } for  name="traced_producer" dev="tmpfs" ino=1549 scontext=u:r:gxp_logging:s0 tcontext=u:object_r:traced_producer_socket:s0 tclass=sock_file permissive=0
+10-13 15:09:22.239  1728  1728 E AOC     : A3:ERR: vd6282_device.cc, 1825: USF: VD6282: Recovery timed-out:1 ag:1 ic:1 als_ctrl:7 intr_clr:2!
+10-13 15:09:22.338  1952  2037 W ProcessStats: Tracking association SourceState{725799b app.revanced.android.youtube/10343 Fgs #1537203} whose proc state 3 is better than process ProcessState{446e56e app.revanced.android.gms/10578 pkg=app.revanced.android.gms} proc state 14 (2 skipped)
+10-13 15:09:24.371  1728  1728 E AOC     : A3:ERR: vd6282_device.cc, 1825: USF: VD6282: Recovery timed-out:1 ag:1 ic:1 als_ctrl:7 intr_clr:2!
+10-13 15:09:24.920  3772  8306 W PlayCommon: [2212] No account for auth token provided
+10-13 15:09:26.335 13669 13669 W HidDeviceService: unregisterAppUid(): caller UID doesn't match user UID
+10-13 15:09:26.506  1728  1728 E AOC     : A3:ERR: vd6282_device.cc, 1825: USF: VD6282: Recovery timed-out:1 ag:1 ic:1 als_ctrl:7 intr_clr:2!
+10-13 15:09:28.639  1728  1728 E AOC     : A3:ERR: vd6282_device.cc, 1825: USF: VD6282: Recovery timed-out:1 ag:1 ic:1 als_ctrl:7 intr_clr:2!

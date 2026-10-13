@@ -33,6 +33,8 @@ Evidence: `evidence/2026-10-13-first-issuance/logcat.txt` (server logs for this 
 
 - Cause: Certify was configured with `MockCSVDataProviderPlugin`, which ignores the claims attached to the pre-authorized offer and looks the holder up in the CSV by token subject. Certify core ships `PreAuthDataProviderPlugin`, which returns the cached offer claims. Switched to it (configuration only).
 - Observation for F3/F9: the holder proof key is a hardware-backed P-256 key bound to user authentication; every proof needs a biometric or device credential. Algorithm choice is driven by the issuer's `proof_signing_alg_values_supported` (RS256, ES256).
+- Server side of the failed attempt captured as well (nginx shows offer, metadata and token 200, credential request 400); see the evidence README.
+- After `restart-issuer` with `PreAuthDataProviderPlugin` (about 15:10): FarmerCredential downloaded and shown in the wallet. First end-to-end issuance on this stack. Not captured; capture on the next run.
 
 ---
 
