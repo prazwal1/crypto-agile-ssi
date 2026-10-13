@@ -10,8 +10,6 @@ Scope and design decisions, with the reasoning at the time. Open items first.
 | D-02 | Is SD-JWT VC supported end to end in Inji? | Decides whether the commitment-based credential family is in scope | Certify validates `vc+sd-jwt` claims separately from `ldp_vc`; wallet support not yet checked |
 | D-03 | Which unmodified external verifier for P3 | Needed for the interoperability evaluation | Decide by M2 rather than M5 |
 | D-04 | ML-DSA library for Android/JVM | Phase 4 provider choice | BouncyCastle PQC classes are already a transitive dependency of Inji Verify (F8) |
-| D-05 | Mimoto version mismatch: running image 0.21.0, analysed source v0.22.0 | Runtime and static findings must refer to the same code | Either pin the image to 0.22.0 or re-pin the source to v0.21.0 |
-| D-06 | Replace quick tunnels with a named Cloudflare tunnel on an owned domain | Quick-tunnel hostnames change, which changes the issuer DID and invalidates issued credentials | Required before collecting Phase 3/4 evidence |
 | D-07 | `assertionMethod` in the issuer DID document lists the DID, not the verification method id | May affect strict verifiers | Check against DID Core and the chosen external verifier |
 
 ## Closed
@@ -24,3 +22,6 @@ Scope and design decisions, with the reasoning at the time. Open items first.
 | C-04 | Certify and Verify run unmodified; Wallet and Mimoto are the modified side | 2026-10-04 | Unmodified counterparties are needed to demonstrate interoperability |
 | C-05 | Wallet v0.22.1 is the version anchor for all pinned repositories | 2026-10-08 | Its `build.gradle` fixes native library versions exactly |
 | C-06 | Declare all 14 CSV claims in FarmerCredential's `credential_subject` (patch 001) | 2026-10-09 | Upstream seed declares 4; offers with the CSV claims were rejected. Configuration only |
+| C-07 | Run Mimoto 0.22.0 to match the analysed source v0.22.0 (closes D-05) | 2026-10-13 | F4/F5 cite v0.22.0 paths and lines; Mimoto is a modified component and should sit on the wallet v0.22.x release line. `injistack/mimoto:0.22.0` is published (2026-04-27, same day as the tag); its default config differs from ours only by `spring.session.store-type=caffeine` |
+| C-08 | Named Cloudflare tunnel on `arlabsnepal.com` (`ssi-issuer`, `ssi-mimoto`) instead of quick tunnels (closes D-06) | 2026-10-13 | Fixed issuer DID `did:web:ssi-issuer.arlabsnepal.com`, so issued credentials stay verifiable across runs and evidence refers to one DID. One-level subdomains for Universal SSL. Quick-tunnel mode kept as fallback (no `tunnel.env`) |
+| C-09 | Offer creation (`/v1/certify/pre-authorized-data`) and actuator blocked on the public hostname | 2026-10-13 | The endpoint is unauthenticated in Certify; on a permanent public host anyone could mint credentials under the issuer DID. Offers are created on localhost:8090 |
