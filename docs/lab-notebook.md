@@ -10,7 +10,7 @@ Dated record of working sessions. Each entry states what was done, what was obse
 - Mimoto image set to 0.22.0 to match the analysed source (C-07). Named Cloudflare tunnel on `arlabsnepal.com` (C-08): issuer DID now fixed at `did:web:ssi-issuer.arlabsnepal.com`, Mimoto at `https://ssi-mimoto.arlabsnepal.com`. Offer creation and actuator blocked on the public host (C-09).
 - `start` (20:13): named tunnel registered; all local and public endpoints 200. Wallet rebuilt against the new Mimoto host.
 
-### Inventory review (21:30 to 22:45)
+### Inventory review (21:31 to 21:40)
 - Scored all 919 scanner rows. Pass 1 by path rule: 341 rows in tests, build files, upstream deployment config, samples and docs. Pass 2 by hand: read the matched code in 245 production files at the pinned commits, one judgement per file (`phase1-dependency-analysis/review/judgements.tsv`).
 - Result: 446 verified rows collapse into 35 bindings across 9 repositories (`results/bindings.csv`). New `tools/score_inventory.py` refuses to run if any production row lacks a judgement; outputs reproduced identically on the laptop.
 - Mistake caught: the deployment-config path rule also matched four production Java classes in `config/` packages; fixed and reviewed by hand.
