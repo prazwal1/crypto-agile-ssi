@@ -221,6 +221,8 @@ EVIDENCE = [
  ('evidence/2026-10-14-reissue-eddsa/, presentation-run-3/','Ed25519-bound reissue; two valid presentations','capture-logs.ps1, PB','F20, F23'),
  ('evidence/2026-10-14-presentation-export/','Stored VP tokens (photo redacted) and TRACE.md','stack.ps1 export-presentation, PB','F20, F23'),
  ('evidence/2026-10-14-verify-version-diff/','inji-verify v0.17.0 vs v0.18.2, vc-verifier 1.6.0 vs 1.8.1 diffs and summary','git diff (Claude)','C-10, F8, F18, F23'),
+ ('phase1-dependency-analysis/results/cbom.json','CycloneDX 1.6 CBOM: 12 cryptographic-assets (all nistQuantumSecurityLevel 0) + 14 crypto libraries; schema-valid','tools/build_cbom.py (Claude)','F8, F16, all algorithm findings'),
+ ('evidence/2026-10-14-did-conformance/','Issuer DID assertionMethod non-conformance (D-07)','manual check (Claude)','C-13, F15, R-10'),
  ('evidence/2026-10-14-sdjwt-*/','SD-JWT issuance and presentation runs (D-02); trace TRACE-SDJWT.md in presentation-export','capture-logs.ps1, stack.ps1 export-presentation, PB','C-11, F25'),
  ('evidence/2026-10-14-verify-image-libs/','Libraries in the deployed verify-service jar (sha256 4c049791...); jar in F:\\thesis\\artifacts\\2026-10-14-verify-0.18.2\\','docker cp (PB), tools/inspect-jar.py','F8'),
  ('F:\\thesis\\artifacts\\2026-10-13-certify-0.14.0\\','certify.jar (f53bbdf1...), mock-certify-plugin.jar (e3f67385...), outside git','docker cp, PB','F16'),
@@ -242,4 +244,5 @@ SESSIONS = [
  ('2026-10-14','OpenID4VP presentation trace','Verifier schema fix; face, header-size and holder-binding failures diagnosed; patches 002, 003; two valid presentations; F22, F23; R-13, R-14','evidence/2026-10-14-*'),
  ('2026-10-14 eve','D-08 verifier version check','Diffs inji-verify 0.17.0/0.18.2 and vc-verifier 1.6.0/1.8.1; deployed jar inspected; C-10; F8, F18, F23 updated','evidence/2026-10-14-verify-*'),
  ('2026-10-14 late','D-02 SD-JWT end to end','SD-JWT type via Certify API; public admin endpoints blocked (F24, C-12); face-match bug; selective-disclosure presentation verified; C-11, F25, R-15','evidence/2026-10-14-sdjwt-*, TRACE-SDJWT.md'),
+ ('2026-10-14 late','Phase 1 close-out (Claude side)','D-07 deferred (C-13); InsufficientAuthenticationException mechanism identified; D-01 baseline draft; CycloneDX CBOM (schema-valid)','phase1-dependency-analysis/results/cbom.json, docs/d01-baseline-algorithms.md'),
 ]

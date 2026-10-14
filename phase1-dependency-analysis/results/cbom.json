@@ -1,0 +1,551 @@
+{
+  "$schema": "http://cyclonedx.org/schema/bom-1.6.schema.json",
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.6",
+  "serialNumber": "urn:uuid:3d5a0fed-651a-5573-97f7-882be5565794",
+  "version": 1,
+  "metadata": {
+    "timestamp": "2026-10-14T22:30:00Z",
+    "authors": [
+      {
+        "name": "Prajwal Bhandary"
+      }
+    ],
+    "component": {
+      "type": "application",
+      "bom-ref": "inji-ssi-prototype",
+      "name": "Crypto-agile SSI prototype (MOSIP Inji)",
+      "version": "phase1-2026-10-14",
+      "description": "W3C DID/VC issuance, holding and OpenID4VP presentation on MOSIP Inji (Certify 0.14.0, Mimoto 0.22.0, Inji Verify 0.18.2, Wallet 0.22.1). CBOM scope: cryptographic assets on surfaces S1-S4."
+    },
+    "properties": [
+      {
+        "name": "inji:verified-bindings",
+        "value": "446 verified inventory rows across 9 repositories + keymanager"
+      },
+      {
+        "name": "inji:note",
+        "value": "nistQuantumSecurityLevel is 0 for every algorithm found: no post-quantum signature, KEM or key-agreement is present in any running component."
+      }
+    ]
+  },
+  "components": [
+    {
+      "type": "cryptographic-asset",
+      "bom-ref": "alg:ed25519",
+      "name": "Ed25519",
+      "cryptoProperties": {
+        "assetType": "algorithm",
+        "algorithmProperties": {
+          "primitive": "signature",
+          "parameterSetIdentifier": "Ed25519",
+          "executionEnvironment": "software-plain-ram",
+          "implementationPlatform": "generic",
+          "cryptoFunctions": [
+            "keygen",
+            "sign",
+            "verify"
+          ],
+          "classicalSecurityLevel": 128,
+          "nistQuantumSecurityLevel": 0,
+          "curve": "Ed25519"
+        },
+        "oid": "1.3.101.112"
+      },
+      "description": "Default VC proof (Ed25519Signature2020), OpenID4VP request objects and VP proof, SD-JWT KB-JWT, holder issuance proof. Software key (@noble / eddsa-0.3.0). Evidence: F10,F20,F25 (see phase1-dependency-analysis/findings.md).",
+      "properties": [
+        {
+          "name": "inji:findings",
+          "value": "F10,F20,F25"
+        },
+        {
+          "name": "inji:quantum-vulnerable",
+          "value": "true"
+        }
+      ]
+    },
+    {
+      "type": "cryptographic-asset",
+      "bom-ref": "alg:rsa2048",
+      "name": "RSA-2048 (RS256/PS256)",
+      "cryptoProperties": {
+        "assetType": "algorithm",
+        "algorithmProperties": {
+          "primitive": "signature",
+          "parameterSetIdentifier": "2048",
+          "executionEnvironment": "software-plain-ram",
+          "implementationPlatform": "generic",
+          "cryptoFunctions": [
+            "keygen",
+            "sign",
+            "verify"
+          ],
+          "classicalSecurityLevel": 112,
+          "nistQuantumSecurityLevel": 0
+        },
+        "oid": "1.2.840.113549.1.1.1"
+      },
+      "description": "Certify access token (RS256); keymanager master-key hierarchy and X.509 chain; SD-JWT issuer certificate root. 2048-bit. Evidence: F14,F20,F25 (see phase1-dependency-analysis/findings.md).",
+      "properties": [
+        {
+          "name": "inji:findings",
+          "value": "F14,F20,F25"
+        },
+        {
+          "name": "inji:quantum-vulnerable",
+          "value": "true"
+        }
+      ]
+    },
+    {
+      "type": "cryptographic-asset",
+      "bom-ref": "alg:ecdsa-p256",
+      "name": "ECDSA P-256 (ES256)",
+      "cryptoProperties": {
+        "assetType": "algorithm",
+        "algorithmProperties": {
+          "primitive": "signature",
+          "parameterSetIdentifier": "P-256",
+          "executionEnvironment": "hardware",
+          "implementationPlatform": "generic",
+          "cryptoFunctions": [
+            "keygen",
+            "sign",
+            "verify"
+          ],
+          "classicalSecurityLevel": 128,
+          "nistQuantumSecurityLevel": 0,
+          "curve": "P-256"
+        },
+        "oid": "1.2.840.10045.3.1.7"
+      },
+      "description": "Holder proof for FarmerCredential (Android StrongBox, user-auth gated); SD-JWT issuer signature. secp256r1. Evidence: F3,F9,F25 (see phase1-dependency-analysis/findings.md).",
+      "properties": [
+        {
+          "name": "inji:findings",
+          "value": "F3,F9,F25"
+        },
+        {
+          "name": "inji:quantum-vulnerable",
+          "value": "true"
+        }
+      ]
+    },
+    {
+      "type": "cryptographic-asset",
+      "bom-ref": "alg:ecdsa-secp256k1",
+      "name": "ECDSA secp256k1 (ES256K)",
+      "cryptoProperties": {
+        "assetType": "algorithm",
+        "algorithmProperties": {
+          "primitive": "signature",
+          "parameterSetIdentifier": "secp256k1",
+          "executionEnvironment": "software-plain-ram",
+          "implementationPlatform": "generic",
+          "cryptoFunctions": [
+            "keygen",
+            "sign",
+            "verify"
+          ],
+          "classicalSecurityLevel": 128,
+          "nistQuantumSecurityLevel": 0,
+          "curve": "secp256k1"
+        },
+        "oid": "1.3.132.0.10"
+      },
+      "description": "Wallet software key type; accepted by vc-verifier; mapped in Certify suite config (F21 drift). Not exercised by any credential in the running flow. Evidence: F1,F18,F21 (see phase1-dependency-analysis/findings.md).",
+      "properties": [
+        {
+          "name": "inji:findings",
+          "value": "F1,F18,F21"
+        },
+        {
+          "name": "inji:quantum-vulnerable",
+          "value": "true"
+        }
+      ]
+    },
+    {
+      "type": "cryptographic-asset",
+      "bom-ref": "alg:ecdsa-p384",
+      "name": "ECDSA P-384",
+      "cryptoProperties": {
+        "assetType": "algorithm",
+        "algorithmProperties": {
+          "primitive": "signature",
+          "parameterSetIdentifier": "P-384",
+          "executionEnvironment": "software-plain-ram",
+          "implementationPlatform": "generic",
+          "cryptoFunctions": [
+            "keygen",
+            "sign",
+            "verify"
+          ],
+          "classicalSecurityLevel": 192,
+          "nistQuantumSecurityLevel": 0,
+          "curve": "P-384"
+        },
+        "oid": "1.3.132.0.34"
+      },
+      "description": "Present in verifier/library algorithm tables; not used by the FarmerCredential flow. Evidence: F6 (see phase1-dependency-analysis/findings.md).",
+      "properties": [
+        {
+          "name": "inji:findings",
+          "value": "F6"
+        },
+        {
+          "name": "inji:quantum-vulnerable",
+          "value": "true"
+        }
+      ]
+    },
+    {
+      "type": "cryptographic-asset",
+      "bom-ref": "alg:x25519",
+      "name": "X25519",
+      "cryptoProperties": {
+        "assetType": "algorithm",
+        "algorithmProperties": {
+          "primitive": "key-agree",
+          "parameterSetIdentifier": "X25519",
+          "executionEnvironment": "software-plain-ram",
+          "implementationPlatform": "generic",
+          "cryptoFunctions": [
+            "keygen",
+            "keyderive"
+          ],
+          "classicalSecurityLevel": 128,
+          "nistQuantumSecurityLevel": 0,
+          "curve": "Curve25519"
+        },
+        "oid": "1.3.101.110"
+      },
+      "description": "ECDH key agreement: OpenID4VP response encryption (ECDH-ES) and Tuvali BLE transport. Evidence: F7,F20 (see phase1-dependency-analysis/findings.md).",
+      "properties": [
+        {
+          "name": "inji:findings",
+          "value": "F7,F20"
+        },
+        {
+          "name": "inji:quantum-vulnerable",
+          "value": "true"
+        }
+      ]
+    },
+    {
+      "type": "cryptographic-asset",
+      "bom-ref": "alg:ecdh-es",
+      "name": "ECDH-ES",
+      "cryptoProperties": {
+        "assetType": "algorithm",
+        "algorithmProperties": {
+          "primitive": "key-agree",
+          "parameterSetIdentifier": "X25519",
+          "executionEnvironment": "software-plain-ram",
+          "implementationPlatform": "generic",
+          "cryptoFunctions": [
+            "keyderive"
+          ],
+          "classicalSecurityLevel": 128,
+          "nistQuantumSecurityLevel": 0
+        }
+      },
+      "description": "OpenID4VP authorization-response encryption, with X25519 and A256GCM. Evidence: F20 (see phase1-dependency-analysis/findings.md).",
+      "properties": [
+        {
+          "name": "inji:findings",
+          "value": "F20"
+        },
+        {
+          "name": "inji:quantum-vulnerable",
+          "value": "true"
+        }
+      ]
+    },
+    {
+      "type": "cryptographic-asset",
+      "bom-ref": "alg:rsa-oaep",
+      "name": "RSA-OAEP",
+      "cryptoProperties": {
+        "assetType": "algorithm",
+        "algorithmProperties": {
+          "primitive": "pke",
+          "parameterSetIdentifier": "2048",
+          "executionEnvironment": "software-plain-ram",
+          "implementationPlatform": "generic",
+          "cryptoFunctions": [
+            "encrypt",
+            "decrypt"
+          ],
+          "classicalSecurityLevel": 112,
+          "nistQuantumSecurityLevel": 0
+        },
+        "oid": "1.2.840.113549.1.1.7"
+      },
+      "description": "Keymanager key unwrapping (master-key protection of stored signing keys). Evidence: F14 (see phase1-dependency-analysis/findings.md).",
+      "properties": [
+        {
+          "name": "inji:findings",
+          "value": "F14"
+        },
+        {
+          "name": "inji:quantum-vulnerable",
+          "value": "true"
+        }
+      ]
+    },
+    {
+      "type": "cryptographic-asset",
+      "bom-ref": "alg:aes256gcm",
+      "name": "AES-256-GCM",
+      "cryptoProperties": {
+        "assetType": "algorithm",
+        "algorithmProperties": {
+          "primitive": "ae",
+          "parameterSetIdentifier": "256",
+          "executionEnvironment": "software-plain-ram",
+          "implementationPlatform": "generic",
+          "cryptoFunctions": [
+            "encrypt",
+            "decrypt"
+          ],
+          "classicalSecurityLevel": 256,
+          "nistQuantumSecurityLevel": 0
+        },
+        "oid": "2.16.840.1.101.3.4.1.46"
+      },
+      "description": "Authenticated encryption: Tuvali BLE payloads, mimoto key storage, wallet local keystore. Evidence: F7 (see phase1-dependency-analysis/findings.md).",
+      "properties": [
+        {
+          "name": "inji:findings",
+          "value": "F7"
+        },
+        {
+          "name": "inji:quantum-vulnerable",
+          "value": "false"
+        }
+      ]
+    },
+    {
+      "type": "cryptographic-asset",
+      "bom-ref": "alg:hkdf-sha256",
+      "name": "HKDF-SHA256",
+      "cryptoProperties": {
+        "assetType": "algorithm",
+        "algorithmProperties": {
+          "primitive": "kdf",
+          "parameterSetIdentifier": "SHA-256",
+          "executionEnvironment": "software-plain-ram",
+          "implementationPlatform": "generic",
+          "cryptoFunctions": [
+            "keyderive"
+          ],
+          "classicalSecurityLevel": 256,
+          "nistQuantumSecurityLevel": 0
+        }
+      },
+      "description": "Key derivation in the Tuvali BLE handshake. Evidence: F7 (see phase1-dependency-analysis/findings.md).",
+      "properties": [
+        {
+          "name": "inji:findings",
+          "value": "F7"
+        },
+        {
+          "name": "inji:quantum-vulnerable",
+          "value": "false"
+        }
+      ]
+    },
+    {
+      "type": "cryptographic-asset",
+      "bom-ref": "alg:pbkdf2",
+      "name": "PBKDF2",
+      "cryptoProperties": {
+        "assetType": "algorithm",
+        "algorithmProperties": {
+          "primitive": "kdf",
+          "parameterSetIdentifier": "SHA-256",
+          "executionEnvironment": "software-plain-ram",
+          "implementationPlatform": "generic",
+          "cryptoFunctions": [
+            "keyderive"
+          ],
+          "classicalSecurityLevel": 256,
+          "nistQuantumSecurityLevel": 0
+        },
+        "oid": "1.2.840.113549.1.5.12"
+      },
+      "description": "Wallet backup key derivation. Evidence: B-W8 (see phase1-dependency-analysis/findings.md).",
+      "properties": [
+        {
+          "name": "inji:findings",
+          "value": "B-W8"
+        },
+        {
+          "name": "inji:quantum-vulnerable",
+          "value": "false"
+        }
+      ]
+    },
+    {
+      "type": "cryptographic-asset",
+      "bom-ref": "alg:sha256",
+      "name": "SHA-256",
+      "cryptoProperties": {
+        "assetType": "algorithm",
+        "algorithmProperties": {
+          "primitive": "hash",
+          "parameterSetIdentifier": "SHA-256",
+          "executionEnvironment": "software-plain-ram",
+          "implementationPlatform": "generic",
+          "cryptoFunctions": [
+            "digest"
+          ],
+          "classicalSecurityLevel": 256,
+          "nistQuantumSecurityLevel": 0
+        },
+        "oid": "2.16.840.1.101.3.4.2.1"
+      },
+      "description": "Digests: SD-JWT disclosures (_sd), canonicalized LD proof hashing, @noble/hashes. Evidence: F7,F25 (see phase1-dependency-analysis/findings.md).",
+      "properties": [
+        {
+          "name": "inji:findings",
+          "value": "F7,F25"
+        },
+        {
+          "name": "inji:quantum-vulnerable",
+          "value": "false"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "lib:bouncycastle-bcprov-jdk18on@1.78.1",
+      "name": "BouncyCastle bcprov-jdk18on",
+      "version": "1.78.1",
+      "description": "Certify image; only copy with pre-standard Dilithium/SPHINCS+ (no final ML-DSA). F16.",
+      "purl": "pkg:maven/org.bouncycastle/bcprov-jdk18on@1.78.1"
+    },
+    {
+      "type": "library",
+      "bom-ref": "lib:bouncycastle-bcprov-jdk15on@1.70",
+      "name": "BouncyCastle bcprov-jdk15on",
+      "version": "1.70",
+      "description": "Certify image (second copy). F16.",
+      "purl": "pkg:maven/org.bouncycastle/bcprov-jdk15on@1.70"
+    },
+    {
+      "type": "library",
+      "bom-ref": "lib:bouncycastle-bcprov-jdk18on@1.78",
+      "name": "BouncyCastle bcprov-jdk18on",
+      "version": "1.78",
+      "description": "verify-service image. F8.",
+      "purl": "pkg:maven/org.bouncycastle/bcprov-jdk18on@1.78"
+    },
+    {
+      "type": "library",
+      "bom-ref": "lib:bouncycastle-bcprov-jdk15on@1.69",
+      "name": "BouncyCastle bcprov-jdk15on",
+      "version": "1.69",
+      "description": "verify-service image; first on the classpath. F8.",
+      "purl": "pkg:maven/org.bouncycastle/bcprov-jdk15on@1.69"
+    },
+    {
+      "type": "library",
+      "bom-ref": "lib:bouncycastle-bcprov-jdk15to18@1.70",
+      "name": "BouncyCastle bcprov-jdk15to18",
+      "version": "1.70",
+      "description": "verify-service image (third copy). F8.",
+      "purl": "pkg:maven/org.bouncycastle/bcprov-jdk15to18@1.70"
+    },
+    {
+      "type": "library",
+      "bom-ref": "lib:nimbus-jose-jwt@10.0.2",
+      "name": "nimbus-jose-jwt",
+      "version": "10.0.2",
+      "description": "Certify JWT/JWS. ",
+      "purl": "pkg:maven/com.nimbusds/nimbus-jose-jwt@10.0.2"
+    },
+    {
+      "type": "library",
+      "bom-ref": "lib:nimbus-jose-jwt@9.37.4",
+      "name": "nimbus-jose-jwt",
+      "version": "9.37.4",
+      "description": "verify-service JWT/JWS and SD-JWT.",
+      "purl": "pkg:maven/com.nimbusds/nimbus-jose-jwt@9.37.4"
+    },
+    {
+      "type": "library",
+      "bom-ref": "lib:google-tink@1.13.0",
+      "name": "Google Tink",
+      "version": "1.13.0",
+      "description": "Certify image.",
+      "purl": "pkg:maven/com.google.crypto.tink/tink@1.13.0"
+    },
+    {
+      "type": "library",
+      "bom-ref": "lib:google-tink@1.16.0",
+      "name": "Google Tink",
+      "version": "1.16.0",
+      "description": "verify-service image.",
+      "purl": "pkg:maven/com.google.crypto.tink/tink@1.16.0"
+    },
+    {
+      "type": "library",
+      "bom-ref": "lib:ed25519-java-(i2p)@0.3.0",
+      "name": "ed25519-java (i2p)",
+      "version": "0.3.0",
+      "description": "Ed25519 in both images.",
+      "purl": "pkg:maven/net.i2p.crypto/eddsa@0.3.0"
+    },
+    {
+      "type": "library",
+      "bom-ref": "lib:vcverifier-jar@1.8.1",
+      "name": "vcverifier-jar",
+      "version": "1.8.1",
+      "description": "verify-service credential/presentation verification. F25.",
+      "purl": "pkg:maven/io.mosip/vcverifier-jar@1.8.1"
+    },
+    {
+      "type": "library",
+      "bom-ref": "lib:kernel-keymanager-service@1.4.0",
+      "name": "kernel-keymanager-service",
+      "version": "1.4.0",
+      "description": "Certify signing backend. F12-F16.",
+      "purl": "pkg:maven/io.mosip/kernel-keymanager-service@1.4.0"
+    },
+    {
+      "type": "library",
+      "bom-ref": "lib:@noble-curves-+-@noble-hashes@(wallet v0.22.1)",
+      "name": "@noble/curves + @noble/hashes",
+      "version": "(wallet v0.22.1)",
+      "description": "Wallet software ES256K/Ed25519 keygen and SHA-2. F3."
+    },
+    {
+      "type": "library",
+      "bom-ref": "lib:android-keystore@(Pixel 7, Android 17, StrongBox)",
+      "name": "Android Keystore",
+      "version": "(Pixel 7, Android 17, StrongBox)",
+      "description": "Wallet hardware RSA and P-256 keys (no ML-DSA). F3."
+    }
+  ],
+  "dependencies": [
+    {
+      "ref": "inji-ssi-prototype",
+      "dependsOn": [
+        "alg:ed25519",
+        "alg:rsa2048",
+        "alg:ecdsa-p256",
+        "alg:ecdsa-secp256k1",
+        "alg:ecdsa-p384",
+        "alg:x25519",
+        "alg:ecdh-es",
+        "alg:rsa-oaep",
+        "alg:aes256gcm",
+        "alg:hkdf-sha256",
+        "alg:pbkdf2",
+        "alg:sha256"
+      ]
+    }
+  ]
+}

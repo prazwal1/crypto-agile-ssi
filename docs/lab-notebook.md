@@ -58,6 +58,8 @@ Dated record of working sessions. Each entry states what was done, what was obse
 ### Closing items on Claude's side (22:08 onward)
 - InsufficientAuthenticationException (open since 2026-10-09): mechanism confirmed from `SecurityConfig` (`.anyRequest().authenticated()` + oauth2 resource server). Any request to `certify:8090` on a non-ignored path without a bearer token is rejected (401) and logged at ERROR by `ExceptionHandlerAdvice`. No functional impact. Added `stack.ps1 diagnose-certify-auth` to pin the exact caller; left as cosmetic.
 - D-07: issuer DID `assertionMethod`/`authentication` list the bare DID, not the verification-method id (`DIDDocumentUtil.java:62-63` vs the id at `:132`). Non-conformant with DID Core / Controlled Identifiers; MOSIP verifiers do not enforce it (`vc-verifier LdpVerifier.kt:43-55`) so runs passed. Deferred to the D-03 external-verifier test (C-13); covered by R-10. Evidence `evidence/2026-10-14-did-conformance/`.
+- D-01: drafted the baseline-algorithm argument (`docs/d01-baseline-algorithms.md`): recommend Ed25519, ES256, RS256 (each has a runtime trace); keep ES256K in the inventory but out of the demonstrated migration. Pending PB decision.
+- CBOM: `phase1-dependency-analysis/results/cbom.json`, CycloneDX 1.6, built by `tools/build_cbom.py` from the verified rows and the two jar inspections. 12 cryptographic-assets (all nistQuantumSecurityLevel 0), 14 crypto libraries; validated against the 1.6 schema. 8 quantum-vulnerable assets.
 
 ---
 
