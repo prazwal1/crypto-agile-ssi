@@ -1,0 +1,1 @@
+sha256:2ed468e7e1f1ce317a41476dd131f4ce8f081b0f055a080c95e99a92cc192bdd injistack/inji-verify-service:0.18.2

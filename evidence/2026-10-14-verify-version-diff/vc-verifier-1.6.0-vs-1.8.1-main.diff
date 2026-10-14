@@ -1,0 +1,2282 @@
+diff --git a/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/PresentationVerifier.kt b/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/PresentationVerifier.kt
+index 33a66d5..76d05af 100644
+--- a/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/PresentationVerifier.kt
++++ b/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/PresentationVerifier.kt
+@@ -2,31 +2,61 @@ package io.mosip.vercred.vcverifier
+ 
+ import com.nimbusds.jose.JWSAlgorithm
+ import com.nimbusds.jose.JWSObject
++import com.nimbusds.jose.jwk.Curve
++import com.nimbusds.jose.jwk.ECKey
++import com.nimbusds.jose.jwk.JWK
++import com.nimbusds.jose.jwk.OctetKeyPair
++import com.nimbusds.jose.util.Base64URL
+ import foundation.identity.jsonld.JsonLDObject
+ import info.weboftrust.ldsignatures.LdProof
+ import info.weboftrust.ldsignatures.canonicalizer.URDNA2015Canonicalizer
+ import info.weboftrust.ldsignatures.util.JWSUtil
+ import io.ipfs.multibase.Multibase
+ import io.mosip.vercred.vcverifier.constants.CredentialFormat
++import io.mosip.vercred.vcverifier.constants.CredentialValidatorConstants.CREDENTIAL_SUBJECT
++import io.mosip.vercred.vcverifier.constants.CredentialValidatorConstants.HOLDER
++import io.mosip.vercred.vcverifier.constants.CredentialValidatorConstants.ID
+ import io.mosip.vercred.vcverifier.constants.CredentialVerifierConstants.ED25519_PROOF_TYPE_2018
+ import io.mosip.vercred.vcverifier.constants.CredentialVerifierConstants.ED25519_PROOF_TYPE_2020
++import io.mosip.vercred.vcverifier.constants.CredentialVerifierConstants.ERROR_CODE_VERIFICATION_FAILED
++import io.mosip.vercred.vcverifier.constants.CredentialVerifierConstants.ERROR_MESSAGE_VERIFICATION_FAILED
++import io.mosip.vercred.vcverifier.constants.CredentialVerifierConstants.HOLDER_MISMATCH_MSG
++import io.mosip.vercred.vcverifier.constants.CredentialVerifierConstants.HOLDER_MISSING_MSG
++import io.mosip.vercred.vcverifier.constants.CredentialVerifierConstants.HOLDER_VERIFICATION_FAIL_ERROR
++import io.mosip.vercred.vcverifier.constants.CredentialVerifierConstants.ES256K_PROOF_TYPE_2019
++import io.mosip.vercred.vcverifier.constants.CredentialVerifierConstants.ES256_PROOF_TYPE_2019
++import io.mosip.vercred.vcverifier.constants.CredentialVerifierConstants.FAILED_TO_DECODE
+ import io.mosip.vercred.vcverifier.constants.CredentialVerifierConstants.JSON_WEB_PROOF_TYPE_2020
+-import io.mosip.vercred.vcverifier.constants.Shared
++import io.mosip.vercred.vcverifier.constants.CredentialVerifierConstants.SUBJECT_ID_MISSING_MSG
++import io.mosip.vercred.vcverifier.constants.CredentialVerifierConstants.UNSUPPORTED_KEY_TYPE
++import io.mosip.vercred.vcverifier.constants.CredentialVerifierConstants.VERIFIABLE_CREDENTIAL_MISSING_MSG
++import io.mosip.vercred.vcverifier.constants.CredentialVerifierConstants.HOLDER_PROOF_MISSING_MSG
++import io.mosip.vercred.vcverifier.constants.CredentialVerifierConstants.INVALID_HOLDER_PROOF_MSG
++import io.mosip.vercred.vcverifier.constants.Shared.KEY_VERIFIABLE_CREDENTIAL
+ import io.mosip.vercred.vcverifier.data.PresentationVerificationResult
+ import io.mosip.vercred.vcverifier.data.PresentationResultWithCredentialStatus
++import io.mosip.vercred.vcverifier.data.PresentationResultWithCredentialStatusV2
++import io.mosip.vercred.vcverifier.data.PresentationVerificationResultV2
+ import io.mosip.vercred.vcverifier.data.VCResult
++import io.mosip.vercred.vcverifier.data.VCResultV2
+ import io.mosip.vercred.vcverifier.data.VCResultWithCredentialStatus
++import io.mosip.vercred.vcverifier.data.VCResultWithCredentialStatusV2
+ import io.mosip.vercred.vcverifier.data.VPVerificationStatus
+ import io.mosip.vercred.vcverifier.data.VerificationResult
+ import io.mosip.vercred.vcverifier.data.VerificationStatus
+ import io.mosip.vercred.vcverifier.exception.DidResolverExceptions.UnsupportedDidUrl
++import io.mosip.vercred.vcverifier.exception.HolderBindingException
+ import io.mosip.vercred.vcverifier.exception.PresentationNotSupportedException
+ import io.mosip.vercred.vcverifier.exception.PublicKeyNotFoundException
+ import io.mosip.vercred.vcverifier.exception.SignatureNotSupportedException
+ import io.mosip.vercred.vcverifier.exception.SignatureVerificationException
+ import io.mosip.vercred.vcverifier.exception.UnknownException
+ import io.mosip.vercred.vcverifier.keyResolver.PublicKeyResolverFactory
++import io.mosip.vercred.vcverifier.keyResolver.decompressP256Key
+ import io.mosip.vercred.vcverifier.signature.impl.ED25519SignatureVerifierImpl
++import io.mosip.vercred.vcverifier.utils.Base64Decoder
++import io.mosip.vercred.vcverifier.signature.impl.ES256KSignatureVerifierImpl
++import io.mosip.vercred.vcverifier.signature.impl.ES256SignatureVerifierImpl
+ import io.mosip.vercred.vcverifier.utils.Util
+ import io.mosip.vercred.vcverifier.utils.asIterable
+ import org.json.JSONArray
+@@ -34,6 +64,11 @@ import org.json.JSONObject
+ import java.security.spec.InvalidKeySpecException
+ import java.util.logging.Logger
+ 
++private const val MULTIBASE_KEY_SIZE = 34
++private const val ED_KEY_PREFIX = 0xed.toByte()
++private const val MULTICODEC_TRAILING_BYTE = 0x01.toByte()
++private const val P256_KEY_PREFIX_FIRST = 0x80.toByte()
++private const val P256_KEY_PREFIX_SECOND = 0x24.toByte()
+ 
+ class PresentationVerifier {
+     private val logger = Logger.getLogger(PresentationVerifier::class.java.name)
+@@ -44,84 +79,85 @@ class PresentationVerifier {
+ 
+         val presentationVerificationStatus: VPVerificationStatus = getPresentationVerificationStatus(presentation)
+ 
+-        val verifiableCredentials = JSONObject(presentation).getJSONArray(Shared.KEY_VERIFIABLE_CREDENTIAL)
++        val verifiableCredentials = JSONObject(presentation).getJSONArray(KEY_VERIFIABLE_CREDENTIAL)
++
+         val vcVerificationResults: List<VCResult> = getVCVerificationResults(verifiableCredentials)
+ 
+         return PresentationVerificationResult(presentationVerificationStatus, vcVerificationResults)
+     }
+ 
++    fun verifyV2(presentation: String): PresentationVerificationResultV2 {
++
++        val presentationVerificationResult: VerificationResult = getPresentationVerificationResult(presentation)
++
++        val verifiableCredentials = JSONObject(presentation).getJSONArray(KEY_VERIFIABLE_CREDENTIAL)
++
++        val vcVerificationResults: List<VCResultV2> = getVCVerificationResultsV2(verifiableCredentials)
++
++        return PresentationVerificationResultV2(presentationVerificationResult, vcVerificationResults)
++    }
++
+     private fun getPresentationVerificationStatus(presentation: String): VPVerificationStatus {
+-        logger.info("Received Presentation For Verification - Start")
+-        val proofVerificationStatus: VPVerificationStatus
++        logger.info("Received Presentation For Verification - getPresentationVerificationStatus - Start")
+         val vcJsonLdObject: JsonLDObject
+ 
+         try {
+             vcJsonLdObject = JsonLDObject.fromJson(presentation)
+-        } catch (e: RuntimeException) {
++        } catch (_: RuntimeException) {
+             throw PresentationNotSupportedException("Unsupported VP Token type")
+         }
+ 
+-        try {
+-            logger.info("Proof verification - Start")
+-            vcJsonLdObject.documentLoader = Util.getConfigurableDocumentLoader()
+-            val ldProof: LdProof = LdProof.getFromJsonLDObject(vcJsonLdObject)
+-
+-            val canonicalHashBytes = URDNA2015Canonicalizer().canonicalize(ldProof, vcJsonLdObject)
+-
+-            val verificationMethod = ldProof.verificationMethod
+-            val publicKeyObj = PublicKeyResolverFactory().get(verificationMethod)
+-
+-            when {
+-                ldProof.type == ED25519_PROOF_TYPE_2018 && !ldProof.jws.isNullOrEmpty() -> {
+-                    val signJWS: String = ldProof.jws
+-                    val jwsObject = JWSObject.parse(signJWS)
+-                    val signature = jwsObject.signature.decode()
+-                    val actualData =
+-                        JWSUtil.getJwsSigningInput(jwsObject.header, canonicalHashBytes)
+-                    proofVerificationStatus = if (ED25519SignatureVerifierImpl().verify(
+-                            publicKeyObj,
+-                            actualData,
+-                            signature
+-                        )
+-                    ) VPVerificationStatus.VALID else VPVerificationStatus.INVALID
+-                }
++        return try {
++            if (verifyPresentationProof(vcJsonLdObject)) {
++                //perform holder binding check
++                return if (validateHolderBindingForDidKeyAndJwk(vcJsonLdObject).verificationStatus)
++                    VPVerificationStatus.VALID
++                else
++                    VPVerificationStatus.INVALID
++            }
++            else
++                VPVerificationStatus.INVALID
++        } catch (e: Exception) {
++            logger.severe("Error while verifying presentation proof : ${e.message}")
++            when (e) {
++                is PublicKeyNotFoundException,
++                is IllegalStateException,
++                is UnsupportedDidUrl,
++                is InvalidKeySpecException,
++                is SignatureNotSupportedException,
++                is SignatureVerificationException -> throw e
+ 
+-                ldProof.type == ED25519_PROOF_TYPE_2020 && !ldProof.proofValue.isNullOrEmpty() -> {
+-                    val proofValue = ldProof.proofValue
+-                    val signature = Multibase.decode(proofValue)
+-                    proofVerificationStatus = if (ED25519SignatureVerifierImpl().verify(
+-                            publicKeyObj,
+-                            canonicalHashBytes,
+-                            signature
+-                        )
+-                    ) VPVerificationStatus.VALID else VPVerificationStatus.INVALID
++                else -> {
++                    throw UnknownException("Error while doing verification of verifiable presentation")
+                 }
++            }
++        }
++    }
+ 
+-                ldProof.type == JSON_WEB_PROOF_TYPE_2020 && !ldProof.jws.isNullOrEmpty() -> {
+-                    val signJWS: String = ldProof.jws
+-                    val jwsObject = JWSObject.parse(signJWS)
+-                    if (jwsObject.header.algorithm != JWSAlgorithm.EdDSA) throw SignatureNotSupportedException(
+-                        "Unsupported jws signature algorithm"
+-                    )
+-                    val signature = jwsObject.signature.decode()
+-                    val actualData =
+-                        JWSUtil.getJwsSigningInput(jwsObject.header, canonicalHashBytes)
++    private fun getPresentationVerificationResult(presentation: String): VerificationResult {
++        logger.info("Received Presentation For Verification - getPresentationVerificationResult Start")
++        val vcJsonLdObject: JsonLDObject
+ 
+-                    proofVerificationStatus = if (ED25519SignatureVerifierImpl().verify(
+-                            publicKeyObj,
+-                            actualData,
+-                            signature
+-                        )
+-                    ) VPVerificationStatus.VALID else VPVerificationStatus.INVALID
+-                }
++        try {
++            vcJsonLdObject = JsonLDObject.fromJson(presentation)
++        } catch (_: RuntimeException) {
++            throw PresentationNotSupportedException("Unsupported VP Token type")
++        }
++        return try {
++            val isVerified = verifyPresentationProof(vcJsonLdObject)
+ 
+-                else -> {
+-                    proofVerificationStatus = VPVerificationStatus.INVALID
+-                }
++            if (isVerified) {
++                //perform holder binding check
++                return validateHolderBindingForDidKeyAndJwk(vcJsonLdObject)
++            } else {
++                VerificationResult(
++                    false,
++                    ERROR_MESSAGE_VERIFICATION_FAILED,
++                    ERROR_CODE_VERIFICATION_FAILED
++                )
+             }
+-
+         } catch (e: Exception) {
+-            logger.severe("Error while verifying presentation proof: ${e.message}")
++            logger.severe("Error while verifying presentation : ${e.message}")
+             when (e) {
+                 is PublicKeyNotFoundException,
+                 is IllegalStateException,
+@@ -135,7 +171,380 @@ class PresentationVerifier {
+                 }
+             }
+         }
+-        return proofVerificationStatus
++    }
++
++    private fun validateHolderBindingForDidKeyAndJwk(
++        vcJsonLdObject: JsonLDObject
++    ): VerificationResult {
++
++        val presentationVerified = VerificationResult(
++            true,
++            "",
++            ""
++        )
++
++        return try {
++            logger.info("Starting holder binding check")
++            val holderStr = vcJsonLdObject.jsonObject[HOLDER] as? String
++                ?: return VerificationResult(
++                    false,
++                    HOLDER_MISSING_MSG,
++                    HOLDER_VERIFICATION_FAIL_ERROR
++                )
++
++            val verifiableCredentials =
++                vcJsonLdObject.jsonObject[KEY_VERIFIABLE_CREDENTIAL]
++                    ?.let {
++                        val vcs = it as? List<*> ?: listOf(it)
++
++                        if (vcs.isEmpty()) {
++                            throw HolderBindingException(
++                                VERIFIABLE_CREDENTIAL_MISSING_MSG,
++                                HOLDER_VERIFICATION_FAIL_ERROR
++                            )
++                        }
++
++                        vcs
++                    }
++                    ?: throw HolderBindingException(
++                        VERIFIABLE_CREDENTIAL_MISSING_MSG,
++                        HOLDER_VERIFICATION_FAIL_ERROR
++                    )
++
++            val holderPublicKeyJson = extractPublicKeyJson(holderStr)
++
++            if (holderPublicKeyJson == null) {
++                logger.info(
++                    "Skipping holder binding check: Method not supported for $holderStr"
++                )
++                return presentationVerified
++            }
++
++            validateHolderProofOfPossession(
++                vcJsonLdObject,
++                holderPublicKeyJson
++            )
++
++            verifiableCredentials.forEach { credentialObj ->
++
++                val credential = credentialObj as? Map<*, *>
++                    ?: throw HolderBindingException(
++                        VERIFIABLE_CREDENTIAL_MISSING_MSG,
++                        HOLDER_VERIFICATION_FAIL_ERROR
++                    )
++
++                val credentialSubject = credential[CREDENTIAL_SUBJECT]
++
++                val subjects = when (credentialSubject) {
++                    is Map<*, *> -> listOf(credentialSubject)
++                    is List<*> -> credentialSubject.ifEmpty { null }
++                    else -> null
++                } ?: throw HolderBindingException(
++                    SUBJECT_ID_MISSING_MSG,
++                    HOLDER_VERIFICATION_FAIL_ERROR
++                )
++
++                subjects.forEach subjectLoop@ { subject ->
++
++                    val subjectStr =
++                        (subject as? Map<*, *>)?.get(ID) as? String
++
++                    if (subjectStr == null) {
++                        logger.info("Skipping subject binding check: subject.id missing")
++                        return@subjectLoop
++                    }
++
++                    val subjectPublicKeyJson =
++                        extractPublicKeyJson(subjectStr) ?: run {
++
++                            logger.info(
++                                "Skipping subject binding check: " +
++                                        "Method not supported for $subjectStr"
++                            )
++
++                            return@subjectLoop
++                        }
++
++
++                    if (
++                        !comparePublicKeyJson(
++                            holderPublicKeyJson,
++                            subjectPublicKeyJson
++                        )
++                    ) {
++                        throw HolderBindingException(
++                            HOLDER_MISMATCH_MSG.format(
++                                holderStr,
++                                subjectStr
++                            ),
++                            HOLDER_VERIFICATION_FAIL_ERROR
++                        )
++                    }
++                }
++            }
++
++            presentationVerified
++
++        } catch (e: HolderBindingException) {
++            logger.severe("Error while doing holder binding check, returning verification failed : ${e.errorCode} :  ${e.errorMessage}")
++            VerificationResult(
++                false,
++                e.errorMessage,
++                e.errorCode
++            )
++        }
++    }
++
++    private fun validateHolderProofOfPossession(
++        vcJsonLdObject: JsonLDObject,
++        holderPublicKeyJson: JSONObject
++    ) {
++        logger.info("Starting holder proof-of-possession check")
++        val proof = LdProof.getFromJsonLDObject(vcJsonLdObject)
++            ?: throw HolderBindingException(HOLDER_PROOF_MISSING_MSG, HOLDER_VERIFICATION_FAIL_ERROR)
++
++        val verificationMethod = proof.verificationMethod?.toString()
++            ?: throw HolderBindingException(
++                HOLDER_PROOF_MISSING_MSG,
++                HOLDER_VERIFICATION_FAIL_ERROR
++            )
++
++        val verificationMethodKeyJson =
++            extractPublicKeyJson(verificationMethod) ?: run {
++                logger.severe(
++                    "Invalid proof-of-possession verificationMethod $verificationMethod"
++                )
++
++                throw HolderBindingException(
++                    INVALID_HOLDER_PROOF_MSG,
++                    HOLDER_VERIFICATION_FAIL_ERROR
++                )
++            }
++
++        if (!comparePublicKeyJson(holderPublicKeyJson, verificationMethodKeyJson)) {
++            throw HolderBindingException(
++                INVALID_HOLDER_PROOF_MSG,
++                HOLDER_VERIFICATION_FAIL_ERROR
++            )
++        }
++    }
++
++    //TODO when DidKeyPublicKeyResolver/DidJwkPublicKeyResolver is extended to support RSA, generic EC, OKP
++    // along with current Ed25519, P-256 below code should be replaced with DidKeyPublicKeyResolver / DidJwkPublicKeyResolver
++    private fun extractPublicKeyJson(input: String): JSONObject? {
++        return when {
++            input.startsWith("did:jwk:") -> {
++                try {
++                    val encodedJwk = input
++                        .removePrefix("did:jwk:")
++                        .split('#', '?', ';')[0]
++                    val jwkJson = String(
++                        Base64Decoder().decodeFromBase64Url(encodedJwk)
++                    )
++                    val parsedJwk = JWK.parse(jwkJson)
++                    val publicJwk = parsedJwk.toPublicJWK()
++                    JSONObject(publicJwk.toJSONObject())
++                } catch (e: HolderBindingException) {
++                    throw e
++                } catch (e: Exception) {
++                    throw HolderBindingException(
++                        FAILED_TO_DECODE,
++                        HOLDER_VERIFICATION_FAIL_ERROR
++                    )
++                }
++            }
++
++            input.startsWith("did:key:") -> {
++                try {
++                    val methodSpecificId = input
++                        .removePrefix("did:key:")
++                        .split('#', '?', ';')[0]
++
++                    val decodedKey = Multibase.decode(methodSpecificId)
++                    when {
++                        isEd25519KeyType(decodedKey) -> {
++                            val x = Base64URL.encode(
++                                decodedKey.copyOfRange(2, 34)
++                            )
++                            JSONObject(
++                                OctetKeyPair.Builder(Curve.Ed25519, x)
++                                    .build()
++                                    .toJSONObject()
++                            )
++                        }
++                        isP256KeyType(decodedKey) -> {
++                            val publicKeyBytes =
++                                decodedKey.copyOfRange(2, decodedKey.size)
++                            val decompressed =
++                                decompressP256Key(publicKeyBytes)
++                            val x = Base64URL.encode(
++                                decompressed.copyOfRange(1, 33)
++                            )
++                            val y = Base64URL.encode(
++                                decompressed.copyOfRange(33, 65)
++                            )
++                            JSONObject(
++                                ECKey.Builder(Curve.P_256, x, y)
++                                    .build()
++                                    .toJSONObject()
++                            )
++                        }
++                        else -> {
++                            throw HolderBindingException(
++                                UNSUPPORTED_KEY_TYPE.format(decodedKey),
++                                HOLDER_VERIFICATION_FAIL_ERROR
++                            )
++                        }
++                    }
++                } catch (e: HolderBindingException) {
++                    throw e
++                } catch (e: Exception) {
++                    throw HolderBindingException(
++                        FAILED_TO_DECODE,
++                        HOLDER_VERIFICATION_FAIL_ERROR
++                    )
++                }
++            }
++            else -> null
++        }
++    }
++
++    private fun comparePublicKeyJson(publicKeyJson1: JSONObject, publicKeyJson2: JSONObject): Boolean {
++        val keyType = publicKeyJson1.optString("kty")
++        if (keyType != publicKeyJson2.optString("kty")) return false
++
++        return when (keyType) {
++            "EC" -> publicKeyJson1.optString("crv") == publicKeyJson2.optString("crv") &&
++                    publicKeyJson1.optString("x") == publicKeyJson2.optString("x") &&
++                    publicKeyJson1.optString("y") == publicKeyJson2.optString("y")
++
++            "OKP" -> publicKeyJson1.optString("crv") == publicKeyJson2.optString("crv") &&
++                    publicKeyJson1.optString("x") == publicKeyJson2.optString("x")
++
++            // Only reachable via did:jwk; did:key RSA is not supported
++            "RSA" -> publicKeyJson1.optString("n") == publicKeyJson2.optString("n") &&
++                    publicKeyJson1.optString("e") == publicKeyJson2.optString("e")
++
++            else -> false
++        }
++    }
++
++    private fun isEd25519KeyType(decodedKey: ByteArray) =
++        (decodedKey[0] == ED_KEY_PREFIX && decodedKey[1] == MULTICODEC_TRAILING_BYTE) && decodedKey.size == MULTIBASE_KEY_SIZE
++
++    private fun isP256KeyType(decodedKey: ByteArray) =
++        decodedKey[0] == P256_KEY_PREFIX_FIRST && decodedKey[1] == P256_KEY_PREFIX_SECOND
++
++    private fun verifyPresentationProof(vcJsonLdObject: JsonLDObject): Boolean {
++
++        vcJsonLdObject.documentLoader = Util.getConfigurableDocumentLoader()
++        val ldProof = LdProof.getFromJsonLDObject(vcJsonLdObject)
++
++        val canonicalHashBytes =
++            URDNA2015Canonicalizer().canonicalize(ldProof, vcJsonLdObject)
++
++        val publicKey =
++            PublicKeyResolverFactory().get(ldProof.verificationMethod)
++
++        return when {
++            ldProof.type == ED25519_PROOF_TYPE_2018 && !ldProof.jws.isNullOrEmpty() -> {
++                val jws = JWSObject.parse(ldProof.jws)
++                val actualData =
++                    JWSUtil.getJwsSigningInput(jws.header, canonicalHashBytes)
++
++                ED25519SignatureVerifierImpl().verify(
++                    publicKey,
++                    actualData,
++                    jws.signature.decode()
++                )
++            }
++
++            ldProof.type == ED25519_PROOF_TYPE_2020 && !ldProof.proofValue.isNullOrEmpty() -> {
++                ED25519SignatureVerifierImpl().verify(
++                    publicKey,
++                    canonicalHashBytes,
++                    Multibase.decode(ldProof.proofValue)
++                )
++            }
++
++            (ldProof.type == ES256K_PROOF_TYPE_2019) && !ldProof.proofValue.isNullOrEmpty() -> {
++                ES256KSignatureVerifierImpl().verify(
++                    publicKey,
++                    canonicalHashBytes,
++                    Multibase.decode(ldProof.proofValue)
++                )
++            }
++
++            (ldProof.type == ES256_PROOF_TYPE_2019) && !ldProof.proofValue.isNullOrEmpty() -> {
++                ES256SignatureVerifierImpl().verify(
++                    publicKey,
++                    canonicalHashBytes,
++                    Multibase.decode(ldProof.proofValue)
++                )
++            }
++
++            (ldProof.type == ES256K_PROOF_TYPE_2019) && !ldProof.jws.isNullOrEmpty() -> {
++                val jws = JWSObject.parse(ldProof.jws)
++                val actualData = JWSUtil.getJwsSigningInput(jws.header, canonicalHashBytes)
++                if (jws.header.algorithm != JWSAlgorithm.ES256K) {
++                    throw SignatureNotSupportedException("Unsupported JWS algorithm")
++                }
++                ES256KSignatureVerifierImpl().verify(
++                    publicKey,
++                    actualData,
++                    jws.signature.decode()
++                )
++            }
++
++            (ldProof.type == ES256_PROOF_TYPE_2019) && !ldProof.jws.isNullOrEmpty() -> {
++                val jws = JWSObject.parse(ldProof.jws)
++                val actualData = JWSUtil.getJwsSigningInput(jws.header, canonicalHashBytes)
++                if (jws.header.algorithm != JWSAlgorithm.ES256) {
++                    throw SignatureNotSupportedException("Unsupported JWS algorithm")
++                }
++                ES256SignatureVerifierImpl().verify(
++                    publicKey,
++                    actualData,
++                    jws.signature.decode()
++                )
++            }
++
++            ldProof.type == JSON_WEB_PROOF_TYPE_2020 && !ldProof.jws.isNullOrEmpty() -> {
++                val jws = JWSObject.parse(ldProof.jws)
++                if (jws.header.algorithm != JWSAlgorithm.EdDSA && jws.header.algorithm != JWSAlgorithm.ES256K && jws.header.algorithm != JWSAlgorithm.ES256) {
++                    throw SignatureNotSupportedException("Unsupported JWS algorithm")
++                }
++
++                val actualData =
++                    JWSUtil.getJwsSigningInput(jws.header, canonicalHashBytes)
++
++                when (jws.header.algorithm) {
++                    JWSAlgorithm.EdDSA -> {
++                        ED25519SignatureVerifierImpl().verify(
++                            publicKey,
++                            actualData,
++                            jws.signature.decode()
++                        )
++                    }
++                    JWSAlgorithm.ES256K -> {
++                        ES256KSignatureVerifierImpl().verify(
++                            publicKey,
++                            actualData,
++                            jws.signature.decode()
++                        )
++                    }
++                    JWSAlgorithm.ES256 -> {
++                        ES256SignatureVerifierImpl().verify(
++                            publicKey,
++                            actualData,
++                            jws.signature.decode()
++                        )
++                    }
++                    else -> false
++                }
++            }
++            else -> false
++        }
+     }
+ 
+     private fun getVCVerificationResults(verifiableCredentials: JSONArray): List<VCResult> {
+@@ -159,6 +568,25 @@ class PresentationVerifier {
+         }
+     }
+ 
++    private fun getVCVerificationResultsV2(verifiableCredentials: JSONArray): List<VCResultV2> {
++        return verifiableCredentials.asIterable().map { item ->
++            val verificationResult: VerificationResult =
++                credentialsVerifier.verify((item as JSONObject).toString(), CredentialFormat.LDP_VC)
++
++            /*
++            Here we are adding the entire VC as a string in the method response. We know that this is not very efficient.
++            But in newer draft of OpenId4VP specifications the Presentation Exchange
++            is fully removed so we rather not use the submission_requirements for giving the VC reference
++            for response. As of now we could not find anything unique that can be referred in a vp_token
++            VC we will be going with the approach of sending whole VC back in response.
++            */
++            VCResultV2(
++                item.toString(),
++                verificationResult
++            )
++        }
++    }
++
+     private fun getVCVerificationResultsWithCredentialStatus(verifiableCredentials: JSONArray, statusPurposeList: List<String>): List<VCResultWithCredentialStatus> {
+         return verifiableCredentials.asIterable().map { item ->
+             val credentialVerificationSummary = credentialsVerifier.verifyAndGetCredentialStatus((item as JSONObject).toString(), CredentialFormat.LDP_VC, statusPurposeList)
+@@ -170,16 +598,40 @@ class PresentationVerifier {
+         }
+     }
+ 
++    private fun getVCVerificationResultsWithCredentialStatusV2(verifiableCredentials: JSONArray, statusPurposeList: List<String>): List<VCResultWithCredentialStatusV2> {
++        return verifiableCredentials.asIterable().map { item ->
++            val credentialVerificationSummary = credentialsVerifier.verifyAndGetCredentialStatus((item as JSONObject).toString(), CredentialFormat.LDP_VC, statusPurposeList)
++            val verificationResult: VerificationResult = credentialVerificationSummary.verificationResult
++            val credentialStatus = credentialVerificationSummary.credentialStatus
++
++            VCResultWithCredentialStatusV2(item.toString(), verificationResult, credentialStatus)
++        }
++    }
++
+     fun verifyAndGetCredentialStatus(
+         presentation: String,
+         statusPurposeList: List<String> = emptyList()
+     ): PresentationResultWithCredentialStatus {
+         val presentationVerificationStatus = getPresentationVerificationStatus(presentation)
+ 
+-        val verifiableCredentials = JSONObject(presentation).getJSONArray(Shared.KEY_VERIFIABLE_CREDENTIAL)
++        val verifiableCredentials = JSONObject(presentation).getJSONArray(KEY_VERIFIABLE_CREDENTIAL)
++
+         val vcVerificationResults: List<VCResultWithCredentialStatus> = getVCVerificationResultsWithCredentialStatus(verifiableCredentials, statusPurposeList)
+ 
+         return PresentationResultWithCredentialStatus(presentationVerificationStatus, vcVerificationResults)
+     }
+-}
+ 
++    fun verifyAndGetCredentialStatusV2(
++        presentation: String,
++        statusPurposeList: List<String> = emptyList()
++    ): PresentationResultWithCredentialStatusV2 {
++        val presentationVerificationResult = getPresentationVerificationResult(presentation)
++
++        val verifiableCredentials = JSONObject(presentation).getJSONArray(KEY_VERIFIABLE_CREDENTIAL)
++
++        val vcVerificationResults: List<VCResultWithCredentialStatusV2> = getVCVerificationResultsWithCredentialStatusV2(verifiableCredentials, statusPurposeList)
++
++        return PresentationResultWithCredentialStatusV2(presentationVerificationResult, vcVerificationResults)
++    }
++
++}
+diff --git a/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/constants/CredentialFormat.kt b/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/constants/CredentialFormat.kt
+index 7a4d394..4777a0e 100644
+--- a/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/constants/CredentialFormat.kt
++++ b/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/constants/CredentialFormat.kt
+@@ -1,10 +1,12 @@
+ package io.mosip.vercred.vcverifier.constants
+ 
+ enum class CredentialFormat(val value: String) {
++    CWT_VC("cwt_vc"),
+     LDP_VC("ldp_vc"),
+     VC_SD_JWT("vc+sd-jwt"),
+     DC_SD_JWT("dc+sd-jwt"),
+-    MSO_MDOC("mso_mdoc");
++    MSO_MDOC("mso_mdoc"),
++    JWT_VC_JSON("jwt_vc_json");
+ 
+     companion object {
+         fun fromValue(value: String): CredentialFormat? {
+diff --git a/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/constants/CredentialValidatorConstants.kt b/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/constants/CredentialValidatorConstants.kt
+index a5a5905..f6055a1 100644
+--- a/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/constants/CredentialValidatorConstants.kt
++++ b/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/constants/CredentialValidatorConstants.kt
+@@ -8,6 +8,7 @@ object CredentialValidatorConstants {
+ 
+     const val ISSUER = "issuer"
+     const val CREDENTIAL_SUBJECT = "credentialSubject"
++    const val HOLDER = "holder"
+     const val PROOF = "proof"
+     const val TYPE = "type"
+     const val CONTEXT = "@context"
+@@ -52,6 +53,10 @@ object CredentialValidatorConstants {
+     const val ERROR_VALID_FROM_INVALID = "${VALIDATION_ERROR}validFrom is not valid."
+     const val ERROR_VALID_UNTIL_INVALID = "${VALIDATION_ERROR}validUntil is not valid."
+ 
++    const val ERROR_MESSAGE_EMPTY_VC_CWT="${VALIDATION_ERROR}Input VC CWT string is null or empty."
++
++    const val ERROR_MESSAGE_INVALID_HEX_VC_CWT="${VALIDATION_ERROR}Invalid hexadecimal format"
++
+ 
+     const val ERROR_CODE_VC_EXPIRED = "ERR_VC_EXPIRED"
+     const val ERROR_MESSAGE_VC_EXPIRED = "VC is expired"
+@@ -110,6 +115,7 @@ object CredentialValidatorConstants {
+         "RsaSignature2018",
+         "Ed25519Signature2018",
+         "Ed25519Signature2020",
+-        "EcdsaSecp256k1Signature2019"
++        "EcdsaSecp256k1Signature2019",
++        "EcdsaSecp256r1Signature2019",
+     )
+ }
+diff --git a/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/constants/CredentialVerifierConstants.kt b/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/constants/CredentialVerifierConstants.kt
+index 4ed030f..d61f075 100644
+--- a/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/constants/CredentialVerifierConstants.kt
++++ b/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/constants/CredentialVerifierConstants.kt
+@@ -21,6 +21,8 @@ object CredentialVerifierConstants {
+     const val ED25519_ALGORITHM = "Ed25519"
+     const val RSA_ALGORITHM = "RSA"
+     const val SECP256K1 = "secp256k1"
++    const val SECP256R1 = "secp256r1"
++    const val PRIME256V1 = "prime256v1"
+     const val P256 = "P-256"
+     const val JWS_PS256_SIGN_ALGO_CONST = "PS256"
+     const val JWS_RS256_SIGN_ALGO_CONST = "RS256"
+@@ -29,6 +31,8 @@ object CredentialVerifierConstants {
+     const val JWS_ES256_SIGN_ALGO_CONST = "ES256"
+ 
+     const val RSA_KEY_TYPE = "RsaVerificationKey2018"
++
++    const val RSA_PROOF_TYPE = "RsaSignature2018"
+     const val ED25519_KEY_TYPE_2018 = "Ed25519VerificationKey2018"
+     const val ED25519_PROOF_TYPE_2018 = "Ed25519Signature2018"
+     const val ED25519_PROOF_TYPE_2020 = "Ed25519Signature2020"
+@@ -36,6 +40,10 @@ object CredentialVerifierConstants {
+     const val ED25519_KEY_TYPE_2020 = "Ed25519VerificationKey2020"
+     const val ES256K_KEY_TYPE_2019 = "EcdsaSecp256k1VerificationKey2019"
+ 
++    const val ES256K_PROOF_TYPE_2019 = "EcdsaSecp256k1Signature2019"
++
++    const val ES256_PROOF_TYPE_2019 = "EcdsaSecp256r1Signature2019"
++
+     const val ES256_KEY_TYPE_2019 = "EcdsaSecp256r1VerificationKey2019"
+ 
+     const val JWK_KEY_TYPE_EC = "EC"
+@@ -44,8 +52,24 @@ object CredentialVerifierConstants {
+     const val ERROR_MESSAGE_VERIFICATION_FAILED = "Verification Failed"
+     const val ERROR_CODE_VERIFICATION_FAILED = "ERR_SIGNATURE_VERIFICATION_FAILED"
+ 
+-    // This is used to turn public key bytes into a buffer in DER format
+-    const val DER_PUBLIC_KEY_PREFIX = "302a300506032b6570032100"
++    const val HOLDER_VERIFICATION_FAIL_ERROR = "ERR_HOLDER_BINDING_CHECK_FAILED"
++    const val HOLDER_MISSING_MSG = "The Verifiable Presentation is missing a mandatory Holder ID"
++    const val SUBJECT_ID_MISSING_MSG = "The Verifiable Credential is missing a mandatory Credential Subject ID"
++    const val VERIFIABLE_CREDENTIAL_MISSING_MSG = "The Verifiable Presentation is missing a mandatory Verifiable Credential"
++    const val HOLDER_MISMATCH_MSG = "Holder mismatch in VP: VP holder: %s, VC subject: %s"
++    const val UNSUPPORTED_KEY_TYPE = "KeyType - %s is not supported. Supported: ed25519, ecr1"
++    const val FAILED_TO_DECODE = "Fail to decode input to extract public key"
+ 
++    // This is used to turn public key bytes into a buffer in DER format
++    const val ED_DER_PUBLIC_KEY_PREFIX = "302a300506032b6570032100"
++    const val P256_DER_PUBLIC_KEY_PREFIX = "3059301306072a8648ce3d020106082a8648ce3d030107034200"
+     const val COMPRESSED_HEX_KEY_LENGTH = 33
++
++    const val RSA_MULTICODEC_FIRST = 0x12.toByte()
++    const val RSA_MULTICODEC_SECOND = 0x05.toByte()
++
++    const val HOLDER_PROOF_MISSING_MSG =
++        "VP proof verificationMethod is missing"
++    const val INVALID_HOLDER_PROOF_MSG =
++        "VP proof verificationMethod is not controlled by vp.holder"
+ }
+\ No newline at end of file
+diff --git a/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/credentialverifier/CredentialVerifierFactory.kt b/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/credentialverifier/CredentialVerifierFactory.kt
+index fe9ea99..10cb6ce 100644
+--- a/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/credentialverifier/CredentialVerifierFactory.kt
++++ b/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/credentialverifier/CredentialVerifierFactory.kt
+@@ -1,9 +1,11 @@
+ package io.mosip.vercred.vcverifier.credentialverifier
+ 
+ import io.mosip.vercred.vcverifier.constants.CredentialFormat
++import io.mosip.vercred.vcverifier.credentialverifier.types.CwtVerifiableCredential
+ import io.mosip.vercred.vcverifier.credentialverifier.types.LdpVerifiableCredential
+ import io.mosip.vercred.vcverifier.credentialverifier.types.SdJwtVerifiableCredential
+ import io.mosip.vercred.vcverifier.credentialverifier.types.msomdoc.MsoMdocVerifiableCredential
++import io.mosip.vercred.vcverifier.credentialverifier.types.JwtVerifiableCredential
+ 
+ class CredentialVerifierFactory {
+     fun get(credentialFormat: CredentialFormat): VerifiableCredential {
+@@ -12,6 +14,8 @@ class CredentialVerifierFactory {
+             CredentialFormat.MSO_MDOC -> MsoMdocVerifiableCredential()
+             CredentialFormat.VC_SD_JWT -> SdJwtVerifiableCredential()
+             CredentialFormat.DC_SD_JWT -> SdJwtVerifiableCredential()
++            CredentialFormat.CWT_VC -> CwtVerifiableCredential()
++            CredentialFormat.JWT_VC_JSON -> JwtVerifiableCredential()
+         }
+     }
+ }
+\ No newline at end of file
+diff --git a/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/credentialverifier/types/CwtVerifiableCredential.kt b/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/credentialverifier/types/CwtVerifiableCredential.kt
+new file mode 100644
+index 0000000..6cda917
+--- /dev/null
++++ b/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/credentialverifier/types/CwtVerifiableCredential.kt
+@@ -0,0 +1,21 @@
++package io.mosip.vercred.vcverifier.credentialverifier.types
++
++import io.mosip.vercred.vcverifier.credentialverifier.VerifiableCredential
++import io.mosip.vercred.vcverifier.credentialverifier.validator.CwtValidator
++import io.mosip.vercred.vcverifier.credentialverifier.verifier.CwtVerifier
++import io.mosip.vercred.vcverifier.data.CredentialStatusResult
++import io.mosip.vercred.vcverifier.data.ValidationStatus
++
++class CwtVerifiableCredential: VerifiableCredential {
++    override fun validate(credential: String): ValidationStatus {
++        return CwtValidator().validate(credential)
++    }
++
++    override fun verify(credential: String): Boolean {
++        return CwtVerifier().verify(credential);
++    }
++
++    override fun checkStatus(credential: String, statusPurposes: List<String>?): Map<String, CredentialStatusResult> {
++        return emptyMap();
++    }
++}
+\ No newline at end of file
+diff --git a/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/credentialverifier/types/JwtVerifiableCredential.kt b/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/credentialverifier/types/JwtVerifiableCredential.kt
+new file mode 100644
+index 0000000..ccec724
+--- /dev/null
++++ b/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/credentialverifier/types/JwtVerifiableCredential.kt
+@@ -0,0 +1,16 @@
++package io.mosip.vercred.vcverifier.credentialverifier.types
++
++import io.mosip.vercred.vcverifier.credentialverifier.VerifiableCredential
++import io.mosip.vercred.vcverifier.credentialverifier.validator.JwtValidator
++import io.mosip.vercred.vcverifier.credentialverifier.verifier.JwtVerifier
++import io.mosip.vercred.vcverifier.data.ValidationStatus
++
++class JwtVerifiableCredential: VerifiableCredential {
++    override fun validate(credential: String): ValidationStatus {
++        return JwtValidator().validate(credential)
++    }
++
++    override fun verify(credential: String): Boolean {
++        return JwtVerifier().verify(credential)
++    }
++}
+\ No newline at end of file
+diff --git a/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/credentialverifier/validator/CwtValidator.kt b/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/credentialverifier/validator/CwtValidator.kt
+new file mode 100644
+index 0000000..65a45f4
+--- /dev/null
++++ b/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/credentialverifier/validator/CwtValidator.kt
+@@ -0,0 +1,210 @@
++package io.mosip.vercred.vcverifier.credentialverifier.validator
++
++import com.upokecenter.cbor.CBOREncodeOptions
++import com.upokecenter.cbor.CBORObject
++import com.upokecenter.cbor.CBORType
++import io.mosip.vercred.vcverifier.constants.CredentialValidatorConstants.ERROR_CODE_CURRENT_DATE_BEFORE_PROCESSING_DATE
++import io.mosip.vercred.vcverifier.constants.CredentialValidatorConstants.ERROR_CODE_GENERIC
++import io.mosip.vercred.vcverifier.constants.CredentialValidatorConstants.ERROR_CODE_INVALID
++import io.mosip.vercred.vcverifier.constants.CredentialValidatorConstants.ERROR_CODE_MISSING
++import io.mosip.vercred.vcverifier.constants.CredentialValidatorConstants.ERROR_CODE_VC_EXPIRED
++import io.mosip.vercred.vcverifier.constants.CredentialValidatorConstants.ERROR_CURRENT_DATE_BEFORE_PROCESSING_DATE
++import io.mosip.vercred.vcverifier.constants.CredentialValidatorConstants.ERROR_INVALID_FIELD
++import io.mosip.vercred.vcverifier.constants.CredentialValidatorConstants.ERROR_MESSAGE_EMPTY_VC_CWT
++import io.mosip.vercred.vcverifier.constants.CredentialValidatorConstants.ERROR_MESSAGE_VC_EXPIRED
++import io.mosip.vercred.vcverifier.constants.CredentialValidatorConstants.EXCEPTION_DURING_VALIDATION
++import io.mosip.vercred.vcverifier.constants.CredentialValidatorConstants.ERROR_MESSAGE_INVALID_HEX_VC_CWT
++import io.mosip.vercred.vcverifier.data.ValidationStatus
++
++import io.mosip.vercred.vcverifier.exception.ValidationException
++import io.mosip.vercred.vcverifier.utils.Util.hexToBytes
++import io.mosip.vercred.vcverifier.utils.Util.validateNumericDate
++
++class CwtValidator {
++
++    fun validate(credential: String): ValidationStatus {
++        try {
++            if (credential.isEmpty()) {
++                throw ValidationException(
++                    ERROR_MESSAGE_EMPTY_VC_CWT,
++                    ERROR_CODE_INVALID + "EMPTY"
++                )
++            }
++
++            if (!isValidHex(credential)) {
++                throw ValidationException(
++                    ERROR_MESSAGE_INVALID_HEX_VC_CWT,
++                    ERROR_CODE_INVALID + "HEX"
++                )
++            }
++
++            val coseObj = decodeCose(credential)
++
++            validateCoseStructure(coseObj)
++
++            val protectedHeader = decodeProtectedHeader(coseObj)
++            validateProtectedHeader(protectedHeader)
++
++            val claims = decodeCwtClaims(coseObj)
++            validateCwtStructure(claims)
++            validateNumericDates(claims)
++            return ValidationStatus("", "")
++        } catch (e: ValidationException) {
++            return ValidationStatus(e.errorMessage, e.errorCode)
++        } catch (e: Exception) {
++            return ValidationStatus(
++                "${EXCEPTION_DURING_VALIDATION}${e.message}",
++                ERROR_CODE_GENERIC
++            )
++        }
++    }
++
++
++    private fun validateCoseStructure(coseObj: CBORObject) {
++
++        if (coseObj.type != CBORType.Array) {
++            throw ValidationException(
++                ERROR_INVALID_FIELD + "COSE_Sign1 must be a CBOR array",
++                ERROR_CODE_INVALID + "COSE_STRUCTURE"
++            )
++        }
++
++        if (coseObj.size() != 4) {
++            throw ValidationException(
++                ERROR_INVALID_FIELD + "COSE_Sign1 must have exactly 4 elements",
++                ERROR_CODE_INVALID + "COSE_STRUCTURE"
++            )
++        }
++
++        // Index 0: Protected header
++        if (coseObj[0].type != CBORType.ByteString) {
++            throw ValidationException(
++                ERROR_INVALID_FIELD + "Protected header must be a CBOR byte string (bstr)",
++                ERROR_CODE_INVALID + "PROTECTED_HEADER"
++            )
++        }
++
++        // Index 1: Unprotected header
++        if (coseObj[1].type != CBORType.Map) {
++            throw ValidationException(
++                ERROR_INVALID_FIELD + "Unprotected header must be a CBOR map",
++                ERROR_CODE_INVALID + "UNPROTECTED_HEADER"
++            )
++        }
++
++        // Index 2: Payload (The CWT Claims)
++        if (coseObj[2].type != CBORType.ByteString) {
++            throw ValidationException(
++                ERROR_INVALID_FIELD + "Payload must be a CBOR byte string (bstr)",
++                ERROR_CODE_INVALID + "PAYLOAD"
++            )
++        }
++
++        // Index 3: Signature
++        if (coseObj[3].type != CBORType.ByteString) {
++            throw ValidationException(
++                ERROR_INVALID_FIELD + "Signature must be a CBOR byte string (bstr)",
++                ERROR_CODE_INVALID + "SIGNATURE"
++            )
++        }
++    }
++
++
++    private fun validateProtectedHeader(protectedHeader: CBORObject) {
++
++        if (protectedHeader.type != CBORType.Map) {
++            throw ValidationException(
++                ERROR_INVALID_FIELD + "Protected header must decode to a CBOR map",
++                ERROR_CODE_INVALID + "PROTECTED_HEADER"
++            )
++        }
++
++        val ALG = CBORObject.FromObject(1)
++
++        if (!protectedHeader.ContainsKey(ALG)) {
++            throw ValidationException(
++                ERROR_INVALID_FIELD + "Missing alg in protected header",
++                ERROR_CODE_MISSING + "ALG"
++            )
++        }
++
++        if (!protectedHeader[ALG].isNumber) {
++            throw ValidationException(
++                ERROR_INVALID_FIELD + "alg must be an integer",
++                ERROR_CODE_INVALID + "ALG"
++            )
++        }
++    }
++
++
++    private fun validateCwtStructure(claims: CBORObject) {
++
++        if (claims.type != CBORType.Map) {
++            throw ValidationException(
++                ERROR_INVALID_FIELD + "CWT payload must be a CBOR map",
++                ERROR_CODE_INVALID + "CWT_STRUCTURE"
++            )
++        }
++    }
++
++
++    private fun validateNumericDates(claims: CBORObject) {
++
++        val EXP = CBORObject.FromObject(4)
++        val NBF = CBORObject.FromObject(5)
++        val IAT = CBORObject.FromObject(6)
++
++        val now = System.currentTimeMillis() / 1000
++
++        val exp = validateNumericDate(claims, EXP, "exp")
++        val nbf = validateNumericDate(claims, NBF, "nbf")
++        val iat = validateNumericDate(claims, IAT, "iat")
++
++        // Expired Check
++        if (exp != null && exp <= now) {
++            throw ValidationException(
++                ERROR_MESSAGE_VC_EXPIRED + " (exp=$exp, now=$now)",
++                ERROR_CODE_VC_EXPIRED
++            )
++        }
++
++        // Not Before Check
++        if (nbf != null && nbf > now) {
++            throw ValidationException(
++                ERROR_CURRENT_DATE_BEFORE_PROCESSING_DATE + " (nbf=$nbf, now=$now)",
++                ERROR_CODE_CURRENT_DATE_BEFORE_PROCESSING_DATE
++            )
++        }
++
++        // Issued At Check
++        if (iat != null && iat > now) {
++            throw ValidationException(
++                ERROR_INVALID_FIELD + "CWT issued in the future (iat=$iat, now=$now)",
++                ERROR_CODE_INVALID + "IAT"
++            )
++        }
++    }
++
++
++
++    private fun decodeCose(credential: String): CBORObject {
++        val bytes = hexToBytes(credential)
++        return CBORObject.DecodeFromBytes(bytes)
++    }
++
++    private fun decodeProtectedHeader(coseObj: CBORObject): CBORObject {
++        val bytes = coseObj[0].GetByteString()
++        return CBORObject.DecodeFromBytes(bytes)
++    }
++
++    private fun decodeCwtClaims(coseObj: CBORObject): CBORObject {
++        val payloadBytes = coseObj[2].GetByteString()
++        return CBORObject.DecodeFromBytes(payloadBytes, CBOREncodeOptions("allowduplicatekeys=false"))
++    }
++
++    private fun isValidHex(credential: String): Boolean {
++        return credential.length % 2 == 0 &&
++                credential.matches(Regex("^[0-9a-fA-F]+$"))
++    }
++
++}
+\ No newline at end of file
+diff --git a/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/credentialverifier/validator/JwtValidator.kt b/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/credentialverifier/validator/JwtValidator.kt
+new file mode 100644
+index 0000000..cdb6066
+--- /dev/null
++++ b/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/credentialverifier/validator/JwtValidator.kt
+@@ -0,0 +1,81 @@
++package io.mosip.vercred.vcverifier.credentialverifier.validator
++
++import com.nimbusds.jwt.SignedJWT
++import io.mosip.vercred.vcverifier.data.ValidationStatus
++import io.mosip.vercred.vcverifier.utils.Base64Decoder
++import java.util.Date
++
++class JwtValidator {
++    companion object {
++        private const val CLOCK_SKEW_MS = 3000L
++    }
++    private val jwtRegex = Regex("^[A-Za-z0-9-_]+\\.[A-Za-z0-9-_]+\\.[A-Za-z0-9-_]+$")
++
++    fun validate(credential: String): ValidationStatus {
++        val trimmedCredential = credential.trim()
++
++        try {
++            val parts = trimmedCredential.split(".")
++            if (parts.isNotEmpty()) {
++                val headerJson = String(Base64Decoder().decodeFromBase64Url(parts[0]))
++                if (headerJson.contains("\"alg\":\"none\"", ignoreCase = true)) {
++                    return ValidationStatus("JWT algorithm 'none' is not allowed", "INVALID_ALGORITHM")
++                }
++            }
++        } catch (e: Exception) {
++            e.printStackTrace()
++            return ValidationStatus("Failed to parse JWT header: ${e.message}", "MALFORMED_INPUT")
++        }
++
++        if (!jwtRegex.matches(trimmedCredential)) {
++            return ValidationStatus("Invalid characters or format in JWT", "MALFORMED_INPUT")
++        }
++
++        try {
++            val signedJWT = SignedJWT.parse(trimmedCredential)
++            
++            signedJWT.header.type?.let { type ->
++                if (type.toString() != "JWT") {
++                    return ValidationStatus("typ header must be 'JWT', found: $type", "INVALID_HEADER")
++                }
++            }
++
++            val claims = signedJWT.jwtClaimsSet
++            if (claims.issuer.isNullOrBlank()) {
++                return ValidationStatus("Missing required 'iss' (issuer) claim", "INVALID_VC_FORMAT")
++            }
++
++            val now = Date().time
++            val expirationTime = claims.expirationTime
++            if (expirationTime != null && now > (expirationTime.time + CLOCK_SKEW_MS)) {
++                return ValidationStatus("VC has expired", "ERROR_CODE_VC_EXPIRED")
++            }
++
++            val notBeforeTime = claims.notBeforeTime
++            if (notBeforeTime != null && now < (notBeforeTime.time - CLOCK_SKEW_MS)) {
++                return ValidationStatus("VC is not yet valid", "ERROR_CODE_VC_NOT_YET_VALID")
++            }
++
++            val vcClaim = claims.getClaim("vc") as? Map<*, *>
++            if (vcClaim == null || vcClaim["credentialSubject"] == null) {
++                return ValidationStatus("Missing 'vc' or 'credentialSubject' claim", "INVALID_VC_FORMAT")
++            }
++
++            val sub = claims.subject
++            val credentialSubjectId = (vcClaim["credentialSubject"] as? Map<*, *>)?.get("id")?.toString()
++            if (sub != null && credentialSubjectId != null && sub != credentialSubjectId) {
++                return ValidationStatus("Claim 'sub' must match 'credentialSubject.id'", "INVALID_VC_FORMAT")
++            }
++
++            val jti = claims.jwtid
++            val vcId = vcClaim["id"]?.toString()
++            if (jti != null && vcId != null && jti != vcId) {
++                return ValidationStatus("Claim 'jti' must match 'vc.id'", "INVALID_VC_FORMAT")
++            }
++
++            return ValidationStatus("", "")
++        } catch (e: Exception) {
++            return ValidationStatus("Invalid JWT structure: ${e.message}", "INVALID_JWT")
++        }
++    }
++}
+diff --git a/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/credentialverifier/validator/SdJwtValidator.kt b/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/credentialverifier/validator/SdJwtValidator.kt
+index 92760fa..efd0236 100644
+--- a/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/credentialverifier/validator/SdJwtValidator.kt
++++ b/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/credentialverifier/validator/SdJwtValidator.kt
+@@ -461,7 +461,7 @@ class SdJwtValidator {
+         if (iat <= 0) {
+             throw ValidationException(
+                 "Missing or invalid 'iat' in Key Binding JWT",
+-                "${ERROR_CODE_INVALID}_KB_JWT_IAT"
++                "${ERROR_CODE_INVALID}KB_JWT_IAT"
+             )
+         }
+ 
+diff --git a/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/credentialverifier/verifier/CwtVerifier.kt b/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/credentialverifier/verifier/CwtVerifier.kt
+new file mode 100644
+index 0000000..1a7b044
+--- /dev/null
++++ b/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/credentialverifier/verifier/CwtVerifier.kt
+@@ -0,0 +1,149 @@
++package io.mosip.vercred.vcverifier.credentialverifier.verifier
++
++import com.authlete.cbor.CBORDecoder
++import com.authlete.cbor.CBORTaggedItem
++import com.authlete.cose.COSESign1
++import com.authlete.cose.COSEVerifier
++import com.upokecenter.cbor.CBORObject
++import com.upokecenter.cbor.CBORType
++import io.mosip.vercred.vcverifier.exception.DidResolverExceptions.UnsupportedDidUrl
++import io.mosip.vercred.vcverifier.exception.PublicKeyNotFoundException
++import io.mosip.vercred.vcverifier.exception.SignatureVerificationException
++import io.mosip.vercred.vcverifier.exception.UnknownException
++import io.mosip.vercred.vcverifier.keyResolver.PublicKeyResolverFactory
++import io.mosip.vercred.vcverifier.utils.Util.hexToBytes
++import io.mosip.vercred.vcverifier.utils.Util.toCoseBytes
++import java.net.URI
++import java.security.PublicKey
++import java.util.logging.Logger
++
++class CwtVerifier {
++
++   private val logger = Logger.getLogger(CwtVerifier::class.java.name)
++
++    private fun validateCoseStructure(coseObj: CBORObject) {
++        if (coseObj.type != CBORType.Array || coseObj.size() != 4) {
++            throw SignatureVerificationException("Invalid COSE_Sign1 structure")
++        }
++    }
++
++    private fun extractIssuer(claims: CBORObject): URI {
++        val ISS = CBORObject.FromObject(1)
++
++        if (!claims.ContainsKey(ISS)) {
++            throw SignatureVerificationException("Missing issuer (iss) claim")
++        }
++
++        val iss = claims[ISS]
++        if (iss.type != CBORType.TextString) {
++            throw SignatureVerificationException("Invalid issuer (iss) type")
++        }
++
++        val issURI = URI(iss.AsString())
++        return when (issURI.scheme) {
++            "did" -> issURI
++            "http", "https" -> {
++                val base = issURI.toString().removeSuffix("/")
++                URI("$base/.well-known/jwks.json")
++            }
++            else -> throw UnsupportedDidUrl("Unsupported issuer scheme: ${issURI.scheme}")
++        }
++    }
++
++    private fun extractKid(coseObj: CBORObject): String? {
++        val KID = CBORObject.FromObject(4)
++
++        val protectedBytes = coseObj[0].GetByteString()
++        if (protectedBytes.isNotEmpty()) {
++            val protected = CBORObject.DecodeFromBytes(protectedBytes)
++            val kid = protected[KID]
++            if (kid != null && kid.type == CBORType.ByteString) {
++                return String(kid.GetByteString(), Charsets.UTF_8)
++            }
++        }
++
++        val unprotected = coseObj[1]
++        val kid = unprotected[KID]
++        if (kid != null && kid.type == CBORType.ByteString) {
++            return String(kid.GetByteString(), Charsets.UTF_8)
++        }
++
++        return null
++    }
++
++
++    private fun extractClaims(coseObj: CBORObject): CBORObject {
++        val payloadBytes = coseObj[2].GetByteString()
++        val claims = CBORObject.DecodeFromBytes(payloadBytes)
++
++        if (claims.type != CBORType.Map) {
++            throw SignatureVerificationException("Invalid CWT claims structure")
++        }
++
++        return claims
++    }
++
++    private fun verifySignature(
++        coseBytes: ByteArray,
++        publicKey: PublicKey
++    ): Boolean {
++        val sign1 = parseCoseSign1(coseBytes)
++
++        val verifier = COSEVerifier(publicKey)
++
++        return try {
++            verifier.verify(sign1)
++        } catch (exception: Exception){
++            throw SignatureVerificationException("CWT signature verification failed: ${exception.message}")
++        }
++    }
++
++    private fun requireAndUnwrapCwt(cbor: CBORObject): CBORObject {
++        if (!cbor.isTagged || cbor.mostOuterTag.ToInt32Unchecked() != 61) {
++            throw SignatureVerificationException(
++                "Invalid CWT: missing required CBOR tag 61"
++            )
++        }
++        return cbor.UntagOne()
++    }
++
++
++    private fun parseCoseSign1(coseBytes: ByteArray): COSESign1 {
++        val item = CBORDecoder(coseBytes).next()
++            ?: throw SignatureVerificationException("Empty CBOR input")
++
++        val tagged = item as? CBORTaggedItem
++            ?: throw SignatureVerificationException("COSE_Sign1 must be tagged")
++
++        return tagged.tagContent as? COSESign1
++            ?: throw SignatureVerificationException("Invalid COSE_Sign1 structure")
++    }
++
++    fun verify(credential: String): Boolean {
++        logger.info("Received CWT Verification - Start")
++
++        return try {
++            val inputBytes = hexToBytes(credential)
++            val decoded = CBORObject.DecodeFromBytes(inputBytes)
++            val coseObj = requireAndUnwrapCwt(decoded)
++            val coseBytes = toCoseBytes(coseObj)
++
++            validateCoseStructure(coseObj)
++            val claims = extractClaims(coseObj)
++            val kid = extractKid(coseObj)
++
++            var issuer = extractIssuer(claims)
++            val publicKey = PublicKeyResolverFactory().get(issuer,kid)
++
++            verifySignature(coseBytes, publicKey)
++        } catch (exception: Exception) {
++            when (exception) {
++                is PublicKeyNotFoundException,
++                is SignatureVerificationException -> throw exception
++                else -> throw UnknownException(
++                    "Error while verifying CWT credential: ${exception.message}"
++                )
++            }
++        }
++    }
++}
+\ No newline at end of file
+diff --git a/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/credentialverifier/verifier/JwtVerifier.kt b/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/credentialverifier/verifier/JwtVerifier.kt
+new file mode 100644
+index 0000000..ff7597b
+--- /dev/null
++++ b/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/credentialverifier/verifier/JwtVerifier.kt
+@@ -0,0 +1,69 @@
++package io.mosip.vercred.vcverifier.credentialverifier.verifier
++
++import com.nimbusds.jose.JWSObject
++import com.nimbusds.jose.jwk.AsymmetricJWK
++import io.mosip.vercred.vcverifier.keyResolver.PublicKeyResolverFactory
++import io.mosip.vercred.vcverifier.utils.Util.verifyJwt
++import io.mosip.vercred.vcverifier.exception.SignatureVerificationException
++import java.net.URI
++import java.util.logging.Logger
++
++class JwtVerifier {
++
++    private val factory = PublicKeyResolverFactory()
++    private val logger = Logger.getLogger(JwtVerifier::class.java.name)
++
++    /**
++     * Verifies the cryptographic signature of a JWT-based Verifiable Credential.
++     * Aligns with OID4VCI and RFC 7515.
++     */
++    fun verify(credential: String): Boolean {
++        return try {
++            val jwsObject = JWSObject.parse(credential)
++            val header = jwsObject.header
++            val payload = jwsObject.payload.toJSONObject()
++                ?: throw IllegalArgumentException("JWT payload is not a valid JSON object")
++
++            val publicKey = if (header.jwk != null) {
++                val asymmetricJwk = header.jwk as? AsymmetricJWK 
++                    ?: throw IllegalArgumentException("Embedded JWK is not an asymmetric key")
++                asymmetricJwk.toPublicKey()
++            } else {
++                val jkuString = header.toJSONObject()["jku"]?.toString()
++                val kid = header.keyID
++                val issuerClaim = payload["iss"]?.toString()
++
++                val verificationUri = when {
++                    jkuString != null -> URI.create(jkuString)
++                    kid != null && (kid.startsWith("did:") || kid.startsWith("http")) -> URI.create(kid)
++                    kid != null && !issuerClaim.isNullOrBlank() && issuerClaim.startsWith("did:") -> {
++                        val separator = if (kid.startsWith("#")) "" else "#"
++                        URI.create("$issuerClaim$separator$kid")
++                    }
++                    !issuerClaim.isNullOrBlank() -> URI.create(issuerClaim)
++                    else -> throw IllegalArgumentException("Missing key identification hint (jku, kid, iss, or embedded jwk).")
++                }
++                factory.get(verificationUri, kid)
++            }
++
++            val isVerified = verifyJwt(
++                credential,
++                publicKey,
++                header.algorithm.name
++            )
++            
++            if (!isVerified) {
++                logger.severe("Cryptographic signature verification failed. The token data has been tampered with.")
++            }
++            
++            isVerified
++
++        } catch (e: SignatureVerificationException) {
++            logger.severe("Cryptographic signature verification failed: ${e.message}")
++            false
++        } catch (e: Exception) {
++            logger.severe("JWT Verification Error: ${e.message}")
++            false
++        }
++    }
++}
+diff --git a/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/credentialverifier/verifier/LdpVerifier.kt b/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/credentialverifier/verifier/LdpVerifier.kt
+index 40f3387..cffe130 100644
+--- a/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/credentialverifier/verifier/LdpVerifier.kt
++++ b/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/credentialverifier/verifier/LdpVerifier.kt
+@@ -12,17 +12,16 @@ import io.mosip.vercred.vcverifier.exception.PublicKeyNotFoundException
+ import io.mosip.vercred.vcverifier.exception.SignatureVerificationException
+ import io.mosip.vercred.vcverifier.exception.UnknownException
+ import io.mosip.vercred.vcverifier.keyResolver.PublicKeyResolverFactory
++import io.mosip.vercred.vcverifier.keyResolver.getJwsAlgorithmFromProofType
+ import io.mosip.vercred.vcverifier.signature.SignatureFactory
+-import io.mosip.vercred.vcverifier.signature.impl.ED25519SignatureVerifierImpl
+ import io.mosip.vercred.vcverifier.utils.Util
+ import org.bouncycastle.jce.provider.BouncyCastleProvider
+ import java.security.Security
+ import java.util.logging.Logger
+ 
+-
+ class LdpVerifier {
+-
+     private val logger = Logger.getLogger(LdpVerifier::class.java.name)
++
+     private var provider: BouncyCastleProvider = BouncyCastleProvider()
+ 
+     init {
+@@ -54,12 +53,19 @@ class LdpVerifier {
+                 return signatureVerifier.verify(publicKeyObj, actualData, signature)
+             }
+ 
+-            //Currently we are getting proofValue only in ED25519Signature2020 sunbird VC
+             else if (!ldProof.proofValue.isNullOrEmpty()) {
++
+                 val proofValue = ldProof.proofValue
++
+                 val signature = Multibase.decode(proofValue)
+-                val signatureVerifier = ED25519SignatureVerifierImpl()
+-                return signatureVerifier.verify(publicKeyObj, canonicalHashBytes, signature)
++                val jwsAlgorithm = getJwsAlgorithmFromProofType(ldProof.type)
++                val signatureVerifier = SignatureFactory().get(jwsAlgorithm)
++
++                return signatureVerifier.verify(
++                    publicKeyObj,
++                    canonicalHashBytes,
++                    signature
++                )
+             }
+             false
+         } catch (exception: Exception) {
+diff --git a/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/data/Data.kt b/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/data/Data.kt
+index 4c2a23c..1bbed99 100644
+--- a/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/data/Data.kt
++++ b/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/data/Data.kt
+@@ -62,4 +62,23 @@ data class CredentialStatusResult(
+ data class CredentialVerificationSummary(
+     val verificationResult: VerificationResult,
+     val credentialStatus: Map<String, CredentialStatusResult>
++)
++
++data class PresentationVerificationResultV2(
++    var proofVerificationResult: VerificationResult,
++    var vcResults: List<VCResultV2>
++)
++data class VCResultV2(
++    val vc: String,
++    val verificationResult: VerificationResult
++)
++
++data class PresentationResultWithCredentialStatusV2(
++    var proofVerificationResult: VerificationResult,
++    var vcResults: List<VCResultWithCredentialStatusV2>
++)
++data class VCResultWithCredentialStatusV2(
++    val vc: String,
++    val verificationResult: VerificationResult,
++    val credentialStatus: Map<String, CredentialStatusResult>
+ )
+\ No newline at end of file
+diff --git a/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/exception/HolderBindingException.kt b/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/exception/HolderBindingException.kt
+new file mode 100644
+index 0000000..43788e2
+--- /dev/null
++++ b/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/exception/HolderBindingException.kt
+@@ -0,0 +1,3 @@
++package io.mosip.vercred.vcverifier.exception
++
++class HolderBindingException(val errorMessage: String, val errorCode: String) : BaseUncheckedException(errorMessage)
+diff --git a/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/keyResolver/PublicKeyResolverFactory.kt b/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/keyResolver/PublicKeyResolverFactory.kt
+index b083089..4e0f345 100644
+--- a/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/keyResolver/PublicKeyResolverFactory.kt
++++ b/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/keyResolver/PublicKeyResolverFactory.kt
+@@ -3,6 +3,7 @@ package io.mosip.vercred.vcverifier.keyResolver
+ import io.mosip.vercred.vcverifier.exception.PublicKeyTypeNotSupportedException
+ import io.mosip.vercred.vcverifier.keyResolver.types.did.DidPublicKeyResolver
+ import io.mosip.vercred.vcverifier.keyResolver.types.http.HttpsPublicKeyResolver
++import io.mosip.vercred.vcverifier.keyResolver.types.jwks.JwksPublicKeyResolver
+ import java.net.URI
+ import java.security.PublicKey
+ 
+@@ -10,12 +11,15 @@ import java.security.PublicKey
+ internal const val DID_PREFIX = "did:"
+ private const val HTTP_PREFIX = "http"
+ 
++private const val JWKS_SUFFIX = "jwks.json"
++
+ class PublicKeyResolverFactory {
+ 
+-    fun get(verificationMethod: URI): PublicKey {
++    fun get(verificationMethod: URI, keyId: String? = null): PublicKey {
+         val verificationMethodStr = verificationMethod.toString()
+         return when {
+             verificationMethodStr.startsWith(DID_PREFIX) -> DidPublicKeyResolver().resolve(verificationMethod.toString())
++            verificationMethodStr.startsWith(HTTP_PREFIX) && verificationMethodStr.endsWith(JWKS_SUFFIX) -> JwksPublicKeyResolver().resolve(verificationMethod.toString(),keyId)
+             verificationMethodStr.startsWith(HTTP_PREFIX) -> HttpsPublicKeyResolver().resolve(verificationMethod.toString())
+             else -> throw PublicKeyTypeNotSupportedException("Public Key type is not supported")
+         }
+diff --git a/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/keyResolver/Utils.kt b/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/keyResolver/Utils.kt
+index 107dfb7..f7f3c2c 100644
+--- a/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/keyResolver/Utils.kt
++++ b/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/keyResolver/Utils.kt
+@@ -5,20 +5,34 @@ import com.nimbusds.jose.jwk.JWK
+ import com.nimbusds.jose.jwk.KeyType
+ import io.ipfs.multibase.Base58
+ import io.mosip.vercred.vcverifier.constants.CredentialVerifierConstants.COMPRESSED_HEX_KEY_LENGTH
+-import io.mosip.vercred.vcverifier.constants.CredentialVerifierConstants.DER_PUBLIC_KEY_PREFIX
+ import io.mosip.vercred.vcverifier.constants.CredentialVerifierConstants.ED25519_ALGORITHM
+ import io.mosip.vercred.vcverifier.constants.CredentialVerifierConstants.ED25519_KEY_TYPE_2018
+ import io.mosip.vercred.vcverifier.constants.CredentialVerifierConstants.ED25519_KEY_TYPE_2020
++import io.mosip.vercred.vcverifier.constants.CredentialVerifierConstants.ED25519_PROOF_TYPE_2018
++import io.mosip.vercred.vcverifier.constants.CredentialVerifierConstants.ED25519_PROOF_TYPE_2020
++import io.mosip.vercred.vcverifier.constants.CredentialVerifierConstants.ED_DER_PUBLIC_KEY_PREFIX
+ import io.mosip.vercred.vcverifier.constants.CredentialVerifierConstants.ES256K_KEY_TYPE_2019
++import io.mosip.vercred.vcverifier.constants.CredentialVerifierConstants.ES256K_PROOF_TYPE_2019
+ import io.mosip.vercred.vcverifier.constants.CredentialVerifierConstants.ES256_KEY_TYPE_2019
++import io.mosip.vercred.vcverifier.constants.CredentialVerifierConstants.ES256_PROOF_TYPE_2019
+ import io.mosip.vercred.vcverifier.constants.CredentialVerifierConstants.JWK_KEY_TYPE_EC
++import io.mosip.vercred.vcverifier.constants.CredentialVerifierConstants.JWS_EDDSA_SIGN_ALGO_CONST
++import io.mosip.vercred.vcverifier.constants.CredentialVerifierConstants.JWS_ES256K_SIGN_ALGO_CONST
++import io.mosip.vercred.vcverifier.constants.CredentialVerifierConstants.JWS_ES256_SIGN_ALGO_CONST
++import io.mosip.vercred.vcverifier.constants.CredentialVerifierConstants.JWS_RS256_SIGN_ALGO_CONST
+ import io.mosip.vercred.vcverifier.constants.CredentialVerifierConstants.P256
++import io.mosip.vercred.vcverifier.constants.CredentialVerifierConstants.P256_DER_PUBLIC_KEY_PREFIX
+ import io.mosip.vercred.vcverifier.constants.CredentialVerifierConstants.RSA_ALGORITHM
+ import io.mosip.vercred.vcverifier.constants.CredentialVerifierConstants.RSA_KEY_TYPE
++import io.mosip.vercred.vcverifier.constants.CredentialVerifierConstants.RSA_MULTICODEC_FIRST
++import io.mosip.vercred.vcverifier.constants.CredentialVerifierConstants.RSA_MULTICODEC_SECOND
++import io.mosip.vercred.vcverifier.constants.CredentialVerifierConstants.RSA_PROOF_TYPE
+ import io.mosip.vercred.vcverifier.constants.CredentialVerifierConstants.SECP256K1
+ import io.mosip.vercred.vcverifier.exception.PublicKeyNotFoundException
+ import io.mosip.vercred.vcverifier.exception.PublicKeyResolutionFailedException
+ import io.mosip.vercred.vcverifier.exception.PublicKeyTypeNotSupportedException
++import io.mosip.vercred.vcverifier.exception.SignatureNotSupportedException
++import io.mosip.vercred.vcverifier.signature.bouncyCastleProvider
+ import io.mosip.vercred.vcverifier.utils.Base64Decoder
+ import org.bouncycastle.jce.ECNamedCurveTable
+ import org.bouncycastle.jce.provider.BouncyCastleProvider
+@@ -31,10 +45,12 @@ import java.security.KeyFactory
+ import java.security.PublicKey
+ import java.security.interfaces.ECPublicKey
+ import java.security.spec.ECParameterSpec
++import java.security.spec.ECPoint
+ import java.security.spec.ECPublicKeySpec
+ import java.security.spec.X509EncodedKeySpec
+ import java.util.logging.Logger
+ 
++
+ private val base64Decoder = Base64Decoder()
+ 
+ private val logger = Logger.getLogger("KeyResolverUtils")
+@@ -50,8 +66,19 @@ private val PUBLIC_KEY_ALGORITHM: Map<String, String> = mapOf(
+     RSA_KEY_TYPE to RSA_ALGORITHM,
+     ED25519_KEY_TYPE_2018 to ED25519_ALGORITHM,
+     ED25519_KEY_TYPE_2020 to ED25519_ALGORITHM,
++    ES256_KEY_TYPE_2019 to JWK_KEY_TYPE_EC,
+ )
+ 
++fun getJwsAlgorithmFromProofType(proofType: String): String {
++    return when (proofType) {
++        ED25519_PROOF_TYPE_2018, ED25519_PROOF_TYPE_2020 -> JWS_EDDSA_SIGN_ALGO_CONST
++        ES256K_PROOF_TYPE_2019 -> JWS_ES256K_SIGN_ALGO_CONST
++        ES256_PROOF_TYPE_2019 -> JWS_ES256_SIGN_ALGO_CONST
++        RSA_PROOF_TYPE -> JWS_RS256_SIGN_ALGO_CONST
++        else -> throw SignatureNotSupportedException("Unsupported signature suite")
++    }
++}
++
+ private const val SECP256K1_PRIME_MODULUS =
+     "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFFFFFC2F"
+ 
+@@ -70,23 +97,32 @@ fun getPublicKeyObjectFromPemPublicKey(publicKeyPem: String, keyType: String): P
+     }
+ }
+ 
++fun getPublicKeyFromJWK(jwk: Map<String, Any>, keyType: String): PublicKey {
++    return when (keyType) {
++        ES256K_KEY_TYPE_2019,ES256_KEY_TYPE_2019,JWK_KEY_TYPE_EC  -> getECPublicKey(jwk)
++        ED25519_KEY_TYPE_2020, "OKP" -> getEdPublicKey(jwk)
++        RSA_KEY_TYPE, RSA_ALGORITHM -> getRSAPublicKey(jwk)
++        else -> throw PublicKeyTypeNotSupportedException("Unsupported key type: $keyType")
++    }
++}
++
+ 
+ fun getPublicKeyFromJWK(jwkStr: String, keyType: String): PublicKey {
+     val objectMapper = ObjectMapper()
+-    val jwk: Map<String, String> =
+-        objectMapper.readValue(jwkStr, Map::class.java) as Map<String, String>
++    val jwk: Map<String, Any> =
++        objectMapper.readValue(jwkStr, Map::class.java) as Map<String, Any>
+ 
+     return when (keyType) {
+-        ES256K_KEY_TYPE_2019,ES256_KEY_TYPE_2019 -> getECPublicKey(jwk)
+-        ED25519_KEY_TYPE_2020 -> getEdPublicKey(jwk)
+-        RSA_KEY_TYPE -> getRSAPublicKey(jwk)
++        ES256K_KEY_TYPE_2019,ES256_KEY_TYPE_2019,JWK_KEY_TYPE_EC  -> getECPublicKey(jwk)
++        ED25519_KEY_TYPE_2020, "OKP" -> getEdPublicKey(jwk)
++        RSA_KEY_TYPE, RSA_ALGORITHM -> getRSAPublicKey(jwk)
+         else -> throw PublicKeyTypeNotSupportedException("Unsupported key type: $keyType")
+     }
+ }
+ 
+-private fun getRSAPublicKey(jwk: Map<String, String>): PublicKey {
+-    val nB64Url = jwk["n"] ?: throw PublicKeyResolutionFailedException("Missing modulus 'n' in JWK for RSA key")
+-    val eB64Url = jwk["e"] ?: throw PublicKeyResolutionFailedException("Missing exponent 'e' in JWK for RSA key")
++private fun getRSAPublicKey(jwk: Map<String, Any>): PublicKey {
++    val nB64Url = jwk["n"]?.toString() ?: throw PublicKeyResolutionFailedException("Missing modulus 'n' in JWK for RSA key")
++    val eB64Url = jwk["e"]?.toString() ?: throw PublicKeyResolutionFailedException("Missing exponent 'e' in JWK for RSA key")
+ 
+     val modulus = BigInteger(1, base64Decoder.decodeFromBase64Url(nB64Url))
+     val exponent = BigInteger(1, base64Decoder.decodeFromBase64Url(eB64Url))
+@@ -97,7 +133,7 @@ private fun getRSAPublicKey(jwk: Map<String, String>): PublicKey {
+ }
+ 
+ 
+-internal fun getEdPublicKey(jwk: Map<String, String>): PublicKey {
++internal fun getEdPublicKey(jwk: Map<String, Any>): PublicKey {
+     val keyType = jwk["kty"]
+     require(keyType == "OKP") { throw PublicKeyResolutionFailedException("KeyType - $keyType is not supported. Supported: OKP") }
+     val curve = jwk["crv"]
+@@ -105,7 +141,8 @@ internal fun getEdPublicKey(jwk: Map<String, String>): PublicKey {
+ 
+     val xB64Url =
+         jwk["x"] ?: throw PublicKeyResolutionFailedException("Missing the public key data in JWK")
+-    val xBytes = base64Decoder.decodeFromBase64Url(xB64Url)
++    val xB64 = xB64Url.toString()
++    val xBytes = base64Decoder.decodeFromBase64Url(xB64)
+ 
+     val spki = X509_HEADER_PREFIX_ED_KEY + xBytes
+ 
+@@ -114,14 +151,20 @@ internal fun getEdPublicKey(jwk: Map<String, String>): PublicKey {
+ }
+ 
+ 
+-private fun getECPublicKey(jwk: Map<String, String>): PublicKey {
+-    val curve = jwk["crv"] ?: throw IllegalArgumentException("Missing 'crv' field for EC key")
+-    val xBytes = Base64Decoder().decodeFromBase64Url(jwk["x"]!!)
+-    val yBytes = Base64Decoder().decodeFromBase64Url(jwk["y"]!!)
++private fun getECPublicKey(jwk: Map<String, Any>): PublicKey {
++    val curve = jwk["crv"]?.toString() ?: throw IllegalArgumentException("Missing 'crv' field for EC key")
++
++    val xBase64 = jwk["x"]?.toString()
++        ?: throw PublicKeyResolutionFailedException("Missing 'x'")
++
++    val yBase64 = jwk["y"]?.toString()
++        ?: throw PublicKeyResolutionFailedException("Missing 'y'")
++    val xBytes = Base64Decoder().decodeFromBase64Url(xBase64)
++    val yBytes = Base64Decoder().decodeFromBase64Url(yBase64)
+ 
+     val x = BigInteger(1, xBytes)
+     val y = BigInteger(1, yBytes)
+-    val ecPoint = java.security.spec.ECPoint(x, y)
++    val ecPoint = ECPoint(x, y)
+ 
+     val ecSpec = when (curve) {
+         SECP256K1 -> ECNamedCurveTable.getParameterSpec(SECP256K1)
+@@ -135,23 +178,58 @@ private fun getECPublicKey(jwk: Map<String, String>): PublicKey {
+     return keyFactory.generatePublic(pubKeySpec)
+ }
+ 
+-fun getPublicKeyObjectFromPublicKeyMultibase(publicKeyPem: String, keyType: String): PublicKey {
++fun getPublicKeyObjectFromPublicKeyMultibase(publicKeyMultibase: String, keyType: String): PublicKey {
+     try {
+-        val rawPublicKeyWithHeader = Base58.decode(publicKeyPem.substring(1))
+-        val rawPublicKey = rawPublicKeyWithHeader.copyOfRange(2, rawPublicKeyWithHeader.size)
+-        val publicKey = Hex.decode(DER_PUBLIC_KEY_PREFIX) + rawPublicKey
+-        val pubKeySpec = X509EncodedKeySpec(publicKey)
++        val rawPublicKeyWithHeader = Base58.decode(publicKeyMultibase.substring(1))
++
++        val publicKeyBytes = when (keyType) {
++
++            ED25519_KEY_TYPE_2020 -> {
++                val raw = rawPublicKeyWithHeader.copyOfRange(2, rawPublicKeyWithHeader.size)
++                Hex.decode(ED_DER_PUBLIC_KEY_PREFIX) + raw
++            }
++
++            ES256_KEY_TYPE_2019 -> {
++                val raw = rawPublicKeyWithHeader.copyOfRange(2, rawPublicKeyWithHeader.size)
++                val decompressed = decompressP256Key(raw)
++                Hex.decode(P256_DER_PUBLIC_KEY_PREFIX) + decompressed
++            }
++
++            RSA_KEY_TYPE -> {
++                if (rawPublicKeyWithHeader[0] != RSA_MULTICODEC_FIRST ||
++                    rawPublicKeyWithHeader[1] != RSA_MULTICODEC_SECOND
++                ) {
++                    throw PublicKeyTypeNotSupportedException("Invalid RSA multicodec header")
++                }
++
++                rawPublicKeyWithHeader.copyOfRange(2, rawPublicKeyWithHeader.size)
++            }
++
++            else -> throw PublicKeyTypeNotSupportedException("Unsupported key type: $keyType")
++        }
++
++        val pubKeySpec = X509EncodedKeySpec(publicKeyBytes)
+         val keyFactory = KeyFactory.getInstance(PUBLIC_KEY_ALGORITHM[keyType], provider)
++
+         return keyFactory.generatePublic(pubKeySpec)
++
+     } catch (e: Exception) {
+         logger.severe("Error while getting public key object from Multibase: ${e.message}")
+-        throw PublicKeyNotFoundException("Public key object is null")
++        throw PublicKeyNotFoundException("Public key object is null: ${e.message}")
+     }
+ }
+ 
++internal fun decompressP256Key(compressed: ByteArray): ByteArray {
++    val params = ECNamedCurveTable.getParameterSpec("secp256r1")
++    val curve = params.curve
++
++    val point: org.bouncycastle.math.ec.ECPoint? = curve.decodePoint(compressed)
++    return point?.getEncoded(false) ?: throw IllegalArgumentException("Invalid compressed EC point")
++}
+ fun getPublicKeyFromHex(hexKey: String, keyType: String): PublicKey {
+     return when (keyType) {
+-        ES256K_KEY_TYPE_2019 -> getECPublicKeyFromHex(hexKey)
++        ES256_KEY_TYPE_2019 -> getECR1PublicKeyFromHex(hexKey)
++        ES256K_KEY_TYPE_2019 -> getECK1PublicKeyFromHex(hexKey)
+         ED25519_KEY_TYPE_2020 -> getEdPublicKeyFromHex(hexKey)
+         else -> throw PublicKeyTypeNotSupportedException("Unsupported key type: $keyType")
+     }
+@@ -170,7 +248,7 @@ internal fun getEdPublicKeyFromHex(hexKey: String): PublicKey {
+     return KeyFactory.getInstance(ED25519_ALGORITHM, provider).generatePublic(keySpec)
+ }
+ 
+-fun getECPublicKeyFromHex(hexKey: String): PublicKey {
++fun getECK1PublicKeyFromHex(hexKey: String): PublicKey {
+     val keyFactory = KeyFactory.getInstance(JWK_KEY_TYPE_EC, provider)
+     val keyBytes = hexStringToByteArray(hexKey)
+     val ecPoint = decodeSecp256k1PublicKey(keyBytes)
+@@ -180,18 +258,47 @@ fun getECPublicKeyFromHex(hexKey: String): PublicKey {
+     return keyFactory.generatePublic(pubKeySpec) as ECPublicKey
+ }
+ 
++fun getECR1PublicKeyFromHex(hexKey: String): PublicKey {
++    val keyFactory = KeyFactory.getInstance(JWK_KEY_TYPE_EC, provider)
++    val keyBytes = hexStringToByteArray(hexKey)
++
++    val ecPoint = decodeP256PublicKey(keyBytes)
++
++    val params = ECNamedCurveTable.getParameterSpec("secp256r1")
++
++    val ecSpec = ECNamedCurveSpec(
++        "secp256r1",
++        params.curve,
++        params.g,
++        params.n,
++        params.h
++    )
++
++    val pubKeySpec = ECPublicKeySpec(ecPoint, ecSpec)
++
++    return keyFactory.generatePublic(pubKeySpec)
++}
++
++private fun decodeP256PublicKey(keyBytes: ByteArray): ECPoint {
++    val params = ECNamedCurveTable.getParameterSpec("secp256r1")
++    val point = params.curve.decodePoint(keyBytes)
++
++    return ECPoint(point.xCoord.toBigInteger(), point.yCoord.toBigInteger())
++}
++
+ private fun hexStringToByteArray(hex: String): ByteArray {
+     return BigInteger(hex, 16).toByteArray().dropWhile { it == 0.toByte() }.toByteArray()
+ }
+ 
+ 
+-private fun decodeSecp256k1PublicKey(keyBytes: ByteArray): java.security.spec.ECPoint {
++private fun decodeSecp256k1PublicKey(keyBytes: ByteArray): ECPoint {
+     require(keyBytes.size == COMPRESSED_HEX_KEY_LENGTH) { "Invalid compressed public key length" }
++    require(keyBytes[0] == 0x02.toByte() || keyBytes[0] == 0x03.toByte()) { "Invalid compressed public key prefix" }
+ 
+     val x = BigInteger(1, keyBytes.copyOfRange(1, keyBytes.size))
+     val y = recoverYCoordinate(x, keyBytes[0] == 3.toByte())
+ 
+-    return java.security.spec.ECPoint(x, y)
++    return ECPoint(x, y)
+ }
+ 
+ // Recover the Y-coordinate from X using the Secp256k1 curve equation
+diff --git a/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/keyResolver/types/did/DidKeyPublicKeyResolver.kt b/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/keyResolver/types/did/DidKeyPublicKeyResolver.kt
+index 95a3741..f7b5b40 100644
+--- a/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/keyResolver/types/did/DidKeyPublicKeyResolver.kt
++++ b/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/keyResolver/types/did/DidKeyPublicKeyResolver.kt
+@@ -1,16 +1,15 @@
+ package io.mosip.vercred.vcverifier.keyResolver.types.did
+ 
+ import io.ipfs.multibase.Multibase
++import io.mosip.vercred.vcverifier.constants.CredentialVerifierConstants.JWK_KEY_TYPE_EC
+ import io.mosip.vercred.vcverifier.constants.CredentialVerifierConstants.JWS_EDDSA_SIGN_ALGO_CONST
+ import io.mosip.vercred.vcverifier.exception.PublicKeyTypeNotSupportedException
+-import io.mosip.vercred.vcverifier.exception.UnknownException
+ import org.bouncycastle.asn1.edec.EdECObjectIdentifiers
+ import org.bouncycastle.asn1.x509.AlgorithmIdentifier
+ import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo
+ import org.bouncycastle.jce.provider.BouncyCastleProvider
+ import java.security.KeyFactory
+ import java.security.PublicKey
+-import java.security.spec.InvalidKeySpecException
+ import java.security.spec.X509EncodedKeySpec
+ import java.util.Arrays
+ 
+@@ -18,40 +17,59 @@ private const val MULTIBASE_KEY_SIZE = 34
+ private const val ED_KEY_PREFIX = 0xed.toByte()
+ private const val MULTICODEC_TRAILING_BYTE = 0x01.toByte()
+ 
++private const val P256_KEY_PREFIX_FIRST = 0x80.toByte()
++private const val P256_KEY_PREFIX_SECOND = 0x24.toByte()
+ class DidKeyPublicKeyResolver : DidPublicKeyResolver() {
+     private val provider: BouncyCastleProvider = BouncyCastleProvider()
+ 
+     override fun extractPublicKey(parsedDID: ParsedDID, keyId: String?): PublicKey {
+-        val decodedKey =
+-            Multibase.decode(
+-                parsedDID.id
+-            )
+-        if (isEd25519KeyType(decodedKey)) {
+-            try {
+-
+-                val publicKeyBytes = Arrays.copyOfRange(decodedKey, 2, MULTIBASE_KEY_SIZE)
+-                val algorithmIdentifier = AlgorithmIdentifier(EdECObjectIdentifiers.id_Ed25519)
+-                val subjectPublicKeyInfo = SubjectPublicKeyInfo(algorithmIdentifier, publicKeyBytes)
+-                val encodedKey = subjectPublicKeyInfo.encoded
+-                val keySpec = X509EncodedKeySpec(encodedKey)
+-                val keyFactory = KeyFactory.getInstance(JWS_EDDSA_SIGN_ALGO_CONST, provider)
+-                return keyFactory.generatePublic(keySpec)
+-            } catch (e: Exception) {
+-                when (e) {
+-                    is IllegalStateException,
+-                    is InvalidKeySpecException,
+-                    is IllegalArgumentException -> throw e
+-
+-                    else -> {
+-                        throw UnknownException("Error while getting public key object - "+e.message)
+-                    }
+-                }
++        val decodedKey = Multibase.decode(parsedDID.id)
++
++        return when {
++            isEd25519KeyType(decodedKey) -> extractEd25519Key(decodedKey)
++            isP256KeyType(decodedKey) -> extractP256Key(decodedKey)
++            else -> {
++                throw PublicKeyTypeNotSupportedException(
++                    message = "KeyType - ${decodedKey[0]} is not supported. Supported: ed25519, ecr1"
++                )
+             }
+-        } else {
+-            throw PublicKeyTypeNotSupportedException(message = "KeyType - ${decodedKey[0]} is not supported. Supported: ed25519")
+         }
+     }
+ 
++    private fun extractEd25519Key(decodedKey: ByteArray): PublicKey {
++        val publicKeyBytes = Arrays.copyOfRange(decodedKey, 2, MULTIBASE_KEY_SIZE)
++
++        val algorithmIdentifier = AlgorithmIdentifier(EdECObjectIdentifiers.id_Ed25519)
++        val subjectPublicKeyInfo = SubjectPublicKeyInfo(algorithmIdentifier, publicKeyBytes)
++
++        val encodedKey = subjectPublicKeyInfo.encoded
++        val keySpec = X509EncodedKeySpec(encodedKey)
++
++        val keyFactory = KeyFactory.getInstance(JWS_EDDSA_SIGN_ALGO_CONST, provider)
++        return keyFactory.generatePublic(keySpec)
++    }
++
++    private fun extractP256Key(decodedKey: ByteArray): PublicKey {
++        val publicKeyBytes = Arrays.copyOfRange(decodedKey, 2, decodedKey.size)
++
++        val algorithmIdentifier = AlgorithmIdentifier(
++            org.bouncycastle.asn1.x9.X9ObjectIdentifiers.id_ecPublicKey,
++            org.bouncycastle.asn1.sec.SECObjectIdentifiers.secp256r1
++        )
++
++        val subjectPublicKeyInfo = SubjectPublicKeyInfo(algorithmIdentifier, publicKeyBytes)
++        val encodedKey = subjectPublicKeyInfo.encoded
++
++        val keySpec = X509EncodedKeySpec(encodedKey)
++        val keyFactory = KeyFactory.getInstance(JWK_KEY_TYPE_EC, provider)
++
++        return keyFactory.generatePublic(keySpec)
++    }
++
+     private fun isEd25519KeyType(decodedKey: ByteArray) =
+         (decodedKey[0] == ED_KEY_PREFIX && decodedKey[1] == MULTICODEC_TRAILING_BYTE) && decodedKey.size == MULTIBASE_KEY_SIZE
++
++    private fun isP256KeyType(decodedKey: ByteArray) =
++        decodedKey[0] == P256_KEY_PREFIX_FIRST &&
++                decodedKey[1] == P256_KEY_PREFIX_SECOND
+ }
+\ No newline at end of file
+diff --git a/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/keyResolver/types/jwks/JwksPublicKeyResolver.kt b/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/keyResolver/types/jwks/JwksPublicKeyResolver.kt
+new file mode 100644
+index 0000000..58cc981
+--- /dev/null
++++ b/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/keyResolver/types/jwks/JwksPublicKeyResolver.kt
+@@ -0,0 +1,39 @@
++package io.mosip.vercred.vcverifier.keyResolver.types.jwks
++
++import io.mosip.vercred.vcverifier.exception.PublicKeyNotFoundException
++import io.mosip.vercred.vcverifier.keyResolver.PublicKeyResolver
++import io.mosip.vercred.vcverifier.keyResolver.getPublicKeyFromJWK
++import io.mosip.vercred.vcverifier.networkManager.HttpMethod.GET
++import io.mosip.vercred.vcverifier.networkManager.NetworkManagerClient.Companion.sendHTTPRequest
++import java.security.PublicKey
++import java.util.logging.Logger
++
++class JwksPublicKeyResolver : PublicKeyResolver {
++
++    private val logger = Logger.getLogger(JwksPublicKeyResolver::class.java.name)
++
++    override fun resolve(uri: String, keyId: String?): PublicKey {
++        try {
++            val response = sendHTTPRequest(uri, GET)
++                ?: throw PublicKeyNotFoundException("JWKS response is null")
++
++            val keys = response["keys"] as? List<*>
++                ?: throw PublicKeyNotFoundException("JWKS 'keys' array not found")
++
++            val jwk = keys
++                .filterIsInstance<Map<String, Any>>()
++                .firstOrNull { it["kid"] == keyId }
++                ?: throw PublicKeyNotFoundException("No matching key found for kid=$keyId")
++
++            val kty = jwk["kty"]?.toString()
++                ?: throw PublicKeyNotFoundException("Missing 'kty' in JWK")
++
++            return getPublicKeyFromJWK(jwk, kty)
++        } catch (e: Exception) {
++            throw if (e is PublicKeyNotFoundException) e
++            else PublicKeyNotFoundException("Failed to resolve JWKS public key: ${e.message}").apply { initCause(e) }
++        }
++    }
++
++    companion object
++}
+\ No newline at end of file
+diff --git a/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/signature/SignatureFactory.kt b/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/signature/SignatureFactory.kt
+index 4933621..7914817 100644
+--- a/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/signature/SignatureFactory.kt
++++ b/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/signature/SignatureFactory.kt
+@@ -6,21 +6,22 @@ import io.mosip.vercred.vcverifier.constants.CredentialVerifierConstants.JWS_ES2
+ import io.mosip.vercred.vcverifier.constants.CredentialVerifierConstants.JWS_PS256_SIGN_ALGO_CONST
+ import io.mosip.vercred.vcverifier.constants.CredentialVerifierConstants.JWS_RS256_SIGN_ALGO_CONST
+ import io.mosip.vercred.vcverifier.exception.SignatureNotSupportedException
++import io.mosip.vercred.vcverifier.signature.impl.ES256KSignatureVerifierImpl
+ import io.mosip.vercred.vcverifier.signature.impl.PS256SignatureVerifierImpl
+ import io.mosip.vercred.vcverifier.signature.impl.RS256SignatureVerifierImpl
+ import io.mosip.vercred.vcverifier.signature.impl.ED25519SignatureVerifierImpl
+-import io.mosip.vercred.vcverifier.signature.impl.ES256KSignatureVerifierImpl
++import io.mosip.vercred.vcverifier.signature.impl.ES256SignatureVerifierImpl
+ 
+ class SignatureFactory {
+ 
+-    fun get(signatureAlgorithm: String) : SignatureVerifier {
+-        return when {
+-            JWS_PS256_SIGN_ALGO_CONST == signatureAlgorithm -> PS256SignatureVerifierImpl()
+-            JWS_RS256_SIGN_ALGO_CONST == signatureAlgorithm -> RS256SignatureVerifierImpl()
+-            JWS_EDDSA_SIGN_ALGO_CONST == signatureAlgorithm -> ED25519SignatureVerifierImpl()
+-            JWS_ES256K_SIGN_ALGO_CONST == signatureAlgorithm -> ES256KSignatureVerifierImpl()
+-            JWS_ES256_SIGN_ALGO_CONST == signatureAlgorithm -> ES256KSignatureVerifierImpl()
++    fun get(signatureAlgorithm: String): SignatureVerifier {
++        return when (signatureAlgorithm) {
++            JWS_PS256_SIGN_ALGO_CONST -> PS256SignatureVerifierImpl()
++            JWS_RS256_SIGN_ALGO_CONST -> RS256SignatureVerifierImpl()
++            JWS_EDDSA_SIGN_ALGO_CONST -> ED25519SignatureVerifierImpl()
++            JWS_ES256K_SIGN_ALGO_CONST -> ES256KSignatureVerifierImpl()
++            JWS_ES256_SIGN_ALGO_CONST -> ES256SignatureVerifierImpl()
+             else -> throw SignatureNotSupportedException("Unsupported jws signature algorithm")
+         }
+     }
+-}
+\ No newline at end of file
++}
+diff --git a/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/signature/SignatureVerifier.kt b/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/signature/SignatureVerifier.kt
+index 360740d..f8ca3cc 100644
+--- a/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/signature/SignatureVerifier.kt
++++ b/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/signature/SignatureVerifier.kt
+@@ -4,7 +4,6 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider
+ import java.security.PublicKey
+ 
+ internal var bouncyCastleProvider: BouncyCastleProvider = BouncyCastleProvider()
+-
+ interface SignatureVerifier {
+     fun verify(
+         publicKey: PublicKey,
+diff --git a/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/signature/impl/ECDSASignatureVerifier.kt b/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/signature/impl/ECDSASignatureVerifier.kt
+new file mode 100644
+index 0000000..3cad55e
+--- /dev/null
++++ b/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/signature/impl/ECDSASignatureVerifier.kt
+@@ -0,0 +1,93 @@
++package io.mosip.vercred.vcverifier.signature.impl
++
++import io.mosip.vercred.vcverifier.constants.CredentialVerifierConstants
++import io.mosip.vercred.vcverifier.exception.SignatureVerificationException
++import io.mosip.vercred.vcverifier.signature.SignatureVerifier
++import io.mosip.vercred.vcverifier.signature.bouncyCastleProvider
++import org.bouncycastle.jce.provider.BouncyCastleProvider
++import org.bouncycastle.jce.spec.ECNamedCurveSpec
++import java.io.ByteArrayOutputStream
++import java.math.BigInteger
++import java.security.PublicKey
++import java.security.Signature
++import java.security.interfaces.ECPublicKey
++
++private const val ECDSA_SIGNATURE_LENGTH = 64
++
++abstract class ECDSASignatureVerifier : SignatureVerifier {
++
++    abstract val algorithmName: String
++    abstract val validCurves: List<String>
++
++    override fun verify(
++        publicKey: PublicKey,
++        signData: ByteArray,
++        signature: ByteArray?,
++        provider: BouncyCastleProvider?
++    ): Boolean {
++        val ecKey = publicKey as? ECPublicKey ?: throw SignatureVerificationException("Provided key is not an Elliptic Curve key")
++        val params = ecKey.params
++        val curveName = (params as? ECNamedCurveSpec)?.name ?: params?.toString()
++        if (curveName == null) {
++            throw SignatureVerificationException("Unable to determine curve name for $algorithmName validation")
++        }
++        val normalizedCurve = curveName.lowercase()
++        if (validCurves.none { normalizedCurve.contains(it, ignoreCase = true) }) {
++            throw SignatureVerificationException("Key curve '$curveName' does not match proof type $algorithmName")
++        }
++        if (signature == null || signature.size != ECDSA_SIGNATURE_LENGTH) {
++            throw SignatureVerificationException("Invalid signature length: Expected 64 bytes for R || S format")
++        }
++
++        try {
++            val derSignature = convertRawSignatureToDER(signature) // Convert to ASN.1 DER
++
++            Signature.getInstance(
++                CredentialVerifierConstants.EC_ALGORITHM,
++                provider ?: bouncyCastleProvider
++            )
++                .apply {
++                    initVerify(publicKey)
++                    update(signData)
++                    return verify(derSignature)
++                }
++        } catch (e: Exception) {
++            throw SignatureVerificationException("Error while doing signature verification using $algorithmName algorithm: $e")
++        }
++    }
++
++    /**
++     * Converts a raw ECDSA (R || S) signature (64 bytes) into ASN.1 DER format.
++     *
++     * ASN.1 DER Format:
++     *  - 0x30 (Sequence)
++     *  - Total length
++     *  - 0x02 (Integer marker) + Length of R + R value
++     *  - 0x02 (Integer marker) + Length of S + S value
++     *
++     */
++    private fun convertRawSignatureToDER(signature: ByteArray): ByteArray {
++        val r = BigInteger(1, signature.copyOfRange(0, ECDSA_SIGNATURE_LENGTH / 2))
++        val s = BigInteger(1, signature.copyOfRange(ECDSA_SIGNATURE_LENGTH / 2, ECDSA_SIGNATURE_LENGTH))
++
++        val outputStream = ByteArrayOutputStream()
++        val derEncoder = java.io.DataOutputStream(outputStream)
++
++        derEncoder.writeByte(0x30)
++        val seqBytes = ByteArrayOutputStream()
++
++        seqBytes.write(0x02)
++        seqBytes.write(r.toByteArray().size)
++        seqBytes.write(r.toByteArray())
++
++        seqBytes.write(0x02)
++        seqBytes.write(s.toByteArray().size)
++        seqBytes.write(s.toByteArray())
++
++        val derSeq = seqBytes.toByteArray()
++        derEncoder.write(derSeq.size)
++        derEncoder.write(derSeq)
++
++        return outputStream.toByteArray()
++    }
++}
+diff --git a/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/signature/impl/ES256KSignatureVerifierImpl.kt b/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/signature/impl/ES256KSignatureVerifierImpl.kt
+index 42a56d4..63d42f3 100644
+--- a/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/signature/impl/ES256KSignatureVerifierImpl.kt
++++ b/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/signature/impl/ES256KSignatureVerifierImpl.kt
+@@ -1,77 +1,9 @@
+ package io.mosip.vercred.vcverifier.signature.impl
+ 
+-import io.mosip.vercred.vcverifier.constants.CredentialVerifierConstants
+-import io.mosip.vercred.vcverifier.exception.SignatureVerificationException
+-import io.mosip.vercred.vcverifier.signature.SignatureVerifier
+-import io.mosip.vercred.vcverifier.signature.bouncyCastleProvider
+-import org.bouncycastle.jce.provider.BouncyCastleProvider
+-import java.io.ByteArrayOutputStream
+-import java.math.BigInteger
+-import java.security.PublicKey
+-import java.security.Signature
++import io.mosip.vercred.vcverifier.constants.CredentialVerifierConstants.JWS_ES256K_SIGN_ALGO_CONST
++import io.mosip.vercred.vcverifier.constants.CredentialVerifierConstants.SECP256K1
+ 
+-private const val ECDSA_SIGNATURE_LENGTH = 64
+-
+-class ES256KSignatureVerifierImpl : SignatureVerifier {
+-    override fun verify(
+-        publicKey: PublicKey,
+-        signData: ByteArray,
+-        signature: ByteArray?,
+-        provider: BouncyCastleProvider?
+-    ): Boolean {
+-        if (signature == null || signature.size != ECDSA_SIGNATURE_LENGTH) {
+-            throw SignatureVerificationException("Invalid signature length: Expected 64 bytes for R || S format")
+-        }
+-
+-        try {
+-            val derSignature = convertRawSignatureToDER(signature) // Convert to ASN.1 DER
+-
+-            Signature.getInstance(
+-                CredentialVerifierConstants.EC_ALGORITHM,
+-                provider ?: bouncyCastleProvider
+-            )
+-                .apply {
+-                    initVerify(publicKey)
+-                    update(signData)
+-                    return verify(derSignature)
+-                }
+-        } catch (e: Exception) {
+-            throw SignatureVerificationException("Error while doing signature verification using ES256K algorithm: ${e.message}")
+-        }
+-    }
+-
+-    /**
+-     * Converts a raw ECDSA (R || S) signature (64 bytes) into ASN.1 DER format.
+-     *
+-     * ASN.1 DER Format:
+-     *  - 0x30 (Sequence)
+-     *  - Total length
+-     *  - 0x02 (Integer marker) + Length of R + R value
+-     *  - 0x02 (Integer marker) + Length of S + S value
+-     *
+-     */
+-    private fun convertRawSignatureToDER(signature: ByteArray): ByteArray {
+-        val r = BigInteger(1, signature.copyOfRange(0, ECDSA_SIGNATURE_LENGTH/2))
+-        val s = BigInteger(1, signature.copyOfRange(ECDSA_SIGNATURE_LENGTH/2, ECDSA_SIGNATURE_LENGTH))
+-
+-        val outputStream = ByteArrayOutputStream()
+-        val derEncoder = java.io.DataOutputStream(outputStream)
+-
+-        derEncoder.writeByte(0x30)
+-        val seqBytes = ByteArrayOutputStream()
+-
+-        seqBytes.write(0x02)
+-        seqBytes.write(r.toByteArray().size)
+-        seqBytes.write(r.toByteArray())
+-
+-        seqBytes.write(0x02)
+-        seqBytes.write(s.toByteArray().size)
+-        seqBytes.write(s.toByteArray())
+-
+-        val derSeq = seqBytes.toByteArray()
+-        derEncoder.write(derSeq.size)
+-        derEncoder.write(derSeq)
+-
+-        return outputStream.toByteArray()
+-    }
++class ES256KSignatureVerifierImpl : ECDSASignatureVerifier() {
++    override val algorithmName: String = JWS_ES256K_SIGN_ALGO_CONST
++    override val validCurves: List<String> = listOf(SECP256K1)
+ }
+diff --git a/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/signature/impl/ES256SignatureVerifierImpl.kt b/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/signature/impl/ES256SignatureVerifierImpl.kt
+new file mode 100644
+index 0000000..875e520
+--- /dev/null
++++ b/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/signature/impl/ES256SignatureVerifierImpl.kt
+@@ -0,0 +1,11 @@
++package io.mosip.vercred.vcverifier.signature.impl
++
++import io.mosip.vercred.vcverifier.constants.CredentialVerifierConstants.JWS_ES256_SIGN_ALGO_CONST
++import io.mosip.vercred.vcverifier.constants.CredentialVerifierConstants.P256
++import io.mosip.vercred.vcverifier.constants.CredentialVerifierConstants.PRIME256V1
++import io.mosip.vercred.vcverifier.constants.CredentialVerifierConstants.SECP256R1
++
++class ES256SignatureVerifierImpl : ECDSASignatureVerifier() {
++    override val algorithmName: String = JWS_ES256_SIGN_ALGO_CONST
++    override val validCurves: List<String> = listOf(P256, SECP256R1, PRIME256V1)
++}
+diff --git a/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/utils/LocalDocumentLoader.kt b/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/utils/LocalDocumentLoader.kt
+index 1e34a8f..1f340dd 100644
+--- a/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/utils/LocalDocumentLoader.kt
++++ b/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/utils/LocalDocumentLoader.kt
+@@ -44,6 +44,14 @@ object LocalDocumentLoader : ConfigurableDocumentLoader() {
+                 "/contexts/farmer-context.json"
+             url.toString().contains("https://mosip.github.io/inji-config/contexts/mock-identity-context.json") ->
+                 "/contexts/mock-identity-context.json"
++            url.toString().contains("https://inji.github.io/inji-config/contexts/farmer.json") ->
++                "/contexts/farmer-context-inji.json"
++            url.toString().contains("https://api.released.mosip.net/.well-known/mosip-ida-context.json") ->
++                "/contexts/mosip-ida-context-2.json"
++            url.toString().contains("https://inji.github.io/inji-config/contexts/mosip-identity-context.json") ->
++                "/contexts/mosip-identity-context-2.json"
++            url.toString().contains("https://inji.github.io/inji-config/contexts/insurance-context.json") ->
++                "/contexts/insurance-context-2.json"
+             else -> throw IllegalArgumentException("Unexpected context: $url")
+         }
+     }
+diff --git a/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/utils/Util.kt b/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/utils/Util.kt
+index 4586f43..a92737d 100644
+--- a/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/utils/Util.kt
++++ b/vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/utils/Util.kt
+@@ -2,6 +2,8 @@ package io.mosip.vercred.vcverifier.utils
+ 
+ import com.fasterxml.jackson.core.type.TypeReference
+ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
++import com.upokecenter.cbor.CBORObject
++import com.upokecenter.cbor.CBORType
+ import foundation.identity.jsonld.ConfigurableDocumentLoader
+ import io.mosip.vercred.vcverifier.constants.CredentialValidatorConstants
+ import io.mosip.vercred.vcverifier.constants.CredentialValidatorConstants.CONTEXT
+@@ -144,6 +146,34 @@ object Util {
+         }
+     }
+ 
++    fun hexToBytes(hex: String): ByteArray {
++        val cleanHex = hex.replace("\\s".toRegex(), "")
++        require(cleanHex.length % 2 == 0) { "Invalid hex length" }
++
++        return ByteArray(cleanHex.length / 2) { i ->
++            cleanHex.substring(i * 2, i * 2 + 2).toInt(16).toByte()
++        }
++    }
++
++    fun toCoseBytes(coseObj: CBORObject): ByteArray {
++        return coseObj.EncodeToBytes()
++    }
++
++    fun validateNumericDate(
++        claims: CBORObject,
++        key: CBORObject,
++        name: String
++    ): Long? {
++        if (!claims.ContainsKey(key)) return null
++
++        val value = claims[key]
++
++        require(value.type == CBORType.Integer) {
++            "$name must be a CBOR integer (NumericDate)"
++        }
++
++        return value.ToObject(Long::class.java)
++    }
+ }
+ 
+ fun JSONArray.asIterable(): Iterable<Any?> = Iterable {

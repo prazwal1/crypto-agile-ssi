@@ -43,10 +43,10 @@ FINDINGS = [
   'Read the cryptography package.',
   'X25519 is quantum-vulnerable; out of prototype scope (signatures only) but recorded in the CBOM.','RQ1','Static (source)','High',
   [('tuvali','kotlin/android/src/main/java/io/mosip/tuvali/cryptography/CryptoBoxImpl.java',None,None)],[]),
- ('F8','n/a','Inji Verify','BouncyCastle with pre-standard PQC classes (Dilithium, Falcon, Kyber) is already on Inji Verify\'s classpath per its SBOM.',
-  'Searched the published SBOM for BouncyCastle components and PQC class names (77 Dilithium mentions).',
-  'Not used by code, but a JVM PQ provider is already a transitive dependency; input to D-04.','RQ2 (provider choice)','Static (SBOM)','Medium',
-  [('inji-verify','sbom-clean.json',None,None)],[]),
+ ('F8','S1','Inji Verify','BouncyCastle with pre-standard PQC classes is on Inji Verify\'s classpath. Confirmed in the deployed 0.18.2 jar: three copies (bcprov-jdk15on-1.69, jdk15to18-1.70, jdk18on-1.78); only 1.78 has pre-standard Dilithium and SPHINCS+, none has final ML-DSA or SLH-DSA. 1.69 is first on the classpath (position 7 of 149). The v0.18.2 SBOM is the v0.17.0 file copied, so it is not evidence for the running build.',
+  'First from the published SBOM (77 Dilithium mentions); re-checked by copying verify-service.jar out of the running container and inspecting it with tools/inspect-jar.py (D-08).',
+  'Same three-copy pattern as the issuer (F16): a PQ provider must be pinned (R-09). Published SBOMs must be checked against the image before they enter a CBOM.','RQ1, RQ2 (provider choice)','Artefact inspection','High',
+  [('inji-verify','sbom-clean.json',None,None)],['evidence/2026-10-14-verify-image-libs/bouncycastle-check.txt','evidence/2026-10-14-verify-image-libs/crypto-libs.txt','evidence/2026-10-14-verify-version-diff/README.md']),
  ('F9','S1/S3','Certify config, Wallet','The deployed FarmerCredential accepts holder proofs signed with RS256 or ES256 only and binds the holder with did:jwk; these are exactly the wallet\'s hardware key types. At runtime the wallet received [RS256, ES256] and signed with a P-256 key (ES256).',
   'Config: credential_config.proof_types_supported in the seed and the published issuer metadata. Runtime: logcat shows proofSigningAlgosSupported and the P-256 SPKI prefix.',
   'Algorithm choice is constrained by the counterparty\'s published metadata, not only wallet code. A PQ holder key needs issuer-side configuration to be accepted (negotiation).','RQ1, RQ2','Config + runtime','High',
@@ -83,7 +83,7 @@ FINDINGS = [
   'Read verifyCredentialForIos; the code comment states the bundled library cannot verify Ed25519Signature2020.',
   'An unsupported suite is treated as valid (fail open). Out of the Android prototype\'s scope, but evidence that unsupported algorithms are a security risk.','RQ1, RQ2','Static (source)','High',
   [('inji-wallet','shared/vcjs/verifyCredential.ts',78,100)],['evidence/2026-10-13-inventory-review/excerpts.md']),
- ('F18','S3','Certify, vc-verifier','Issuer and the wallet\'s verifier library disagree on what is valid: Certify can issue EcdsaSecp256r1Signature2019 (ES256) and Data Integrity cryptosuites; vc-verifier accepts only PS256, RS256, EdDSA, ES256K and four proof types, and verifies any proofValue proof as Ed25519.',
+ ('F18','S3','Certify, vc-verifier','Issuer and the wallet\'s verifier library disagree on what is valid: Certify can issue EcdsaSecp256r1Signature2019 (ES256) and Data Integrity cryptosuites; vc-verifier accepts only PS256, RS256, EdDSA, ES256K and four proof types, and verifies any proofValue proof as Ed25519. Versions (D-08): the wallet bundles vc-verifier 1.6.0, which also maps ES256 to the secp256k1 verifier; Inji Verify 0.18.2 bundles 1.8.1, which fixes that, accepts EcdsaSecp256r1Signature2019 and picks the algorithm from the proof type. The two verifiers in the flow (F11) accept different sets.',
   'Compared the issuer suite map and proof generators with the verifier allow-lists, validateProof and LdpVerifier. Static; not executed.',
   'Registries are out of step even among classical algorithms; a credential the issuer offers may be refused by the wallet.','RQ1, RQ2','Static (not run)','Medium',
   [('vc-verifier','vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/utils/ValidationHelper.kt',58,76),('vc-verifier','vc-verifier/kotlin/vcverifier/src/main/java/io/mosip/vercred/vcverifier/credentialverifier/verifier/LdpVerifier.kt',45,61),('inji-certify','certify-service/src/main/java/io/mosip/certify/proofgenerators/EcdsaSecp256r1Signature2019ProofGenerator.java',40,50)],['evidence/2026-10-13-inventory-review/excerpts.md']),
@@ -103,10 +103,10 @@ FINDINGS = [
   'Runtime failure diagnosed from nginx, Certify and wallet logs, then traced to generateAccessToken and generateSignedJwt.',
   'Deployment limits form a hidden size budget for tokens and headers. A PQ token signature (ML-DSA-65: 3,309 bytes, about 4.4 KB base64url, vs 256 for RS256) spends it the same way. All claims, including biometrics, are visible to any token holder.','RQ1, RQ2','Runtime + source','High',
   [('inji-certify','certify-service/src/main/java/io/mosip/certify/services/PreAuthorizedCodeService.java',390,419),('inji-certify','certify-service/src/main/java/io/mosip/certify/utils/AccessTokenJwtUtil.java',83,110)],['evidence/2026-10-14-reissue-face/certify-nginx.log','evidence/2026-10-14-reissue-face-2/certify.log']),
- ('F23','S1/S3','Wallet','The wallet chooses the holder key separately for issuance and presentation, with no link between them. Issuance takes the first key in the user\'s order that the issuer allows; OpenID4VP signs every ldp_vc presentation with the Ed25519 key fixed in its initial context. With the issuer allowing only RS256/ES256, the credential was bound to P-256 and both presentations failed ERR_HOLDER_BINDING_CHECK_FAILED; after allowing EdDSA both passed.',
+ ('F23','S1/S3','Wallet','The wallet chooses the holder key separately for issuance and presentation, with no link between them. Issuance takes the first key in the user\'s order that the issuer allows; OpenID4VP signs every ldp_vc presentation with the Ed25519 key fixed in its initial context. With the issuer allowing only RS256/ES256, the credential was bound to P-256 and both presentations failed ERR_HOLDER_BINDING_CHECK_FAILED; after allowing EdDSA both passed. The limitation is wallet-side: Inji Verify (vc-verifier 1.8.1) resolves Ed25519 and P-256 holder keys and accepts JsonWebSignature2020 with ES256, so a P-256 presentation would have been accepted.',
   'Two failed and two successful presentations compared from the stored VP tokens; cause read in selectCredentialRequestKey and the OpenID4VP machine.',
   'Creation coupling at runtime: the binding key and its algorithm must be stored with the credential and reused for presentation. Also forces the software Ed25519 key over the hardware key (F3) for ldp_vc presentations.','RQ1, RQ2','Runtime + source','High',
-  [('inji-wallet','shared/openId4VCI/Utils.ts',432,447),('inji-wallet','machines/openID4VP/openID4VPModel.ts',80,80),('inji-wallet','machines/openID4VP/openID4VPServices.ts',106,107)],['evidence/2026-10-14-presentation-export/TRACE.md','evidence/2026-10-14-presentation-run-2/verify-service.log']),
+  [('inji-wallet','shared/openId4VCI/Utils.ts',432,447),('inji-wallet','machines/openID4VP/openID4VPModel.ts',80,80),('inji-wallet','machines/openID4VP/openID4VPServices.ts',106,107)],['evidence/2026-10-14-presentation-export/TRACE.md','evidence/2026-10-14-presentation-run-2/verify-service.log','evidence/2026-10-14-verify-version-diff/README.md']),
 ]
 
 # Requirements derived for RQ2
@@ -207,6 +207,8 @@ EVIDENCE = [
  ('evidence/2026-10-14-presentation-run-2/','Two presentations rejected for holder binding','capture-logs.ps1, PB','F23'),
  ('evidence/2026-10-14-reissue-eddsa/, presentation-run-3/','Ed25519-bound reissue; two valid presentations','capture-logs.ps1, PB','F20, F23'),
  ('evidence/2026-10-14-presentation-export/','Stored VP tokens (photo redacted) and TRACE.md','stack.ps1 export-presentation, PB','F20, F23'),
+ ('evidence/2026-10-14-verify-version-diff/','inji-verify v0.17.0 vs v0.18.2, vc-verifier 1.6.0 vs 1.8.1 diffs and summary','git diff (Claude)','C-10, F8, F18, F23'),
+ ('evidence/2026-10-14-verify-image-libs/','Libraries in the deployed verify-service jar (sha256 4c049791...); jar in F:\\thesis\\artifacts\\2026-10-14-verify-0.18.2\\','docker cp (PB), tools/inspect-jar.py','F8'),
  ('F:\\thesis\\artifacts\\2026-10-13-certify-0.14.0\\','certify.jar (f53bbdf1...), mock-certify-plugin.jar (e3f67385...), outside git','docker cp, PB','F16'),
 ]
 
@@ -224,4 +226,5 @@ SESSIONS = [
  ('2026-10-13 21:31 to 21:40','Inventory review','919 rows scored, 35 bindings; F17 to F20; spot-check sample','evidence/2026-10-13-inventory-review/'),
  ('2026-10-13 22:10','Phase 1 workbook','This workbook; F21 recorded','docs/phase1/'),
  ('2026-10-14','OpenID4VP presentation trace','Verifier schema fix; face, header-size and holder-binding failures diagnosed; patches 002, 003; two valid presentations; F22, F23; R-13, R-14','evidence/2026-10-14-*'),
+ ('2026-10-14 eve','D-08 verifier version check','Diffs inji-verify 0.17.0/0.18.2 and vc-verifier 1.6.0/1.8.1; deployed jar inspected; C-10; F8, F18, F23 updated','evidence/2026-10-14-verify-*'),
 ]

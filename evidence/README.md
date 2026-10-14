@@ -24,3 +24,5 @@ SHA-256.
 | `2026-10-14-reissue-eddsa/` | Reissue bound to Ed25519 (proof `alg: EdDSA`) and presentation A, verified | F23, F20 |
 | `2026-10-14-presentation-run-3/` | Presentation B, verified (holder binding passed) | F20, F23 |
 | `2026-10-14-presentation-export/` | Full stored VP submissions (photo redacted) and `TRACE.md`, the presentation trace table | F20, F23 |
+| `2026-10-14-verify-version-diff/` | inji-verify v0.17.0 vs v0.18.2 and vc-verifier 1.6.0 vs 1.8.1 diffs, summary | C-10, F8, F18, F23 |
+| `2026-10-14-verify-image-libs/` | Libraries in the deployed verify-service jar (jar outside git: `F:\thesis\artifacts\2026-10-14-verify-0.18.2\`) | F8 |

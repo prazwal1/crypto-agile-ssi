@@ -41,6 +41,13 @@ Dated record of working sessions. Each entry states what was done, what was obse
 - 20:08 to 20:10 `export-presentation` (`evidence/2026-10-14-presentation-export/`). First run returned only large-object ids: `VPSubmission.vpToken` is `@JdbcTypeCode(SqlTypes.CLOB)`, stored by PostgreSQL as a large object; fixed with `lo_get`. Second run: 4 submissions, 4 face images redacted; the redaction regex also removed a JSON escape, repaired and the regex fixed. Trace summarised in `TRACE.md`: VP proof `JsonWebSignature2020` with detached EdDSA JWS; credential proof `Ed25519Signature2020`; failed runs P-256 subject vs Ed25519 holder, successful runs same Ed25519 key.
 - Side observation: the wallet writes VP proof `created` in local time with a `Z` suffix (7 h off); not checked by the verifier.
 
+### D-08: Inji Verify v0.17.0 vs v0.18.2 (20:42 to 21:20)
+- Cloned inji-verify and vc-verifier; `git diff` of the 18 inji-verify inventory files: 8 unchanged, 10 changed, no algorithm or suite list changed. Service adds VP challenge = nonce and domain = client_id checks (`VerifiablePresentationSubmissionServiceImpl.java:166-177`).
+- Root pom: vcverifier-jar 1.7.0 -> 1.8.1, nimbus 9.37.2 -> 9.37.4, BouncyCastle 1.78 unchanged. The v0.18.2 `sbom.json` equals the v0.17.0 `sbom-clean.json` except a trailing newline.
+- vc-verifier 1.6.0 (wallet) vs 1.8.1 (Inji Verify): ES256 fixed (was mapped to the secp256k1 verifier), EcdsaSecp256r1Signature2019 added, proofValue suite chosen by proof type, holder binding and proof-of-possession added (Ed25519 and P-256 holder keys).
+- PB copied `/home/inji/verify-service.jar` out of the running container (image `inji-verify-service:0.18.2`, sha256 `2ed468e7...`) to `F:\thesis\artifacts\2026-10-14-verify-0.18.2\` (jar sha256 `4c049791...`). `inspect-jar.py`: vcverifier-jar 1.8.1, nimbus 9.37.4, BouncyCastle 1.69, 1.70 and 1.78 (1.69 first on the classpath); only 1.78 has pre-standard Dilithium/SPHINCS+.
+- Decision C-10 (closes D-08); F8, F18, F23 updated.
+
 ---
 
 ## 2026-10-13 (Tue, evening)

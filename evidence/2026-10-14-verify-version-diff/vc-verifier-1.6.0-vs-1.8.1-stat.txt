@@ -1,0 +1,27 @@
+ .../vercred/vcverifier/PresentationVerifier.kt     | 576 ++++++++++++++++++---
+ .../vcverifier/constants/CredentialFormat.kt       |   4 +-
+ .../constants/CredentialValidatorConstants.kt      |   8 +-
+ .../constants/CredentialVerifierConstants.kt       |  28 +-
+ .../CredentialVerifierFactory.kt                   |   4 +
+ .../types/CwtVerifiableCredential.kt               |  21 +
+ .../types/JwtVerifiableCredential.kt               |  16 +
+ .../credentialverifier/validator/CwtValidator.kt   | 210 ++++++++
+ .../credentialverifier/validator/JwtValidator.kt   |  81 +++
+ .../credentialverifier/validator/SdJwtValidator.kt |   2 +-
+ .../credentialverifier/verifier/CwtVerifier.kt     | 149 ++++++
+ .../credentialverifier/verifier/JwtVerifier.kt     |  69 +++
+ .../credentialverifier/verifier/LdpVerifier.kt     |  18 +-
+ .../java/io/mosip/vercred/vcverifier/data/Data.kt  |  19 +
+ .../vcverifier/exception/HolderBindingException.kt |   3 +
+ .../keyResolver/PublicKeyResolverFactory.kt        |   6 +-
+ .../mosip/vercred/vcverifier/keyResolver/Utils.kt  | 159 +++++-
+ .../types/did/DidKeyPublicKeyResolver.kt           |  74 ++-
+ .../types/jwks/JwksPublicKeyResolver.kt            |  39 ++
+ .../vcverifier/signature/SignatureFactory.kt       |  19 +-
+ .../vcverifier/signature/SignatureVerifier.kt      |   1 -
+ .../signature/impl/ECDSASignatureVerifier.kt       |  93 ++++
+ .../signature/impl/ES256KSignatureVerifierImpl.kt  |  78 +--
+ .../signature/impl/ES256SignatureVerifierImpl.kt   |  11 +
+ .../vcverifier/utils/LocalDocumentLoader.kt        |   8 +
+ .../java/io/mosip/vercred/vcverifier/utils/Util.kt |  30 ++
+ 26 files changed, 1515 insertions(+), 211 deletions(-)

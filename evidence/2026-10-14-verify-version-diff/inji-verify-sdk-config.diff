@@ -1,0 +1,892 @@
+diff --git a/inji-verify-sdk/src/components/openid4vp-verification/OpenID4VPVerification.tsx b/inji-verify-sdk/src/components/openid4vp-verification/OpenID4VPVerification.tsx
+index 2064c8a4..c76a9d91 100644
+--- a/inji-verify-sdk/src/components/openid4vp-verification/OpenID4VPVerification.tsx
++++ b/inji-verify-sdk/src/components/openid4vp-verification/OpenID4VPVerification.tsx
+@@ -2,14 +2,18 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
+ import { QRCodeSVG } from "qrcode.react";
+ import {
+   AppError,
+-  OpenID4VPVerificationProps,
+   SessionState,
++  OpenID4VPVerificationProps,
+   VerificationResults,
+-  VerificationStatus,
++  CredentialResult
+ } from "./OpenID4VPVerification.types";
+-import { vpRequest, vpRequestStatus, vpResult } from "../../utils/api";
++import {
++  vpRequestStatus,
++  vpSessionRequest,
++  vpSessionResults,
++} from "../../utils/api";
+ import "./OpenID4VPVerification.css";
+-import { isSdJwt } from "../../utils/utils";
++import {clearUrl, summariseVPResult, normalizeVp} from "../../utils/utils";
+ import { QrData } from "../../types/OVPSchemeQrData";
+ 
+ export const isMobileDevice = (): boolean => {
+@@ -42,11 +46,18 @@ const OpenID4VPVerification: React.FC<OpenID4VPVerificationProps> = ({
+   clientId,
+   isSameDeviceFlowEnabled = true,
+   acceptVPWithoutHolderProof = false,
++  webWalletBaseUrl,
++  vpVerificationRequest,
++  summariseResults = true
+ }) => {
+   const [qrCodeData, setQrCodeData] = useState<string | null>(null);
+   const [loading, setLoading] = useState<boolean>(false);
+   const isActiveRef = useRef(false);
+-  const sessionStateRef = useRef<SessionState | null>(null);
++  const redirectTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
++  const hasFetchedVPResultRef = useRef(false);
++  const sessionStateRef = useRef<SessionState>({
++    requestId: "",
++  });
+ 
+   const shouldShowQRCode = !loading && qrCodeData;
+ 
+@@ -70,13 +81,20 @@ const OpenID4VPVerification: React.FC<OpenID4VPVerificationProps> = ({
+   );
+ 
+   const clearSessionData = useCallback(() => {
+-    sessionStateRef.current = null;
++    sessionStateRef.current = {
++      requestId: "",
++    };
+   }, []);
+ 
+   const resetState = useCallback(() => {
++    if (redirectTimeoutRef.current) {
++      clearTimeout(redirectTimeoutRef.current);
++      redirectTimeoutRef.current = null;
++    }
+     setQrCodeData(null);
+     setLoading(false);
+     isActiveRef.current = false;
++    hasFetchedVPResultRef.current = false;
+     clearSessionData();
+   }, []);
+ 
+@@ -116,55 +134,91 @@ const OpenID4VPVerification: React.FC<OpenID4VPVerificationProps> = ({
+     [clientId]
+   );
+ 
++  const processVPResultResponse = useCallback(
++      (response: {
++            credentialResults?: CredentialResult[];
++            transactionId?: string;
++        }) => {
++            const credentialResults = response.credentialResults ?? [];
++
++            if (onVPProcessed) {
++                if (summariseResults) {
++                    const vcResults = credentialResults.map((cred) => {
++                        const vc = normalizeVp(cred.verifiableCredential);
++                        const vcStatus = summariseVPResult(cred);
++                        return { vc, vcStatus };
++                    });
++
++                    const vpResultStatus = credentialResults.length > 0 &&
++                    credentialResults.every((c: CredentialResult) => c.allChecksSuccessful)
++                        ? "SUCCESS" : "INVALID";
++
++                    const result: VerificationResults = vcResults.map(v => ({
++                        vc: v.vc,
++                        verificationResponse: {
++                            vcResults,
++                            vpResultStatus,
++                        },
++                    }));
++
++                    onVPProcessed(result);
++                } else {
++                    const VPResult: VerificationResults = credentialResults.map(
++                        (cred: CredentialResult) => ({
++                            vc: normalizeVp(cred.verifiableCredential),
++                            verificationResponse: cred,
++                        }),
++                    );
++                    onVPProcessed(VPResult);}
++            } else if (onVPReceived && response.transactionId) {
++                onVPReceived(response.transactionId);
++            }
++        },
++        [onVPProcessed, onVPReceived, summariseResults]
++    );
+   const fetchVPResult = useCallback(
+-    async (txnId: string) => {
++    async (responseCode?: string | null) => {
+       if (!isActiveRef.current) return;
+       setLoading(true);
++
+       try {
+-        if (onVPProcessed && txnId) {
+-          const vcResults = await vpResult(verifyServiceUrl, txnId);
+-          if (!isActiveRef.current) return;
+-
+-          if (vcResults && vcResults.length > 0) {
+-            const VPResult: VerificationResults = vcResults.map(
+-              (vcResult: { vc: any; verificationStatus: VerificationStatus }) => ({
+-                vc: isSdJwt(vcResult.vc) ? vcResult.vc : JSON.parse(vcResult.vc),
+-                vcStatus: vcResult.verificationStatus,
+-              })
+-            );
+-            onVPProcessed(VPResult);
+-            resetState();
+-            return;
+-          } else {
+-            throw new Error("Failed to get the VP result");
+-          }
+-        }
++        const response = await vpSessionResults(
++          verifyServiceUrl,
++          responseCode,
++          vpVerificationRequest,
++        );
+ 
+-        if (onVPReceived && txnId && isActiveRef.current) {
+-          onVPReceived(txnId);
+-          resetState();
++        if (!response) {
++          throw new Error(
++            "An unexpected error occurred while processing the VP session result. Empty response.",
++          );
+         }
++
++        processVPResultResponse(response);
++        resetState();
+       } catch (error) {
+         if (isActiveRef.current) {
+           onError(error as AppError);
+           resetState();
+         }
++      } finally {
++        clearUrl(["response_code"]);
+       }
+     },
+-    [verifyServiceUrl, onVPProcessed, onVPReceived, onError]
++    [verifyServiceUrl, onVPProcessed, onVPReceived, onError, vpVerificationRequest]
+   );
+ 
+   const fetchVPStatus = useCallback(
+-    async (reqId: string, txnId: string) => {
+-      if (!isActiveRef.current || !sessionStateRef.current) return;
++    async (reqId: string) => {
++      if (!isActiveRef.current) return;
+ 
+       try {
+         const response = await vpRequestStatus(verifyServiceUrl, reqId);
+ 
+         if (response.status === "ACTIVE") {
+-          fetchVPStatus(reqId, txnId);
++            fetchVPStatus(reqId);
+         } else if (response.status === "VP_SUBMITTED") {
+-          fetchVPResult(txnId);
++          fetchVPResult();
+         } else if (response.status === "EXPIRED") {
+           resetState();
+           onQrCodeExpired();
+@@ -180,32 +234,34 @@ const OpenID4VPVerification: React.FC<OpenID4VPVerificationProps> = ({
+     [
+       verifyServiceUrl,
+       onQrCodeExpired,
+-      onError,
+-      fetchVPResult
++      fetchVPResult,
+     ]
+   );
+ 
+-  const createVPRequest = useCallback(async () => {
++  const createVPRequest = useCallback(async (isCrossDeviceFlow: boolean) => {
+     if (isActiveRef.current) return;
+     isActiveRef.current = true;
+     setLoading(true);
+     try {
+-      const data = await vpRequest(
++      const responseCodeValidationRequired = webWalletBaseUrl != null;
++
++      const data = await vpSessionRequest(
+         verifyServiceUrl,
+         clientId,
+         transactionId ?? undefined,
+         presentationDefinitionId,
+         presentationDefinition,
+-        acceptVPWithoutHolderProof
++        acceptVPWithoutHolderProof,
++        responseCodeValidationRequired,
+       );
+ 
+-      sessionStateRef.current = {
+-        requestId: data.requestId,
+-        transactionId: data.transactionId,
+-      };
+-
+-      if (!isSameDeviceFlowEnabled || !isMobileDevice()) {
+-        fetchVPStatus(data.requestId, data.transactionId);
++      if (webWalletBaseUrl == null && !isCrossDeviceFlow) {
++        sessionStateRef.current = {
++          requestId: data.requestId,
++        };
++      }
++      if (isCrossDeviceFlow) {
++        fetchVPStatus(data.requestId);
+       }
+       return getPresentationDefinitionParams(data);
+     } catch (error) {
+@@ -219,11 +275,11 @@ const OpenID4VPVerification: React.FC<OpenID4VPVerificationProps> = ({
+     presentationDefinition,
+     getPresentationDefinitionParams,
+     onError,
+-    clientId,
++    clientId
+   ]);
+ 
+   const handleTriggerClick = () => {
+-    if (isSameDeviceFlowEnabled && isMobileDevice()) {
++    if (isSameDeviceFlowEnabled) {
+       startVerification();
+     } else {
+       handleGenerateQRCode();
+@@ -231,7 +287,7 @@ const OpenID4VPVerification: React.FC<OpenID4VPVerificationProps> = ({
+   };
+ 
+   const handleGenerateQRCode = async () => {
+-    const pdParams = await createVPRequest();
++    const pdParams = await createVPRequest(true);
+     if (pdParams) {
+       const qrData = `${protocol || DEFAULT_PROTOCOL}authorize?${pdParams}`;
+       setQrCodeData(qrData);
+@@ -240,19 +296,31 @@ const OpenID4VPVerification: React.FC<OpenID4VPVerificationProps> = ({
+   };
+ 
+   const startVerification = async () => {
+-    const pdParams = await createVPRequest();
+-    if (pdParams) {
+-      window.location.href = `${protocol || DEFAULT_PROTOCOL }authorize?${pdParams}`;
++    const pdParams = await createVPRequest(false);
++    if (!pdParams) return;
++
++    if (webWalletBaseUrl) {
++      let end = webWalletBaseUrl.length;
++      while (end > 0 && webWalletBaseUrl[end - 1] === "/") end--;
++      const baseUrl = webWalletBaseUrl.slice(0, end);
++      window.location.href = `${baseUrl}/authorize?${pdParams}`;
++    } else if (isMobileDevice()) {
++      window.location.href = `${protocol || DEFAULT_PROTOCOL}authorize?${pdParams}`;
++    } else {
++      onError({
++        errorMessage: "Same device flow can be enabled in desktop mode for only Web Wallets. Provide a valid webWalletBaseUrl",
++        errorCode: "MISSING_WEB_WALLET_BASE_URL"
++      });
++      resetState();
+     }
+   };
+ 
+   useEffect(() => {
+     const handleVisibilityChange = () => {
+-      if (document.visibilityState === "visible") {
+-        if (sessionStateRef.current && isActiveRef.current) {
+-          const { requestId, transactionId } = sessionStateRef.current;
+-          fetchVPStatus(requestId, transactionId);
+-        }
++      const requestId = sessionStateRef.current.requestId;
++      if (
++        document.visibilityState === "visible" && isActiveRef.current && requestId) {
++        fetchVPStatus(requestId);
+       }
+     };
+ 
+@@ -263,6 +331,30 @@ const OpenID4VPVerification: React.FC<OpenID4VPVerificationProps> = ({
+     };
+   }, [fetchVPStatus]);
+ 
++  useEffect(() => {
++    if (!isActiveRef.current) {
++      const hash = window.location.hash;
++      const params = new URLSearchParams(hash.substring(1));
++      const responseCode = params.get("response_code");
++      if (responseCode) {
++        isActiveRef.current = true;
++        fetchVPResult(responseCode);
++      } else {
++        const savedRequestId = sessionStateRef.current.requestId;
++
++        if (savedRequestId) {
++          isActiveRef.current = true;
++          setLoading(true);
++          fetchVPStatus(savedRequestId);
++        }
++      }
++    }
++
++    return () => {
++      isActiveRef.current = false;
++    };
++  }, []);
++
+   useEffect(() => {
+     if (!presentationDefinitionId && !presentationDefinition) {
+       throw new Error(
+@@ -303,7 +395,7 @@ const OpenID4VPVerification: React.FC<OpenID4VPVerificationProps> = ({
+ 
+   useEffect(() => {
+     if (!triggerElement) {
+-      if (isSameDeviceFlowEnabled && isMobileDevice()) {
++      if (isSameDeviceFlowEnabled) {
+         startVerification();
+       } else {
+         handleGenerateQRCode();
+@@ -311,13 +403,6 @@ const OpenID4VPVerification: React.FC<OpenID4VPVerificationProps> = ({
+     }
+   }, [triggerElement, isSameDeviceFlowEnabled]);
+ 
+-  useEffect(() => {
+-    return () => {
+-      isActiveRef.current = false;
+-      clearSessionData();
+-    };
+-  }, [clearSessionData]);
+-
+   return (
+     <div className={"ovp-root-div-container"}>
+       {loading && <div id="ovp-loader" className={"ovp-loader"} />}
+@@ -344,3 +429,4 @@ const OpenID4VPVerification: React.FC<OpenID4VPVerificationProps> = ({
+ };
+ 
+ export default OpenID4VPVerification;
++
+diff --git a/inji-verify-sdk/src/components/openid4vp-verification/OpenID4VPVerification.types.ts b/inji-verify-sdk/src/components/openid4vp-verification/OpenID4VPVerification.types.ts
+index a403e024..1033d545 100644
+--- a/inji-verify-sdk/src/components/openid4vp-verification/OpenID4VPVerification.types.ts
++++ b/inji-verify-sdk/src/components/openid4vp-verification/OpenID4VPVerification.types.ts
+@@ -1,21 +1,29 @@
+-export type VerificationStatus = "valid" | "invalid" | "expired";
+-
++export type VerificationStatus = "SUCCESS" | "INVALID" | "EXPIRED" | "REVOKED";
++export type OverallVPStatus = "SUCCESS" | "INVALID";
+ export interface VerificationResult {
+-  /**
+-  
+-  Verified credential data (structured per implementation).
+-  */
+-  vc: Record<string, unknown>;
++    /**
+ 
+-  /**
+-  
+-  The status of the verification.
+-  */
+-  vcStatus: VerificationStatus;
++     Verified credential data (structured per implementation).
++     */
++    vc: Record<string, unknown>;
++
++    /**
++
++     Full verification result, including per-check outcomes and optional claims.
++     */
++    verificationResponse: CredentialResult | VpSummarisedVerificationResponse;
+ }
+ 
+ export type VerificationResults = VerificationResult[];
+ 
++export interface VpSummarisedVerificationResponse {
++    vcResults: {
++        vc: Record<string, unknown>;
++        vcStatus: VerificationStatus;
++    }[];
++    vpResultStatus: OverallVPStatus;
++}
++
+ export interface VPRequestBody {
+   clientId: string;
+   nonce: string;
+@@ -23,7 +31,15 @@ export interface VPRequestBody {
+   presentationDefinitionId?: string;
+   presentationDefinition?: PresentationDefinition;
+   acceptVPWithoutHolderProof?: boolean;
++  /**
++   * When true, the verifier backend will generate a short-lived single-use `response_code`
++   * and return it via redirect for same-device web-wallet flows.
++   *
++   * Must be omitted/false for cross-device and same-device mobile-wallet (deeplink) flows.
++   */
++  responseCodeValidationRequired?: boolean;
+ }
++
+ type ExclusivePresentationDefinition =
+   /**
+    * ID of the presentation definition used for verification.
+@@ -132,20 +148,74 @@ export type OpenID4VPVerificationProps = ExclusivePresentationDefinition &
+    */
+   onError: (error: AppError) => void;
+ 
+-  /**
+-   Indicates whether to accept VP submissions without holder proof.
+-   When true, allows unsigned VPs (VPs without proof).
+-   */
+-  acceptVPWithoutHolderProof?: boolean;
++    /**
++     Indicates whether to accept VP submissions without holder proof.
++     When true, allows unsigned VPs (VPs without proof).
++     */
++    acceptVPWithoutHolderProof?: boolean;
++
++    /**
++     The base URL of the wallet.
++     */
++    webWalletBaseUrl?: string;
++
++    /**
++     * Configuration object used to control VP verification behaviour.
++     *
++     * Allows enabling/disabling specific verification checks such as:
++     * - Schema & signature validation
++     * - Expiry validation
++     * - Status checks (e.g., revocation)
++     */
++    vpVerificationRequest?: VPVerificationRequest;
++
++    /*This attribute will decide the format of the response from SDK*/
++
++    summariseResults?: boolean;
+ };
+ 
+ export interface SessionState {
+   requestId: string;
+-  transactionId: string;
+ }
+ 
+ export type AppError = {
+   errorMessage: string;
+   errorCode?: string;
+   transactionId?: string | null;
+-};
+\ No newline at end of file
++};
++export interface VPVerificationRequest {
++    skipStatusChecks?: boolean;
++    statusCheckFilters?: string[];
++    includeClaims?: boolean;
++}
++
++export interface VPVerificationV2Response {
++    transactionId: string;
++    allChecksSuccessful: boolean;
++    credentialResults: CredentialResult[];
++}
++
++export interface CredentialResult {
++    verifiableCredential: string | object;
++    allChecksSuccessful: boolean;
++    holderProofCheck?: {
++        valid: boolean;
++        error: any;
++    } | null;
++    schemaAndSignatureCheck?: {
++        valid: boolean;
++        error: any;
++    };
++    expiryCheck?: {
++        valid: boolean;
++    };
++    statusChecks?: {
++        purpose: string;
++        valid: boolean;
++        error: any;
++    }[];
++    claims?: Record<string, any>;
++}
++
++
++
+diff --git a/inji-verify-sdk/src/utils/api.ts b/inji-verify-sdk/src/utils/api.ts
+index 99daf4e4..fc4eb67a 100644
+--- a/inji-verify-sdk/src/utils/api.ts
++++ b/inji-verify-sdk/src/utils/api.ts
+@@ -1,9 +1,9 @@
+ import {
+-  AppError,
+-  PresentationDefinition,
+-  VPRequestBody,
++    AppError,
++    PresentationDefinition,
++    VPRequestBody, VPVerificationRequest,
+ } from "../components/openid4vp-verification/OpenID4VPVerification.types";
+-import { vcSubmissionBody } from "../components/qrcode-verification/QRCodeVerification.types";
++import { vcSubmissionBody, VCVerificationV2Request, VCVerificationV2Response} from "../components/qrcode-verification/QRCodeVerification.types";
+ import { QrData } from "../types/OVPSchemeQrData";
+ import { isCWT } from "./cborUtils";
+ 
+@@ -11,42 +11,37 @@ const generateNonce = (): string => {
+   return btoa(Date.now().toString());
+ };
+ 
+-export const vcVerification = async (credential: unknown, url: string) => {
+-  let body: string;
+-  let contentType: string;
++export const vcVerificationV2 = async (credential: unknown, url: string, config?: VCVerificationV2Request): Promise<VCVerificationV2Response> => {
++    const vcString = isCWT(credential)
++        ? (credential as string)
++        : typeof credential === "string" ? credential : JSON.stringify(credential);
+ 
+-  if (isCWT(credential)) {
+-    body = credential as string;
+-    contentType = "application/vc+cwt";
+-  }
+-  else if (typeof credential === "string") {
+-    body = credential;
+-    contentType = "application/vc+sd-jwt";
+-  } else {
+-    body = JSON.stringify(credential);
+-    contentType = "application/vc+ld+json";
+-  }
+-  const requestOptions = {
+-    method: "POST",
+-    headers: {
+-      "Content-Type": contentType,
+-    },
+-    body: body,
+-  };
++    const requestBody = {
++        verifiableCredential: vcString,
++        skipStatusChecks: config?.skipStatusChecks ?? false,
++        statusCheckFilters: config?.statusCheckFilters ?? [],
++        includeClaims: config?.includeClaims ?? false,
++    };
+ 
+-  try {
+-    const response = await fetch(url + "/vc-verification", requestOptions);
+-    const data = await response.json();
+-    if (response.status !== 200) throw new Error(`Failed VC Verification due to: ${ data.error || "Unknown Error" }`);
+-    return data.verificationStatus;
+-  } catch (error) {
+-    console.error(error);
+-    if (error instanceof Error) {
+-      throw Error(error.message);
+-    } else {
+-      throw new Error("An unknown error occurred");
++    try {
++        const response = await fetch(`${url}/v2/vc-verification`, {
++            method: "POST",
++            headers: { "Content-Type": "application/json" },
++            body: JSON.stringify(requestBody),
++        });
++        const data = await response.json();
++
++        if (!response.ok) {
++            throw new Error(data?.message || data?.error || `Verification failed with status ${response.status}`);
++        }
++        if (!data) {
++            throw new Error("Verification response was empty or invalid JSON");
++        }
++        return data as VCVerificationV2Response;
++    } catch (error) {
++        console.error("V2 Verification Error:", error);
++        throw error instanceof Error ? error : new Error("An unknown error occurred during verification");
+     }
+-  }
+ };
+ 
+ export const vcSubmission = async (
+@@ -92,7 +87,7 @@ export const vpRequest = async (
+   const requestBody: VPRequestBody = {
+     clientId: clientId,
+     nonce: generateNonce(),
+-    acceptVPWithoutHolderProof: acceptVPWithoutHolderProof,
++    acceptVPWithoutHolderProof: acceptVPWithoutHolderProof
+   };
+ 
+   if (txnId) requestBody.transactionId = txnId;
+@@ -124,15 +119,18 @@ export const vpRequest = async (
+   }
+ };
+ 
+-export const vpRequestStatus = async (url: string, reqId: string) => {
++export const vpRequestStatus = async (url: string, reqId: string, abortSignal = false) => {
+   try {
+-    const response = await fetch(url + `/vp-request/${reqId}/status`);
++    const response = await fetch(url + `/vp-request/${reqId}/status`, {
++      signal: abortSignal ? AbortSignal.timeout(5000) : undefined
++    });
+     if (response.status !== 200) throw new Error("Failed to fetch status");
+     const data = await response.json();
+     return data;
+   } catch (error) {
+     console.error(error);
+     if (error instanceof Error) {
++      if (error.name === "TimeoutError") return error;
+       throw Error(error.message);
+     } else {
+       throw new Error("An unknown error occurred");
+@@ -147,23 +145,101 @@ const isAppError = (error: unknown): error is AppError => (
+   typeof (error as Record<string, unknown>).errorMessage === 'string'
+ );
+ 
+-export const vpResult = async (url: string, txnId: string) => {
++export const vpSessionRequest = async (
++  url: string,
++  clientId: string,
++  txnId?: string,
++  presentationDefinitionId?: string,
++  presentationDefinition?: PresentationDefinition,
++  acceptVPWithoutHolderProof?: boolean,
++  responseCodeValidationRequired?: boolean
++) => {
++  const requestBody: VPRequestBody = {
++    clientId: clientId,
++    nonce: generateNonce(),
++    acceptVPWithoutHolderProof: acceptVPWithoutHolderProof,
++  };
++
++  if (txnId) requestBody.transactionId = txnId;
++  if (presentationDefinitionId)
++    requestBody.presentationDefinitionId = presentationDefinitionId;
++  if (presentationDefinition)
++    requestBody.presentationDefinition = presentationDefinition;
++  if (responseCodeValidationRequired) {
++    requestBody.responseCodeValidationRequired = true;
++  }
++
+   try {
+-    const response = await fetch(url + `/vp-result/${txnId}`);
+-    const data = await response.json();
+-    if (response.status !== 200) {
++    const response = await fetch(url + "/vp-session-request", {
++      method: "POST",
++      headers: {
++        "Content-Type": "application/json",
++      },
++      credentials: "include",
++      body: JSON.stringify(requestBody),
++    });
++    if (response.status !== 201) throw new Error("Failed to create VP request");
++    const data: QrData = await response.json();
++    return data;
++  } catch (error) {
++    console.error(error);
++    if (error instanceof Error) {
++      throw Error(error.message);
++    } else {
++      throw new Error("An unknown error occurred");
++    }
++  }
++};
++
++/**
++ * Public helper that calls the new `/vp-session-results` endpoint.
++ *
++ * This is the primary endpoint used by UI/SDK to fetch VP (and VC submission)
++ * verification results for a session bound via the `transaction_id` HttpOnly cookie.
++ */
++export const vpSessionResults = async (
++  url: string,
++  responseCode?: string | null,
++  config?: VPVerificationRequest,
++) => {
++  const requestBody = {
++    responseCode: responseCode ?? undefined,
++    skipStatusChecks: config?.skipStatusChecks ?? false,
++    statusCheckFilters: config?.statusCheckFilters ?? [],
++    includeClaims: config?.includeClaims ?? false,
++  };
++
++  try {
++    const response = await fetch(`${url}/vp-session-results`, {
++      method: "POST",
++      credentials: "include",
++      headers: {
++        "Content-Type": "application/json",
++      },
++      body: JSON.stringify(requestBody),
++    });
++    if (!response.ok) {
++      const errorData = await response.json().catch(() => ({}));
+       throw {
+-        errorCode: data.errorCode,
+-        errorMessage: data.errorMessage || data.error || "Unknown error",
+-        transactionId: txnId ?? null
++        errorCode: (errorData as Record<string, unknown>).errorCode as
++          | string
++          | undefined,
++        errorMessage:
++          ((errorData as Record<string, unknown>).errorMessage as string) ||
++          ((errorData as Record<string, unknown>).error as string) ||
++          "Unknown error",
++        transactionId: (errorData as Record<string, unknown>).transactionId as
++          | string
++          | undefined,
+       } as AppError;
+     }
+-    return data.vcResults;
++
++    const data = await response.json();
++    return data;
+   } catch (error) {
+     if (isAppError(error)) {
+       throw error as AppError;
+-    } else {
+-      throw error;
+     }
++    throw error;
+   }
+ };
+\ No newline at end of file
+diff --git a/inji-verify-sdk/src/utils/utils.ts b/inji-verify-sdk/src/utils/utils.ts
+index 5068011a..14f93479 100644
+--- a/inji-verify-sdk/src/utils/utils.ts
++++ b/inji-verify-sdk/src/utils/utils.ts
+@@ -1,4 +1,5 @@
+ import {VALID_SD_JWT_TYPES} from "./constants";
++import {CredentialResult, VCVerificationV2Response} from "../components/qrcode-verification/QRCodeVerification.types";
+ 
+ export const isSdJwt = (vpToken: string): boolean => {
+     try {
+@@ -21,4 +22,86 @@ const decodeBase64Url = (encoded: string): string => {
+     const decoded = atob(base64);
+     const decodedBytes = Uint8Array.from(decoded, c => c.charCodeAt(0));
+     return new TextDecoder().decode(decodedBytes);
+-};
+\ No newline at end of file
++};
++
++export const normalizeVp = (vp: any): Record<string, unknown> => {
++    if (typeof vp === "string") {
++        if (isSdJwt(vp)) vp ;
++        try {
++            return JSON.parse(vp);
++        } catch {
++           {vp};
++        }
++    }
++    return vp;
++};
++
++export const clearUrl = (params: string[] = []) => {
++    const url = new URL(window.location.href);
++
++    const hashParamsObj = new URLSearchParams(url.hash.slice(1));
++    params.forEach(param => {
++        url.searchParams.delete(param);
++        hashParamsObj.delete(param);
++    });
++    url.hash = hashParamsObj.toString()
++      ? `#${hashParamsObj.toString()}`
++      : "";
++
++    window.history.replaceState(null, "", url.pathname + url.search + url.hash);
++};
++
++export const summariseVCResult = (
++    response: VCVerificationV2Response
++): "SUCCESS" | "INVALID" | "EXPIRED" | "REVOKED" => {
++
++    if (!response.schemaAndSignatureCheck?.valid) {
++        return "INVALID";
++    }
++
++    if (!response.expiryCheck?.valid) {
++        return "EXPIRED";
++    }
++
++    if (response.statusCheck?.length) {
++        for (const status of response.statusCheck) {
++            if (status.error) {
++                throw new Error(
++                    status.error.errorMessage || "Status check error occurred"
++                );
++            }
++
++            const isRevoked =
++                status.purpose === "revocation" &&
++                !status.valid &&
++                status.error == null;
++
++            if (isRevoked) return "REVOKED";
++        }
++    }
++
++    return response.allChecksSuccessful ? "SUCCESS" : "INVALID";
++};
++export const summariseVPResult = (cred: CredentialResult): "SUCCESS" | "INVALID" | "EXPIRED" | "REVOKED" => {
++    if (cred.holderProofCheck?.valid === false) return "INVALID";
++
++    if (cred.schemaAndSignatureCheck?.valid === false) return "INVALID";
++
++    if (cred.expiryCheck?.valid === false) return "EXPIRED";
++
++    if (cred.statusChecks?.length) {
++        for (const status of cred.statusChecks) {
++            if (status.error) {
++                throw new Error(status.error.errorMessage || "Status check error occurred");}
++
++            const isRevoked =
++                status.purpose === "revocation" &&
++                    status.valid === false &&
++                status.error == null;
++
++            if (isRevoked) return "REVOKED";
++        }
++    }
++
++    return cred.allChecksSuccessful ? "SUCCESS" : "INVALID";
++};
+diff --git a/verify-service/src/main/resources/application-local.properties b/verify-service/src/main/resources/application-local.properties
+index 75bda4c0..5501f882 100644
+--- a/verify-service/src/main/resources/application-local.properties
++++ b/verify-service/src/main/resources/application-local.properties
+@@ -5,13 +5,19 @@ spring.jpa.properties.hibernate.default_schema=verify
+ spring.datasource.driver-class-name=org.hsqldb.jdbc.JDBCDriver
+ spring.sql.init.platform=hsqldb
+ spring.jpa.hibernate.ddl-auto=update
+-spring.datasource.url=jdbc:hsqldb:mem:testdb
++spring.datasource.url=jdbc:hsqldb:mem:testdb;
+ 
+ spring.sql.init.mode=embedded
+ spring.sql.init.schema-locations=classpath:schema-hsqldb.sql
+ spring.sql.init.continue-on-error=false
+ spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.HSQLDialect
+ 
++# Below configuration are for cookie setup
++inji.verify.cookie-secure-value=${INJI_VERIFY_COOKIE_SECURE_VALUE:false}
++inji.verify.cookie-path=${INJI_VERIFY_COOKIE_PATH:/v1/verify}
++inji.verify.cookie-duration-in-minute=${INJI_VERIFY_COOKIE_DURATION_IN_MINUTE:5}
++inji.verify.cookie-same-site=${INJI_VERIFY_COOKIE_SAME_SITE:Lax}
++
+ # The below configuration is set for VP request status long polling timeout set with env INJI_VP_REQUEST_LONG_POLLING_TIMEOUT, if not set the default value is 55000ms
+ inji.vp-request.long-polling-timeout=${INJI_VP_REQUEST_LONG_POLLING_TIMEOUT:55000}
+ 
+@@ -27,5 +33,6 @@ inji.did.verify.uri=${INJI_DID_VERIFY_URI:did:web:injiverify.dev.mosip.net:v1:ve
+ inji.did.verify.public.key.uri=${INJI_DID_VERIFY_PUBLIC_KEY_URI:did:web:injiverify.dev.mosip.net:v1:verify#key-0}
+ 
+ inji.verify.redirect-uri=${INJI_VERIFY_REDIRECT_URI:}
++inji.verify.response-code-expiry-time-in-mins=${INJI_VERIFY_RESPONSE_CODE_EXPIRY_TIME_IN_MINS:5}
+ 
+-inji.verify.claims-with-meta-data=${INJI_VERIFY_CLAIMS_WITH_META_DATA:_sd,_sd_alg,iss,cnf,sub,aud,exp,nbf,iat,cti}
+\ No newline at end of file
++inji.verify.claims-with-meta-data=${INJI_VERIFY_CLAIMS_WITH_META_DATA:_sd,_sd_alg,iss,cnf,sub,aud,exp,nbf,iat,cti}
+diff --git a/verify-service/src/main/resources/application.properties b/verify-service/src/main/resources/application.properties
+index 38b6c425..075c5584 100644
+--- a/verify-service/src/main/resources/application.properties
++++ b/verify-service/src/main/resources/application.properties
+@@ -7,6 +7,12 @@ spring.datasource.url=jdbc:postgresql://${DATABASE_HOST}:${DATABASE_PORT}/${DATA
+ spring.datasource.username=${DATABASE_USERNAME}
+ spring.datasource.password=${DATABASE_PASSWORD}
+ 
++# Below configuration are for cookie setup
++inji.verify.cookie-secure-value=${INJI_VERIFY_COOKIE_SECURE_VALUE:true}
++inji.verify.cookie-path=${INJI_VERIFY_COOKIE_PATH:/v1/verify}
++inji.verify.cookie-duration-in-minute=${INJI_VERIFY_COOKIE_DURATION_IN_MINUTE:5}
++inji.verify.cookie-same-site=${INJI_VERIFY_COOKIE_SAME_SITE:Lax}
++
+ # The below configuration is set for VP request status long polling timeout set with env INJI_VP_REQUEST_LONG_POLLING_TIMEOUT, if not set the default value is 55000ms
+ inji.vp-request.long-polling-timeout=${INJI_VP_REQUEST_LONG_POLLING_TIMEOUT:55000}
+ 
+@@ -22,5 +28,6 @@ inji.did.verify.uri=${INJI_DID_VERIFY_URI:did:web:injiverify.dev.mosip.net:v1:ve
+ inji.did.verify.public.key.uri=${INJI_DID_VERIFY_PUBLIC_KEY_URI:did:web:injiverify.dev.mosip.net:v1:verify#key-0}
+ 
+ inji.verify.redirect-uri=${INJI_VERIFY_REDIRECT_URI:}
++inji.verify.response-code-expiry-time-in-mins=${INJI_VERIFY_RESPONSE_CODE_EXPIRY_TIME_IN_MINS:5}
+ 
+ inji.verify.claims-with-meta-data=${INJI_VERIFY_CLAIMS_WITH_META_DATA:_sd,_sd_alg,iss,cnf,sub,aud,exp,nbf,iat,cti}
+\ No newline at end of file

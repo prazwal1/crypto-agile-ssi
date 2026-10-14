@@ -1,0 +1,18 @@
+bcprov-jdk15on-1.69.jar (classpath.idx 7): 4461 entries
+  ML-DSA (FIPS 204) JCA spec: absent
+  ML-DSA (FIPS 204) signer: absent
+  SLH-DSA (FIPS 205) JCA spec: absent
+  Dilithium (pre-standard) spec: absent
+  SPHINCS+ (pre-standard) spec: absent
+bcprov-jdk15to18-1.70.jar (classpath.idx 127): 3630 entries
+  ML-DSA (FIPS 204) JCA spec: absent
+  ML-DSA (FIPS 204) signer: absent
+  SLH-DSA (FIPS 205) JCA spec: absent
+  Dilithium (pre-standard) spec: absent
+  SPHINCS+ (pre-standard) spec: absent
+bcprov-jdk18on-1.78.jar (classpath.idx 146): 5698 entries
+  ML-DSA (FIPS 204) JCA spec: absent
+  ML-DSA (FIPS 204) signer: absent
+  SLH-DSA (FIPS 205) JCA spec: absent
+  Dilithium (pre-standard) spec: present
+  SPHINCS+ (pre-standard) spec: present

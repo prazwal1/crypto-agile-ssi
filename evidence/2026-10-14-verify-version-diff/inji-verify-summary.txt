@@ -1,0 +1,26 @@
+# inji-verify v0.17.0 (3b6f90f) -> v0.18.2 (f3f7c75)
+ 271 files changed, 29808 insertions(+), 33155 deletions(-)
+
+## Inventory files (18)
++150 -64	inji-verify-sdk/src/components/openid4vp-verification/OpenID4VPVerification.tsx
++89 -19	inji-verify-sdk/src/components/openid4vp-verification/OpenID4VPVerification.types.ts
++126 -50	inji-verify-sdk/src/utils/api.ts
+unchanged	inji-verify-sdk/src/utils/constants.ts
++12 -3	verify-service/pom.xml
+unchanged	verify-service/src/main/java/io/inji/verify/controller/VCVerificationController.java
+unchanged	verify-service/src/main/java/io/inji/verify/key/impl/P12KeyExtractor.java
+unchanged	verify-service/src/main/java/io/inji/verify/services/impl/P12FileKeyManagementServiceImpl.java
+unchanged	verify-service/src/main/java/io/inji/verify/services/impl/VCVerificationServiceImpl.java
++3 -2	verify-service/src/main/java/io/inji/verify/services/impl/VerifiablePresentationRequestServiceImpl.java
++1 -0	verify-service/src/main/java/io/inji/verify/shared/Constants.java
+unchanged	verify-service/src/main/java/io/inji/verify/utils/DIDDocumentUtil.java
+unchanged	verify-service/src/main/java/io/inji/verify/utils/SecurityUtils.java
++5 -0	verify-service/src/main/java/io/inji/verify/utils/Utils.java
++9 -2	verify-service/src/main/resources/application-local.properties
++7 -0	verify-service/src/main/resources/application.properties
+unchanged	verify-ui/public/env.config.js
++67 -3	verify-ui/src/types/data-types.ts
+
+## Dependency versions (root pom.xml)
+v0.17.0: <vcverifier-jar.version>1.7.0 <bouncycastle.version>1.78 <nimbusds-jiose-jwt.version>9.37.2 
+v0.18.2: <vcverifier-jar.version>1.8.1 <bouncycastle.version>1.78 <nimbusds-jiose-jwt.version>9.37.4 
