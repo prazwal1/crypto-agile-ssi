@@ -1,0 +1,12 @@
+﻿DATABASE_SCHEMA=verify
+INJI_KEYSTORE_FILE_PASS=***
+INJI_DID_VERIFY_PUBLIC_KEY_URI=did:web:ssi-verify.arlabsnepal.com:v1:verify#key-0
+INJI_VERIFY_CLAIMS_WITH_META_DATA=_sd,_sd_alg,iss,cnf,sub,aud,exp,nbf,iat,cti
+active_profile_env=default
+INJI_DID_VERIFY_URI=did:web:ssi-verify.arlabsnepal.com:v1:verify
+INJI_VP_SUBMISSION_BASE_URL=https://ssi-verify.arlabsnepal.com/v1/verify
+DATABASE_NAME=inji_verify
+INJI_VP_REQUEST_LONG_POLLING_TIMEOUT=55000
+INJI_VERIFY_RESPONSE_CODE_EXPIRY_TIME_IN_MINS=5
+INJI_VERIFY_REDIRECT_URI=https://ssi-verify.arlabsnepal.com
+work_dir=/home/inji

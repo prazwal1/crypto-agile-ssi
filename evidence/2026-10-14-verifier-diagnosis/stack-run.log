@@ -1,0 +1,40 @@
+﻿**********************
+Windows PowerShell transcript start
+Start time: 20261014105339
+Username: PRAZWAL\acer
+RunAs User: PRAZWAL\acer
+Configuration Name: 
+Machine: PRAZWAL (Microsoft Windows NT 10.0.26200.0)
+Host Application: C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.exe
+Process ID: 36932
+PSVersion: 5.1.26100.9444
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.9444
+BuildVersion: 10.0.26100.9444
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+
+== Layer test (expected for a made-up id: 404 with NO_AUTH_REQUEST)
+  200  http://localhost:8095/v1/verify/did.json  {"assertionMethod":["did:web:ssi-verify.arlabsnepal.com:v1:verify#key-0"],"service":[],"id":"did:web:ssi-verify.arlabsnepal.com:v1:verify","verificationMethod":[{"publicKeyMultibase":"z6MkkzruJN9axHYvD6xjym3FrMiPTGaZKuL9LFtt8bQMcEvC","controller":"did:web:ssi-verify.arlabsnepal.com:v1:verify","id":"...
+  404  http://localhost:8095/v1/verify/vp-request/diagnose-probe/status  {"errorCode":"NO_AUTH_REQUEST","errorMessage":"No Authorization request found for given request ID."}
+  200  http://localhost:3000/v1/verify/did.json  {"assertionMethod":["did:web:ssi-verify.arlabsnepal.com:v1:verify#key-0"],"service":[],"id":"did:web:ssi-verify.arlabsnepal.com:v1:verify","verificationMethod":[{"publicKeyMultibase":"z6MkkzruJN9axHYvD6xjym3FrMiPTGaZKuL9LFtt8bQMcEvC","controller":"did:web:ssi-verify.arlabsnepal.com:v1:verify","id":"...
+  404  http://localhost:3000/v1/verify/vp-request/diagnose-probe/status  {"errorCode":"NO_AUTH_REQUEST","errorMessage":"No Authorization request found for given request ID."}
+  200  https://ssi-verify.arlabsnepal.com/v1/verify/did.json  {"assertionMethod":["did:web:ssi-verify.arlabsnepal.com:v1:verify#key-0"],"service":[],"id":"did:web:ssi-verify.arlabsnepal.com:v1:verify","verificationMethod":[{"publicKeyMultibase":"z6MkkzruJN9axHYvD6xjym3FrMiPTGaZKuL9LFtt8bQMcEvC","controller":"did:web:ssi-verify.arlabsnepal.com:v1:verify","id":"...
+  404  https://ssi-verify.arlabsnepal.com/v1/verify/vp-request/diagnose-probe/status  {"errorCode":"NO_AUTH_REQUEST","errorMessage":"No Authorization request found for given request ID."}
+
+== Logs and configuration
+
+== Last errors in verify-service
+  2026-10-14T03:48:14.270601883Z 2026-10-14T03:48:14.269Z ERROR 1 --- [verify-service] [nio-8080-exec-2] o.a.c.c.C.[.[.[.[dispatcherServlet]      : Servlet.service() for servlet [dispatcherServlet] in context with path [/v1/verify] threw exception [Req
+  2026-10-14T03:48:14.270626784Z org.postgresql.util.PSQLException: ERROR: column v1_0.response_code does not exist
+  2026-10-14T03:48:14.270629485Z 	at org.postgresql.core.v3.QueryExecutorImpl.receiveErrorResponse(QueryExecutorImpl.java:2734) ~[postgresql-42.7.7.jar!/:42.7.7]
+  2026-10-14T03:48:14.270726691Z 	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138) ~[spring-tx-6.2.11.jar!/:6.2.11]
+  2026-10-14T03:48:14.270804397Z 	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93) ~[tomcat-embed-core-10.1.46.jar!/:na]
+  OK    Saved to F:\thesis\crypto-agile-ssi\evidence\2026-10-14-verifier-diagnosis
+**********************
+Windows PowerShell transcript end
+End time: 20261014105340
+**********************

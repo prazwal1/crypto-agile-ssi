@@ -1,0 +1,61 @@
+﻿2026-10-14T03:45:49.865521525Z generating env-config file
+2026-10-14T03:45:49.870096383Z generation of env-config file completed!
+2026-10-14T03:46:01.348168015Z 172.18.0.3 - - [14/Oct/2026:03:46:01 +0000] "GET /v1/verify/did.json HTTP/1.1" 502 497 "-" "curl/8.21.0" "203.159.54.204"
+2026-10-14T03:46:02.995838842Z 172.18.0.3 - - [14/Oct/2026:03:46:02 +0000] "GET / HTTP/1.1" 200 1036 "-" "curl/8.21.0" "203.159.54.204"
+2026-10-14T03:45:49.898816398Z 2026/10/14 03:45:49 [notice] 1#1: using the "epoll" event method
+2026-10-14T03:46:19.099073709Z 172.18.0.3 - - [14/Oct/2026:03:46:19 +0000] "GET /v1/verify/did.json HTTP/1.1" 200 597 "-" "curl/8.21.0" "203.159.54.204"
+2026-10-14T03:46:35.525613358Z 172.18.0.3 - - [14/Oct/2026:03:46:35 +0000] "GET / HTTP/1.1" 200 1036 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36" "203.159.54.204"
+2026-10-14T03:45:49.898839299Z 2026/10/14 03:45:49 [notice] 1#1: nginx/1.29.3
+2026-10-14T03:45:49.898841599Z 2026/10/14 03:45:49 [notice] 1#1: built by gcc 14.2.0 (Alpine 14.2.0) 
+2026-10-14T03:45:49.898843199Z 2026/10/14 03:45:49 [notice] 1#1: OS: Linux 6.6.87.2-microsoft-standard-WSL2
+2026-10-14T03:45:49.898844399Z 2026/10/14 03:45:49 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2026-10-14T03:45:49.899314126Z 2026/10/14 03:45:49 [notice] 1#1: start worker processes
+2026-10-14T03:45:49.899559540Z 2026/10/14 03:45:49 [notice] 1#1: start worker process 8
+2026-10-14T03:45:49.899844156Z 2026/10/14 03:45:49 [notice] 1#1: start worker process 9
+2026-10-14T03:45:49.900181175Z 2026/10/14 03:45:49 [notice] 1#1: start worker process 10
+2026-10-14T03:46:35.719968257Z 172.18.0.3 - - [14/Oct/2026:03:46:35 +0000] "GET /env.config.js HTTP/1.1" 200 630 "https://ssi-verify.arlabsnepal.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36" "203.159.54.204"
+2026-10-14T03:46:35.724211325Z 172.18.0.3 - - [14/Oct/2026:03:46:35 +0000] "GET /static/css/main.b6c9fac7.css HTTP/1.1" 200 36988 "https://ssi-verify.arlabsnepal.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36" "203.159.54.204"
+2026-10-14T03:46:35.799905615Z 172.18.0.3 - - [14/Oct/2026:03:46:35 +0000] "GET /manifest.json HTTP/1.1" 200 572 "https://ssi-verify.arlabsnepal.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36" "203.159.54.204"
+2026-10-14T03:46:35.956351815Z 172.18.0.3 - - [14/Oct/2026:03:46:35 +0000] "GET /theme.config.js HTTP/1.1" 200 1305 "https://ssi-verify.arlabsnepal.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36" "203.159.54.204"
+2026-10-14T03:46:37.616092143Z 172.18.0.3 - - [14/Oct/2026:03:46:37 +0000] "GET /static/js/main.3338b346.js HTTP/1.1" 200 3924572 "https://ssi-verify.arlabsnepal.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36" "203.159.54.204"
+2026-10-14T03:46:38.444838986Z 172.18.0.3 - - [14/Oct/2026:03:46:38 +0000] "GET /assets/config.json HTTP/1.1" 200 8434 "https://ssi-verify.arlabsnepal.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36" "203.159.54.204"
+2026-10-14T03:45:49.900486592Z 2026/10/14 03:45:49 [notice] 1#1: start worker process 11
+2026-10-14T03:45:49.900792909Z 2026/10/14 03:45:49 [notice] 1#1: start worker process 12
+2026-10-14T03:45:49.901276136Z 2026/10/14 03:45:49 [notice] 1#1: start worker process 13
+2026-10-14T03:45:49.901728762Z 2026/10/14 03:45:49 [notice] 1#1: start worker process 14
+2026-10-14T03:45:49.902403500Z 2026/10/14 03:45:49 [notice] 1#1: start worker process 15
+2026-10-14T03:45:49.902893227Z 2026/10/14 03:45:49 [notice] 1#1: start worker process 16
+2026-10-14T03:45:49.903397656Z 2026/10/14 03:45:49 [notice] 1#1: start worker process 17
+2026-10-14T03:45:49.903868782Z 2026/10/14 03:45:49 [notice] 1#1: start worker process 18
+2026-10-14T03:45:49.904446315Z 2026/10/14 03:45:49 [notice] 1#1: start worker process 19
+2026-10-14T03:45:49.904981845Z 2026/10/14 03:45:49 [notice] 1#1: start worker process 20
+2026-10-14T03:45:49.905757488Z 2026/10/14 03:45:49 [notice] 1#1: start worker process 21
+2026-10-14T03:45:49.907390780Z 2026/10/14 03:45:49 [notice] 1#1: start worker process 22
+2026-10-14T03:45:49.908534644Z 2026/10/14 03:45:49 [notice] 1#1: start worker process 23
+2026-10-14T03:46:01.346671824Z 2026/10/14 03:46:01 [error] 9#9: *1 connect() failed (111: Connection refused) while connecting to upstream, client: 172.18.0.3, server: , request: "GET /v1/verify/did.json HTTP/1.1", upstream: "http://172.18.0.7:8080/v1/verify/did.json", host: "ssi-verify.arlabsnepal.com"
+2026-10-14T03:46:38.633323013Z 172.18.0.3 - - [14/Oct/2026:03:46:38 +0000] "GET /static/media/scanner-outline.d2706b26158565947dc5c1b688bb0d86.svg HTTP/1.1" 200 6494 "https://ssi-verify.arlabsnepal.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36" "203.159.54.204"
+2026-10-14T03:46:38.641330720Z 172.18.0.3 - - [14/Oct/2026:03:46:38 +0000] "GET /assets/images/inji-logo.svg HTTP/1.1" 200 1036 "https://ssi-verify.arlabsnepal.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36" "203.159.54.204"
+2026-10-14T03:46:38.662735075Z 172.18.0.3 - - [14/Oct/2026:03:46:38 +0000] "GET /assets/images/under_construction.svg HTTP/1.1" 200 14010 "https://ssi-verify.arlabsnepal.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36" "203.159.54.204"
+2026-10-14T03:46:39.743441261Z 172.18.0.3 - - [14/Oct/2026:03:46:39 +0000] "GET /favicon.ico HTTP/1.1" 200 15406 "https://ssi-verify.arlabsnepal.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36" "203.159.54.204"
+2026-10-14T03:46:39.782097663Z 172.18.0.3 - - [14/Oct/2026:03:46:39 +0000] "GET /favicon180.png HTTP/1.1" 200 15718 "https://ssi-verify.arlabsnepal.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36" "203.159.54.204"
+2026-10-14T03:46:51.591802660Z 172.18.0.3 - - [14/Oct/2026:03:46:51 +0000] "GET /assets/cert.png HTTP/1.1" 200 2175 "https://ssi-verify.arlabsnepal.com/verify" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36" "203.159.54.204"
+2026-10-14T03:46:55.460970480Z 172.18.0.3 - - [14/Oct/2026:03:46:55 +0000] "POST /v1/verify/vp-session-request HTTP/1.1" 201 264 "https://ssi-verify.arlabsnepal.com/verify" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36" "203.159.54.204"
+2026-10-14T03:46:55.617491652Z 172.18.0.3 - - [14/Oct/2026:03:46:55 +0000] "GET /v1/verify/vp-request/req_4722c323-f639-431d-8e93-171d3fda822d/status HTTP/1.1" 500 101 "https://ssi-verify.arlabsnepal.com/verify" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36" "203.159.54.204"
+2026-10-14T03:47:00.176911560Z 172.18.0.3 - - [14/Oct/2026:03:47:00 +0000] "POST /v1/verify/vp-session-request HTTP/1.1" 201 264 "https://ssi-verify.arlabsnepal.com/verify" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36" "203.159.54.204"
+2026-10-14T03:47:00.323060271Z 172.18.0.3 - - [14/Oct/2026:03:47:00 +0000] "GET /v1/verify/vp-request/req_a11fbb83-db1a-45de-a0c8-55fb2ee6c88b/status HTTP/1.1" 500 101 "https://ssi-verify.arlabsnepal.com/verify" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36" "203.159.54.204"
+2026-10-14T03:47:03.980569212Z 172.18.0.3 - - [14/Oct/2026:03:47:03 +0000] "GET /static/css/main.b6c9fac7.css.map HTTP/1.1" 200 21957 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36" "203.159.54.204"
+2026-10-14T03:47:07.104377400Z 172.18.0.3 - - [14/Oct/2026:03:47:07 +0000] "GET /static/js/main.3338b346.js.map HTTP/1.1" 200 12406744 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36" "203.159.54.204"
+2026-10-14T03:47:11.884161308Z 172.18.0.3 - - [14/Oct/2026:03:47:11 +0000] "POST /v1/verify/vp-session-request HTTP/1.1" 201 264 "https://ssi-verify.arlabsnepal.com/verify" "Mozilla/5.0 (Linux; Android 16; Pixel 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Mobile Safari/537.36" "203.159.54.204"
+2026-10-14T03:47:12.005561277Z 172.18.0.3 - - [14/Oct/2026:03:47:12 +0000] "GET /v1/verify/vp-request/req_eef4ba36-00c8-42ec-b856-472467e69a35/status HTTP/1.1" 500 101 "https://ssi-verify.arlabsnepal.com/verify" "Mozilla/5.0 (Linux; Android 16; Pixel 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Mobile Safari/537.36" "203.159.54.204"
+2026-10-14T03:47:34.305816695Z 172.18.0.3 - - [14/Oct/2026:03:47:34 +0000] "POST /v1/verify/vp-session-request HTTP/1.1" 201 264 "https://ssi-verify.arlabsnepal.com/verify" "Mozilla/5.0 (Linux; Android 16; Pixel 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Mobile Safari/537.36" "203.159.54.204"
+2026-10-14T03:47:54.482949286Z 172.18.0.3 - - [14/Oct/2026:03:47:54 +0000] "GET /verify HTTP/1.1" 200 1036 "-" "Mozilla/5.0 (Linux; Android 16; Pixel 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Mobile Safari/537.36" "203.159.54.204"
+2026-10-14T03:48:06.195949234Z 172.18.0.3 - - [14/Oct/2026:03:48:06 +0000] "POST /v1/verify/vp-session-request HTTP/1.1" 201 264 "https://ssi-verify.arlabsnepal.com/verify" "Mozilla/5.0 (Linux; Android 16; Pixel 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Mobile Safari/537.36" "203.159.54.204"
+2026-10-14T03:48:06.333366330Z 172.18.0.3 - - [14/Oct/2026:03:48:06 +0000] "GET /v1/verify/vp-request/req_77072a95-9bcc-4538-a978-bc36a2574c68/status HTTP/1.1" 500 101 "https://ssi-verify.arlabsnepal.com/verify" "Mozilla/5.0 (Linux; Android 16; Pixel 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Mobile Safari/537.36" "203.159.54.204"
+2026-10-14T03:48:14.153569315Z 172.18.0.3 - - [14/Oct/2026:03:48:14 +0000] "POST /v1/verify/vp-session-request HTTP/1.1" 201 264 "https://ssi-verify.arlabsnepal.com/verify" "Mozilla/5.0 (Linux; Android 16; Pixel 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Mobile Safari/537.36" "203.159.54.204"
+2026-10-14T03:48:14.273210865Z 172.18.0.3 - - [14/Oct/2026:03:48:14 +0000] "GET /v1/verify/vp-request/req_063bf720-9d37-41df-aabd-36413581c060/status HTTP/1.1" 500 101 "https://ssi-verify.arlabsnepal.com/verify" "Mozilla/5.0 (Linux; Android 16; Pixel 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Mobile Safari/537.36" "203.159.54.204"
+2026-10-14T03:52:00.672927758Z 172.18.0.3 - - [14/Oct/2026:03:52:00 +0000] "GET /robots.txt HTTP/1.1" 200 67 "-" "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; Claude-User/1.0; +claude-user@anthropic.com)" "34.162.191.81"
+2026-10-14T03:52:01.737904167Z 172.18.0.3 - - [14/Oct/2026:03:52:01 +0000] "GET /v1/verify/vp-request/test-probe/status HTTP/1.1" 404 112 "-" "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; Claude-User/1.0; +claude-user@anthropic.com)" "34.162.191.81"
+2026-10-14T03:53:39.750159550Z 172.18.0.1 - - [14/Oct/2026:03:53:39 +0000] "GET /v1/verify/did.json HTTP/1.1" 200 597 "-" "curl/8.21.0" "-"
+2026-10-14T03:53:39.793366916Z 172.18.0.1 - - [14/Oct/2026:03:53:39 +0000] "GET /v1/verify/vp-request/diagnose-probe/status HTTP/1.1" 404 112 "-" "curl/8.21.0" "-"
+2026-10-14T03:53:40.061361788Z 172.18.0.3 - - [14/Oct/2026:03:53:40 +0000] "GET /v1/verify/did.json HTTP/1.1" 200 597 "-" "curl/8.21.0" "203.159.54.204"
+2026-10-14T03:53:40.338567664Z 172.18.0.3 - - [14/Oct/2026:03:53:40 +0000] "GET /v1/verify/vp-request/diagnose-probe/status HTTP/1.1" 404 112 "-" "curl/8.21.0" "203.159.54.204"

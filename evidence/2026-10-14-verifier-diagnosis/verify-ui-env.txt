@@ -1,0 +1,5 @@
+﻿DEFAULT_TITLE=Inji Verify
+OVP_QR_HEADER=INJI_OVP://payload=
+CLIENT_ID=inji-verify-ui
+CLIENT_ID_DID=did:web:ssi-verify.arlabsnepal.com:v1:verify
+VP_SUBMISSION_SUPPORTED=true

@@ -12,6 +12,13 @@ Dated record of working sessions. Each entry states what was done, what was obse
 - Changes: optional third tunnel hostname `VERIFY_HOSTNAME` (verify-ui:8000, which proxies `/v1/verify` and the DID to verify-service); verifier DID, response URI and redirect built from it; presentations enabled; FarmerCredential request added to `verify-config/config.json` (client_id_scheme did, ldp_vc, Ed25519Signature2020) and made the only essential entry.
 - Found D-08: verifier source analysed at v0.17.0, images run 0.18.2.
 
+### Verifier status 500 (10:47 to 11:05)
+- Symptom: Generate QR Code (FarmerCredential) and Request Verifiable Credentials both fail with "Failed to fetch status". `POST vp-session-request` returns 201; `GET /v1/verify/vp-request/{id}/status` returns 500.
+- Added `stack.ps1 diagnose-verifier`: same probe on verify-service (:8095), verify-ui nginx (:3000) and the tunnel. All three answer 404 `NO_AUTH_REQUEST` for a made-up id, and the verifier DID resolves on all three, so routing and the DID are fine (`evidence/2026-10-14-verifier-diagnosis/layer-test.txt`).
+- Cause in `verify-service.log`: `PSQLException: column v1_0.response_code does not exist`. verify-service 0.18.2 maps `response_code`, `response_code_expiry_at`, `response_code_used` (same-device flow, added in 0.18.0). `sql/verify_init.sql` was copied from upstream `docker-compose/db-init/init.sql`, which upstream never updated; the authoritative DDL is `db_scripts/inji_verify/ddl/verify-vp_submission.sql`. The earlier check "schema matches db-init" compared against the stale file.
+- Fix: SQL patch 002 (adds the columns, drops NOT NULL on `vp_token` and `presentation_submission`, adds the unique constraint and index, as in the 0.18.2 DDL); `apply-patches` now routes a patch by its `-- database:` header and restarts verify-service; `verify_init.sql` corrected for fresh installs. Other three tables match the DDL (`input_descriptors` is jsonb here, text upstream; no effect on reads).
+- Lesson for the method: compare schemas against the release DDL, not the convenience compose file.
+
 ---
 
 ## 2026-10-13 (Tue, evening)
