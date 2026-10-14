@@ -31,6 +31,14 @@ Dated record of working sessions. Each entry states what was done, what was obse
 - Cause in the wallet source: issuance key from the issuer's allowed proof algorithms and the user's key order; presentation key fixed to Ed25519 (F23). Fix for the run: SQL patch 003 (FarmerCredential allows EdDSA proofs; wallet default order puts Ed25519 first), then reissue.
 - Verifier screenshot not committed: it shows the holder's photo.
 
+### Successful presentation (19:57 to 20:05)
+- 19:57 `apply-patches` (001 to 003 OK; Certify and verify-service restarted).
+- Reissue (`evidence/2026-10-14-reissue-eddsa/`, 20:02): wallet proof JWT header `alg: EdDSA`, `typ: openid4vci-proof+jwt`, `kid: did:jwk` (OKP, Ed25519), logcat line 6412. Credential 200 (9,072 bytes); wallet resolved the issuer DID twice (credential check).
+- Presentation A (same folder, 20:03:10 to 20:03:39): wallet states `checkIfClientValidationIsRequired`, `getKeyPairFromKeystore`, `authenticateVerifier` (request object verified), `checkVerifierTrust`, consent, face match `FACE_VALID`, `sendVP` success. Verifier `req_2efce58b`: holder binding and proof-of-possession checks passed, no error.
+- Presentation B (`evidence/2026-10-14-presentation-run-3/`, 20:04 to 20:05): `req_1d60e1d6`, VP 9,901 chars, same checks passed, result valid in the browser.
+- Both: `LdpStatusChecker` warns "No credentialStatus field present in the VC" (no revocation check possible for this credential).
+- The access token header in logcat is `{"b64":false,"crit":["b64"],"kid":...}` (detached-payload JWS form from keymanager); values in logcat are truncated, so the VP proof is taken from the verifier database (`stack.ps1 export-presentation`).
+
 ---
 
 ## 2026-10-13 (Tue, evening)

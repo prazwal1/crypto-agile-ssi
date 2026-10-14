@@ -1,0 +1,849 @@
+--------- beginning of main
+10-14 20:04:42.867  1243  1302 E WifiHAL : wifi_select_tx_power_scenario
+10-14 20:04:45.350  5520  5520 W ModuleManager: ModuleManager.loadModule():641 Module qyw is not available
+10-14 20:04:45.957  1243  1302 E WifiHAL : Setting APF program, halHandle = 0xb40000790fb86350
+10-14 20:04:45.958  1243  1302 E WifiHAL : Set apf filter for iface = wlan0
+10-14 20:04:47.015 19492 19556 I ReactNativeJS: [Pixel 7] OpenID4VP: xstate.init -> waitingForData
+10-14 20:04:47.015 19492 19556 I ReactNativeJS: {}
+10-14 20:04:47.015 19492 19556 I ReactNativeJS:       
+10-14 20:04:47.016 19492 19556 I ReactNativeJS: [Pixel 7] scan: DISMISS -> checkStorage
+10-14 20:04:47.016 19492 19556 I ReactNativeJS: {}
+10-14 20:04:47.016 19492 19556 I ReactNativeJS:       
+10-14 20:04:47.067  1658  2769 W AS.PlaybackActivityMon: No piid assigned for invalid/internal port id 511
+10-14 20:04:47.068  1172  1191 W audio_hw_35l41: cs35l41_amp_common_event: ret: 0, event: 15, state: 2, device: 0
+10-14 20:04:47.068  1172  5542 W audio_hw_35l41: cs35l41_amp_common_event: ret: 0, event: 1, state: 2, device: 4
+10-14 20:04:47.069  1658  5788 W AS.PlaybackActivityMon: No piid assigned for invalid/internal port id 511
+10-14 20:04:47.070  1172  5542 W audio_hw_35l41: cs35l41_amp_common_event: ret: 0, event: 2, state: 3, device: 4
+10-14 20:04:47.073  1427  1427 E AOC     : F1:ERR: mix_creator.cc, 136: Source CHP is not registered with AHWSinkSPKR
+10-14 20:04:47.247  1172  1191 W audio_hw_35l41: cs35l41_amp_common_event: ret: 0, event: 15, state: 3, device: 0
+10-14 20:04:47.276 19492 19556 I ReactNativeJS: inside wallet disconnect
+10-14 20:04:47.277 19492 19556 I ReactNativeJS: [Pixel 7] scan: SCREEN_BLUR -> disconnectDevice
+10-14 20:04:47.277 19492 19556 I ReactNativeJS: {}
+10-14 20:04:47.277 19492 19556 I ReactNativeJS:       
+10-14 20:04:47.353 19492 19556 I ReactNativeJS: Returned cached response forCommonPropsKey-6964d04a-9268-11ed-a1eb-0242ac120002
+10-14 20:04:47.354 19492 19556 I ReactNativeJS: [Pixel 7] request: DISCONNECT -> inactive
+10-14 20:04:47.354 19492 19556 I ReactNativeJS: {}
+10-14 20:04:47.354 19492 19556 I ReactNativeJS:       
+10-14 20:04:47.354 19492 19556 I ReactNativeJS: 'Pixel 7', '<Sender.Event>', '{"type":"onDisconnected"}'
+10-14 20:04:47.361 19492 19556 I ReactNativeJS: [Pixel 7] OpenID4VP: xstate.init -> waitingForData
+10-14 20:04:47.361 19492 19556 I ReactNativeJS: {}
+10-14 20:04:47.361 19492 19556 I ReactNativeJS:       
+10-14 20:04:47.361 19492 19556 I ReactNativeJS: [Pixel 7] scan: DISCONNECT -> inactive
+10-14 20:04:47.361 19492 19556 I ReactNativeJS: {}
+10-14 20:04:47.361 19492 19556 I ReactNativeJS:       
+10-14 20:04:47.367  1658  2247 W InputChannel-JNI: Channel already disposed.
+--------- beginning of system
+10-14 20:04:47.369  1658  5788 W PackageConfigPersister: App-specific configuration not found for packageName: io.mosip.residentapp and userId: 0
+10-14 20:04:47.422 19492 19556 W ReactNativeJS: Warning: No implementation found for action type 'forwardToServices'
+10-14 20:04:47.422 19492 19556 I ReactNativeJS: [Pixel 7] app: ACTIVE -> ready.network.online
+10-14 20:04:47.422 19492 19556 I ReactNativeJS: {}
+10-14 20:04:47.422 19492 19556 I ReactNativeJS:       
+10-14 20:04:47.433 19492 19556 I ReactNativeJS: [Pixel 7] app: done.invoke.app.ready.focus.active:invocation[1] -> ready.network.online
+10-14 20:04:47.433 19492 19556 I ReactNativeJS: {}
+10-14 20:04:47.433 19492 19556 I ReactNativeJS:       
+10-14 20:04:47.434 19492 19556 I ReactNativeJS: [Pixel 7] app: done.invoke.app.ready.focus.active:invocation[3] -> ready.network.online
+10-14 20:04:47.434 19492 19556 I ReactNativeJS: {}
+10-14 20:04:47.434 19492 19556 I ReactNativeJS:       
+10-14 20:04:47.446 19492 19556 I ReactNativeJS: [Pixel 7] app: done.invoke.app.ready.focus.active:invocation[0] -> ready.network.online
+10-14 20:04:47.446 19492 19556 I ReactNativeJS: {
+10-14 20:04:47.446 19492 19556 I ReactNativeJS:   "data": ""
+10-14 20:04:47.446 19492 19556 I ReactNativeJS: }
+10-14 20:04:47.446 19492 19556 I ReactNativeJS:       
+10-14 20:04:47.447 19492 19556 I ReactNativeJS: [Pixel 7] app: done.invoke.app.ready.focus.active:invocation[2] -> ready.network.online
+10-14 20:04:47.447 19492 19556 I ReactNativeJS: {
+10-14 20:04:47.447 19492 19556 I ReactNativeJS:   "data": ""
+10-14 20:04:47.447 19492 19556 I ReactNativeJS: }
+10-14 20:04:47.447 19492 19556 I ReactNativeJS:       
+10-14 20:04:48.239  2733  3006 E SatelliteController: isSatelliteEnabled: mIsSatelliteEnabled=null
+10-14 20:04:48.248  1658  5788 W UserManagerService: Requested status bar icon for non-badged user 0
+10-14 20:04:48.301  1658  1703 W ProcessStats: Tracking association SourceState{6702f5a system/1000 BFgs #69189} whose proc state 4 is better than process ProcessState{7e5392d com.google.android.ext.services/10245 pkg=com.google.android.ext.services} proc state 14 (6 skipped)
+10-14 20:04:48.342  1658  5788 W UserManagerService: Requested status bar icon for non-badged user 0
+10-14 20:04:48.351  2759  2759 W SplitSelectStateCtor: Missing session instanceIds
+10-14 20:04:48.354  1658  6492 W UserManagerService: Requested status bar icon for non-badged user 0
+10-14 20:04:48.356  1658  2212 W UserManagerService: Requested status bar icon for non-badged user 0
+10-14 20:04:48.456  1658  2769 W AS.PlaybackActivityMon: No piid assigned for invalid/internal port id 511
+10-14 20:04:48.456  1172  1191 W audio_hw_35l41: cs35l41_amp_common_event: ret: 0, event: 15, state: 3, device: 0
+10-14 20:04:48.456  1658  6462 W AS.PlaybackActivityMon: No piid assigned for invalid/internal port id 511
+10-14 20:04:48.587  1172  1191 W audio_hw_35l41: cs35l41_amp_common_event: ret: 0, event: 15, state: 3, device: 0
+10-14 20:04:49.063  1658  2458 W UserManagerService: Requested status bar icon for non-badged user 0
+10-14 20:04:49.077 19492 19556 I ReactNativeJS: [Pixel 7] OpenID4VP: xstate.init -> waitingForData
+10-14 20:04:49.077 19492 19556 I ReactNativeJS: {}
+10-14 20:04:49.077 19492 19556 I ReactNativeJS:       
+10-14 20:04:49.077 19492 19556 I ReactNativeJS: [Pixel 7] scan: RESET -> checkStorage
+10-14 20:04:49.077 19492 19556 I ReactNativeJS: {}
+10-14 20:04:49.077 19492 19556 I ReactNativeJS:       
+10-14 20:04:49.091  1658  2827 W UserManagerService: Requested status bar icon for non-badged user 0
+10-14 20:04:49.100  2759  2759 W SplitSelectStateCtor: Missing session instanceIds
+10-14 20:04:49.104  1658  6462 W UserManagerService: Requested status bar icon for non-badged user 0
+10-14 20:04:49.105  1658  6462 W UserManagerService: Requested status bar icon for non-badged user 0
+10-14 20:04:49.135  1658  2458 W AS.PlaybackActivityMon: No piid assigned for invalid/internal port id 511
+10-14 20:04:49.136  1658  2212 W AS.PlaybackActivityMon: No piid assigned for invalid/internal port id 511
+10-14 20:04:49.136  1172  1191 W audio_hw_35l41: cs35l41_amp_common_event: ret: 0, event: 15, state: 3, device: 0
+10-14 20:04:49.204 19492 19556 I ReactNativeJS: [Pixel 7] scan: SCREEN_FOCUS -> checkStorage
+10-14 20:04:49.204 19492 19556 I ReactNativeJS: {}
+10-14 20:04:49.204 19492 19556 I ReactNativeJS:       
+10-14 20:04:49.236 19492 19556 I ReactNativeJS: Returned cached response forCommonPropsKey-6964d04a-9268-11ed-a1eb-0242ac120002
+10-14 20:04:49.237 19492 19556 I ReactNativeJS: [Pixel 7] scan: done.invoke.scan.checkStorage:invocation[0] -> startPermissionCheck
+10-14 20:04:49.237 19492 19556 I ReactNativeJS: {
+10-14 20:04:49.237 19492 19556 I ReactNativeJS:   "data": false
+10-14 20:04:49.237 19492 19556 I ReactNativeJS: }
+10-14 20:04:49.237 19492 19556 I ReactNativeJS:       
+10-14 20:04:49.265  1172  1191 W audio_hw_35l41: cs35l41_amp_common_event: ret: 0, event: 15, state: 3, device: 0
+10-14 20:04:49.311 19492 19556 I ReactNativeJS: [Pixel 7] scan: START_PERMISSION_CHECK -> checkNearbyDevicesPermission.checking
+10-14 20:04:49.311 19492 19556 I ReactNativeJS: {}
+10-14 20:04:49.311 19492 19556 I ReactNativeJS:       
+10-14 20:04:49.381 19492 19556 I ReactNativeJS: [Pixel 7] scan: NEARBY_DISABLED -> checkNearbyDevicesPermission.requesting
+10-14 20:04:49.381 19492 19556 I ReactNativeJS: {}
+10-14 20:04:49.381 19492 19556 I ReactNativeJS:       
+10-14 20:04:49.432 19492 19556 I ReactNativeJS: [Pixel 7] scan: NEARBY_ENABLED -> checkBluetoothPermission.checking
+10-14 20:04:49.432 19492 19556 I ReactNativeJS: {}
+10-14 20:04:49.432 19492 19556 I ReactNativeJS:       
+10-14 20:04:49.694 19492 19556 I ReactNativeJS: [Pixel 7] scan: BLUETOOTH_PERMISSION_ENABLED -> checkBluetoothState.checking
+10-14 20:04:49.694 19492 19556 I ReactNativeJS: {}
+10-14 20:04:49.694 19492 19556 I ReactNativeJS:       
+10-14 20:04:49.747 19492 19556 I ReactNativeJS: inside wallet disconnect
+10-14 20:04:49.748 19492 19556 I ReactNativeJS: [Pixel 7] scan: BLUETOOTH_STATE_ENABLED -> clearingConnection
+10-14 20:04:49.748 19492 19556 I ReactNativeJS: {}
+10-14 20:04:49.748 19492 19556 I ReactNativeJS:       
+10-14 20:04:49.791 19492 19556 I ReactNativeJS: [Pixel 7] request: DISCONNECT -> inactive
+10-14 20:04:49.791 19492 19556 I ReactNativeJS: {}
+10-14 20:04:49.791 19492 19556 I ReactNativeJS:       
+10-14 20:04:49.792 19492 19556 I ReactNativeJS: [Pixel 7] store: GET -> ready
+10-14 20:04:49.792 19492 19556 I ReactNativeJS: {
+10-14 20:04:49.792 19492 19556 I ReactNativeJS:   "key": "showFaceAuthConsentShareFlow"
+10-14 20:04:49.792 19492 19556 I ReactNativeJS: }
+10-14 20:04:49.792 19492 19556 I ReactNativeJS:       
+10-14 20:04:49.792 19492 19556 I ReactNativeJS: [Pixel 7] scan: DISCONNECT -> checkFaceAuthConsent
+10-14 20:04:49.792 19492 19556 I ReactNativeJS: {}
+10-14 20:04:49.792 19492 19556 I ReactNativeJS:       
+10-14 20:04:49.827 19492 19556 D ReactNativeJS: While getting item - showFaceAuthConsentShareFlow from storage: data value is null so returning the default value
+10-14 20:04:49.828 19492 19556 I ReactNativeJS: [Pixel 7] scan: STORE_RESPONSE -> findingConnection
+10-14 20:04:49.828 19492 19556 I ReactNativeJS: {
+10-14 20:04:49.828 19492 19556 I ReactNativeJS:   "response": null
+10-14 20:04:49.828 19492 19556 I ReactNativeJS: }
+10-14 20:04:49.828 19492 19556 I ReactNativeJS:       
+10-14 20:04:50.006 19492 19556 I ReactNativeJS: [Pixel 7] app: xstate.update -> ready.network.online
+10-14 20:04:50.006 19492 19556 I ReactNativeJS: {}
+10-14 20:04:50.006 19492 19556 I ReactNativeJS:       
+10-14 20:04:50.006 19492 19556 I ReactNativeJS: [Pixel 7] store: STORE_RESPONSE -> ready
+10-14 20:04:50.006 19492 19556 I ReactNativeJS: {
+10-14 20:04:50.006 19492 19556 I ReactNativeJS:   "response": null,
+10-14 20:04:50.006 19492 19556 I ReactNativeJS:   "requester": "x:8"
+10-14 20:04:50.006 19492 19556 I ReactNativeJS: }
+10-14 20:04:50.006 19492 19556 I ReactNativeJS:       
+10-14 20:04:50.130  1176   772 W Lyric   : device_context.cc:373: NotifyCaptureSessionOpen: No OisController found for physical camera RearWide. Status: NOT_FOUND: Failed to find controller by type and camera id(RearWide); Controller with ID: optical image stabilization controller for camera: RearWide not present in device_context
+10-14 20:04:50.147  1359 11336 W cameraserver: createConfiguredSurface: Camera 0: Overriding format 0x4 to IMPLEMENTATION_DEFINED
+10-14 20:04:50.151  1176  2139 W Lyric   : stream_info_parser.cc:430: Camera Rear unknown stream: {type: StreamInfo, stream_id: 32779, camera_id: Rear, format: YCBCR_420_888, width: 4080, height: 3072, usage: [], stream_type: Output, use_case: Default, data_space: DataSpace(Custom)::Arbitrary, is_framework_physical_stream: 0, dynamic_range_profile: Standard, intended_for_max_resolution_mode: 0, group_id: -1, is_tunable: 1} does not fall in any known use case
+10-14 20:04:50.151  1176  2139 W Lyric   : stream_info_parser.cc:430: Camera RearWide unknown stream: {type: StreamInfo, stream_id: 32777, camera_id: RearWide, format: YCBCR_420_888, width: 4080, height: 3072, usage: [], stream_type: Output, use_case: Default, data_space: DataSpace(Custom)::Arbitrary, is_framework_physical_stream: 0, dynamic_range_profile: Standard, intended_for_max_resolution_mode: 0, group_id: -1, is_tunable: 1} does not fall in any known use case
+10-14 20:04:50.152  1176  2139 W Lyric   : stream_info_parser.cc:430: Camera RearVirtual unknown stream: {type: StreamInfo, stream_id: 32778, camera_id: RearVirtual, format: YCBCR_420_888, width: 4080, height: 3072, usage: [], stream_type: Output, use_case: Default, data_space: DataSpace(Custom)::Arbitrary, is_framework_physical_stream: 0, dynamic_range_profile: Standard, intended_for_max_resolution_mode: 0, group_id: -1, is_tunable: 1} does not fall in any known use case
+10-14 20:04:50.152  1176  2143 W Lyric   : generic_subgraph.cc:2099: camera_id = 2, actuator_name = act-rear-normal; actuator_sensitivity: 0.092, actuator_max_position_logical: 324
+10-14 20:04:50.152  1176   750 W Lyric   : generic_subgraph.cc:2099: camera_id = 4, actuator_name = act-rear-normal; actuator_sensitivity: 0.092, actuator_max_position_logical: 324
+10-14 20:04:50.152  1176   747 W Lyric   : sensor_generic_driver.cc:2439: SANDWORM No matching sensor mode found, using best default mode index: 0
+10-14 20:04:50.153  1176   747 W Lyric   : multisensor_controller.cc:1825: RearWide Failed to get pdaf calibration data
+10-14 20:04:50.167  1176  2143 W Lyric   : sensor_generic_driver.cc:6543: NAGUAL Calibration data has been set already
+10-14 20:04:50.174  1176  2139 W Lyric   : multicam_defs.h:554: Can't found CameraFov for 
+10-14 20:04:50.175  1176  2139 W Lyric   : session_telemetry_controller.cc:109: Telemetry was not initialized dpm
+10-14 20:04:50.175  1176  2139 W Lyric   : session_telemetry_controller.cc:109: Telemetry was not initialized slc
+10-14 20:04:50.175  1176  2139 W Lyric   : session_telemetry_controller.cc:109: Telemetry was not initialized scsc
+10-14 20:04:50.175  1176  2139 W Lyric   : session_telemetry_controller.cc:109: Telemetry was not initialized mcsc
+10-14 20:04:50.175  1176  2139 W Lyric   : session_telemetry_controller.cc:109: Telemetry was not initialized gdc1
+10-14 20:04:50.175  1176  2139 W Lyric   : session_telemetry_controller.cc:109: Telemetry was not initialized gdc0
+10-14 20:04:50.175  1176  2139 W Lyric   : session_telemetry_controller.cc:109: Telemetry was not initialized gtnr-merge
+10-14 20:04:50.175  1176  2139 W Lyric   : session_telemetry_controller.cc:109: Telemetry was not initialized itp
+10-14 20:04:50.175  1176  2139 W Lyric   : session_telemetry_controller.cc:109: Telemetry was not initialized gtnr-align
+10-14 20:04:50.175  1176  2139 W Lyric   : session_telemetry_controller.cc:109: Telemetry was not initialized g3aa
+10-14 20:04:50.175  1176  2139 W Lyric   : session_telemetry_controller.cc:109: Telemetry was not initialized ipp
+10-14 20:04:50.175  1176  2139 W Lyric   : session_telemetry_controller.cc:109: Telemetry was not initialized pdp
+10-14 20:04:50.175  1176  2139 W Lyric   : session_telemetry_controller.cc:109: Telemetry was not initialized csi
+10-14 20:04:50.175  1176  2139 W Lyric   : session_telemetry_controller.cc:109: Telemetry was not initialized votf
+10-14 20:04:50.175  1176  2139 W Lyric   : session_telemetry_controller.cc:109: Telemetry was not initialized flash-lm3644
+10-14 20:04:50.175  1176  2139 W Lyric   : session_telemetry_controller.cc:109: Telemetry was not initialized ois-gargoyle
+10-14 20:04:50.175  1176  2139 W Lyric   : session_telemetry_controller.cc:109: Telemetry was not initialized act-slenderman
+10-14 20:04:50.175  1176  2139 W Lyric   : session_telemetry_controller.cc:109: Telemetry was not initialized eeprom-gargoyle
+10-14 20:04:50.175  1176  2139 W Lyric   : session_telemetry_controller.cc:109: Telemetry was not initialized eeprom-smaug-sandworm
+10-14 20:04:50.176  1176  2139 W Lyric   : session_telemetry_controller.cc:109: Telemetry was not initialized eeprom-smaug-dokkaebi
+10-14 20:04:50.176  1176  2139 W Lyric   : session_telemetry_controller.cc:109: Telemetry was not initialized sensor-nagual
+10-14 20:04:50.176  1176  2139 W Lyric   : session_telemetry_controller.cc:109: Telemetry was not initialized sensor-sandworm
+10-14 20:04:50.176  1176  2139 W Lyric   : session_telemetry_controller.cc:109: Telemetry was not initialized sensor-nagual
+10-14 20:04:50.176  1176  2139 W Lyric   : session_telemetry_controller.cc:109: Telemetry was not initialized sensor-dokkaebi
+10-14 20:04:50.176  1176  2139 W Lyric   : session_telemetry_controller.cc:109: Telemetry was not initialized top
+10-14 20:04:50.177  1176  1618 W Lyric   : video_esp_node.cc:94: Failed to acquire video esp context: INVALID_ARGUMENT: Video ESP cannot process stream with size {width: 1600, height: 1200}
+10-14 20:04:50.180  1176  1617 E G3ACoordinator: af_session_config_parser_lyric.cc:91: static_camera_model has no value unexpectedly.
+10-14 20:04:50.180  1176  1617 W G3ACoordinator: af_engine.cc:740: camera_name=RearNormal: Retain last focus states. Overwriting af_mode ContinuousPicture->ContinuousPicture af_state Inactive->PassiveScan
+10-14 20:04:50.182  1176  1617 E GHAWB   : Skin Stats Analyzer: skin_stats_analyzer.cc:26] SetTuning: Disable SkinStatsAnalyzer in tuning
+10-14 20:04:50.183  1176  1617 W G3ACoordinator: awb_engine.cc:529: Failed to register data types in data manager.
+10-14 20:04:50.188  1176  1616 W Lyric   : stream_interface_controller.cc:460: Note: processing_context->consumer is being re-assigned from 13 to 8
+10-14 20:04:50.189  1176  1616 W Lyric   : video_esp_node.cc:94: Failed to acquire video esp context: INVALID_ARGUMENT: Video ESP cannot process stream with size {width: 1600, height: 1200}
+10-14 20:04:50.189  1176  1617 W Lyric   : statistics_node.cc:335: Failed to get pdaf calibration data
+10-14 20:04:50.189  1176  1617 E GHAWB   : Skin Stats Analyzer: skin_stats_analyzer.cc:26] SetTuning: Disable SkinStatsAnalyzer in tuning
+10-14 20:04:50.190  1176  1617 W G3ACoordinator: awb_engine.cc:529: Failed to register data types in data manager.
+10-14 20:04:50.190  1176  1617 W Lyric   : stream_interface_controller.cc:460: Note: processing_context->consumer is being re-assigned from 8 to 13
+10-14 20:04:50.190  1176  1617 W Lyric   : stream_interface_controller.cc:460: Note: processing_context->consumer is being re-assigned from 13 to 8
+10-14 20:04:50.191  1176  1616 W Lyric   : video_esp_node.cc:94: Failed to acquire video esp context: INVALID_ARGUMENT: Video ESP cannot process stream with size {width: 1600, height: 1200}
+10-14 20:04:50.191  1176  1617 E G3ACoordinator: af_session_config_parser_lyric.cc:91: static_camera_model has no value unexpectedly.
+10-14 20:04:50.191  1176  1617 W G3ACoordinator: af_engine.cc:740: camera_name=RearVirtual: Retain last focus states. Overwriting af_mode ContinuousPicture->ContinuousPicture af_state Inactive->PassiveScan
+10-14 20:04:50.191  1176  1617 E GHAWB   : Skin Stats Analyzer: skin_stats_analyzer.cc:26] SetTuning: Disable SkinStatsAnalyzer in tuning
+10-14 20:04:50.192  1176  1617 W G3ACoordinator: awb_engine.cc:529: Failed to register data types in data manager.
+10-14 20:04:50.193  1176  1617 W Lyric   : stream_interface_controller.cc:460: Note: processing_context->consumer is being re-assigned from 8 to 13
+10-14 20:04:50.193  1176  1617 W Lyric   : stream_interface_controller.cc:460: Note: processing_context->consumer is being re-assigned from 13 to 8
+10-14 20:04:50.197  1176   774 W Lyric   : thread_schedule.cc:108: Couldn't set thread affinity with error code: Invalid argument
+10-14 20:04:50.197  1176   748 W Lyric   : thread_schedule.cc:108: Couldn't set thread affinity with error code: Invalid argument
+10-14 20:04:50.197  1176   739 W Lyric   : thread_schedule.cc:108: Couldn't set thread affinity with error code: Invalid argument
+10-14 20:04:50.197  1176   744 W Lyric   : thread_schedule.cc:108: Couldn't set thread affinity with error code: Invalid argument
+10-14 20:04:50.209  1176 12498 W Lyric   : generic_power_throttle_controller.cc:773: 765 calls in 78 sec(s):  Unsupported thermal policy: LDAF
+10-14 20:04:50.209  1176  2142 W Lyric   : actuator_node.cc:426: 4 calls in 101 sec(s): cam2_actuator: Update lens dac readout failed with status INTERNAL: cam2_actuator: shutter notification frame is dropped at frame: -4
+10-14 20:04:50.209  1176  2142 W Lyric   : actuator_node.cc:436: 15 calls in 100 sec(s): cam2_actuator: Update lens temperature failed with status ABORTED: No temperature read
+10-14 20:04:50.210  1176   744 W G3ACoordinator: data_manager.cc:154: [5, 2, 9000] can't be found
+10-14 20:04:50.213  1176   744 W G3ACoordinator: awb_tuning_util.cc:50: Tuning key not found:  Usecase: 13 Sensor mode: -1 Viridian value: -1 Camera position: 1 Camera lens_type: 0 Camera spectrum: -1 Partial Usecases: {}. Try default use case  Usecase: 0 Sensor mode: -1 Viridian value: -1 Camera position: 1 Camera lens_type: 0 Camera spectrum: -1 Partial Usecases: {}
+10-14 20:04:50.213  1176   744 E GHAWB   : Skin Stats Analyzer: skin_stats_analyzer.cc:26] SetTuning: Disable SkinStatsAnalyzer in tuning
+10-14 20:04:50.225  1176  2142 W Lyric   : external_auto_focus_controller_proxy.cc:475: 3 calls in 101 sec(s): ExternalAutoFocusControllerProxy: camera_id = 2; The total number of frames missing CDAF, HW PDAF, SW PDAF and Sparse PDAF statistics is 1
+10-14 20:04:50.225  1176  2142 W Lyric   : external_auto_focus_controller_proxy.cc:830: 3 calls in 101 sec(s): Not able to get shutter notification timestamp
+10-14 20:04:50.226  1176  2142 W G3ACoordinator: af_engine.cc:507: camera_name=RearNormal: Retain last focus states. Overwriting af_mode ContinuousPicture->Auto af_state PassiveScan->Inactive
+10-14 20:04:50.226  1176  2142 W GAF     : gaf_stats_roi_impl.cc:674: 4 calls in 101 sec(s): RearNormal: [ReqId:0] full frame hwpd stats is invalid.
+10-14 20:04:50.226  1176  2142 W GAF     : gaf_stats_aec.cc:208: 4 calls in 101 sec(s): RearNormal: [ReqId:0] Invalid raw ae luma
+10-14 20:04:50.226  1176  2142 W GAF     : elp_util.cc:51: 4 calls in 101 sec(s): RearNormal: [ReqId:0] Invalid region_top or region_height: 0, 0
+10-14 20:04:50.226  1176  2142 E GAF     : elp_util.cc:523: 4 calls in 101 sec(s): RearNormal: [ReqId:0] ELP couldn't be calculated from the ELP table history. Using final_Fallback_position 177
+10-14 20:04:50.226  1176  2142 W GAF     : gaf_motion_stats_estimator.cc:187: 4 calls in 101 sec(s): RearNormal: [ReqId:0] Invalid raw ae luma.
+10-14 20:04:50.226  1176  2142 E GAF     : GAfStatsCdaf: gaf_stats_cdaf.cc:202] [ReqId:0] PreProcessHwCdaf: Invalid raw hw cdaf stats.
+10-14 20:04:50.226  1176  2142 E GAF     : RearNormal: gaf_metric_algos_3a.cc:65] [ReqId:0] ProcessStatsAe: invalid aec stats: skip aec stats processing
+10-14 20:04:50.226  1176  2142 W GAF     : gaf_metric_algos_pd_impl.cc:580: 4 calls in 101 sec(s): RearNormal: [ReqId:0] The effective lens position used for PD tPos is not reliable: effective_lens_pos(177,kFallback)
+10-14 20:04:50.226  1176  2142 W GAF     : gaf_face_processing_utils.cc:433: 1 calls in 101 sec(s): RearNormal: [ReqId:0] Uninitialized ref frame size.
+10-14 20:04:50.226  1176  2142 W GAF     : gaf_saliency_machine_manager.cc:117: 13 calls in 101 sec(s): RearNormal: [ReqId:0] No saliency detections.
+10-14 20:04:50.226  1176  2142 W Lyric   : auto_focus_node.cc:1758: 19 calls in 101 sec(s): Repeating older frame's input for the aligned_detection_and_segmentation due to batch size mismatch.
+10-14 20:04:50.226  1176   742 W GAF     : search_stats_metric_aggregator.cc:99: 1 calls in 101 sec(s): Monitoring search_stats: [ReqId:0] Invalid raw data
+10-14 20:04:50.226  1176   742 W GAF     : multicam_stats_metric_aggregator.cc:85: 1 calls in 101 sec(s): Monitoring multicam_stats: [ReqId:0] Invalid raw data
+10-14 20:04:50.226  1176   742 W Lyric   : telemetry_node.cc:310: 1 calls in 101 sec(s): cam2_telemetry: auto_focus FN 0 Failure recording telemetry. Skip recording.
+10-14 20:04:50.226  1176  2142 W Lyric   : dysco_node.cc:176: LscStats payload is missing in frame 0 due to frame drop!
+10-14 20:04:50.237  1176  2142 E GAF     : GAfStatsCdaf: gaf_stats_cdaf.cc:202] [ReqId:1] PreProcessHwCdaf: Invalid raw hw cdaf stats.
+10-14 20:04:50.237  1176  2142 W GAF     : gaf_stats_ldaf.cc:488: 1 calls in 101 sec(s): RearNormal: [ReqId:2] No distance data from LDAF.
+10-14 20:04:50.237  1176  2142 E GAF     : GAfStatsCdaf: gaf_stats_cdaf.cc:202] [ReqId:2] PreProcessHwCdaf: Invalid raw hw cdaf stats.
+10-14 20:04:50.250  1176   766 W Lyric   : dysco_node.cc:176: LscStats payload is missing in frame 1 due to frame drop!
+10-14 20:04:50.250  1176   766 W Lyric   : dysco_node.cc:176: LscStats payload is missing in frame 2 due to frame drop!
+10-14 20:04:50.253  1176   766 W Lyric   : g3aa_pipeline.cc:936: [Bayer0][Frame 3] Skipping configuration of frames 2-2. Last received HW Frame -1 at SOF -1. Next trigger count updated from 1 to 2. Queue: [1].
+10-14 20:04:50.253  1176   766 W Lyric   : g3aa_pipeline.cc:936: [PDAF0][Frame 3] Skipping configuration of frames 2-2. Last received HW Frame -1 at SOF -1. Next trigger count updated from 1 to 2. Queue: [1].
+10-14 20:04:50.301  1176 20095 W Lyric   : sensor_generic_driver.cc:1141: NAGUAL SOF event is delayed in kernel. optimal event deque delay: 33.33775075ms event dequeue delay: 51.130005ms
+10-14 20:04:50.304  1176   753 W Lyric   : st_3a_overwrite_convertor.cc:269: 1 calls in 101 sec(s): Camera RearVirtual(4) cannot cover zoom ratio 1, request id 3, 3A overwrite value WideVirtual
+10-14 20:04:50.309  1176 12498 W G3ACoordinator: af_input_parser_lyric.cc:1845: AfInputParserLyric: stats_cis_temperature is empty
+10-14 20:04:50.320  1176   766 E native  : E0000 00:00:1791983090.320658     766 frame_series.h:63] No valid frame assigned. Do nothing.
+10-14 20:04:50.324  1176  2147 W Lyric   : tnr_align_node.cc:377: No valid previous gaussian pyramid to use for frame 0(multicam_frame_number=0)
+10-14 20:04:50.328  1176   742 E native  : E0000 00:00:1791983090.328593     742 lens_offset.cc:162] timestamp 41225970951397 invalid. (3341063 ns away from the latest one). Note that this log prints at most once every 1 seconds
+10-14 20:04:50.376  1176 12498 W G3ACoordinator: af_input_parser_lyric.cc:1845: AfInputParserLyric: stats_cis_temperature is empty
+10-14 20:04:50.394  1176   742 W Lyric   : tnr_merge_node.cc:1233: TNR merge uses the previous initial image frame instead of merge feedback for denoise for frame/batch: 1 in context 0xb4000071030de568
+10-14 20:04:50.409  1176 12498 W G3ACoordinator: af_input_parser_lyric.cc:1845: AfInputParserLyric: stats_cis_temperature is empty
+10-14 20:04:50.443  1176 12498 W G3ACoordinator: af_input_parser_lyric.cc:1845: AfInputParserLyric: stats_cis_temperature is empty
+10-14 20:04:50.476  1176 12498 W G3ACoordinator: af_input_parser_lyric.cc:1845: AfInputParserLyric: stats_cis_temperature is empty
+10-14 20:04:50.486 19492 19556 W ReactNativeJS: Warning: Compound state node 'scan.startVPSharing' has no initial state.
+10-14 20:04:50.489 19492 19556 W ReactNativeJS: Warning: Compound state node 'scan.startVPSharing' has no initial state.
+10-14 20:04:50.489 19492 19556 W ReactNativeJS: Warning: Compound state node 'scan.startVPSharing' has no initial state.
+10-14 20:04:50.491 19492 19556 I ReactNativeJS: [Pixel 7] store: GET -> ready
+10-14 20:04:50.491 19492 19556 I ReactNativeJS: {
+10-14 20:04:50.491 19492 19556 I ReactNativeJS:   "key": "showFaceAuthConsentShareFlow"
+10-14 20:04:50.491 19492 19556 I ReactNativeJS: }
+10-14 20:04:50.491 19492 19556 I ReactNativeJS:       
+10-14 20:04:50.491 19492 19556 I ReactNativeJS: [Pixel 7] OpenID4VP: AUTHENTICATE -> checkFaceAuthConsent
+10-14 20:04:50.491 19492 19556 I ReactNativeJS: {
+10-14 20:04:50.491 19492 19556 I ReactNativeJS:   "encodedAuthRequest": "openid4vp://authorize?client_id=did%3Aweb%3Assi-verify.arlabsnepal.com%3Av1%3Averify&request_uri=htt...",
+10-14 20:04:50.491 19492 19556 I ReactNativeJS:   "flowType": "OpenID4VP",
+10-14 20:04:50.491 19492 19556 I ReactNativeJS:   "selectedVC": {},
+10-14 20:04:50.491 19492 19556 I ReactNativeJS:   "isOVPViaDeepLink": false
+10-14 20:04:50.491 19492 19556 I ReactNativeJS: }
+10-14 20:04:50.491 19492 19556 I ReactNativeJS:       
+10-14 20:04:50.493 19492 19556 I ReactNativeJS: [Pixel 7] scan: SCAN -> startVPSharing
+10-14 20:04:50.493 19492 19556 I ReactNativeJS: {
+10-14 20:04:50.493 19492 19556 I ReactNativeJS:   "params": "openid4vp://authorize?client_id=did%3Aweb%3Assi-verify.arlabsnepal.com%3Av1%3Averify&request_uri=htt..."
+10-14 20:04:50.493 19492 19556 I ReactNativeJS: }
+10-14 20:04:50.493 19492 19556 I ReactNativeJS:       
+10-14 20:04:50.670  1176 20095 W Lyric   : shutter_notification_manager.cc:269: 2 calls in 85 sec(s): vsync timeout for frame 12
+10-14 20:04:50.721 19492 19556 D ReactNativeJS: While getting item - showFaceAuthConsentShareFlow from storage: data value is null so returning the default value
+10-14 20:04:50.722 19492 19556 I ReactNativeJS: [Pixel 7] OpenID4VP: STORE_RESPONSE -> checkIfClientValidationIsRequired
+10-14 20:04:50.722 19492 19556 I ReactNativeJS: {
+10-14 20:04:50.722 19492 19556 I ReactNativeJS:   "response": null
+10-14 20:04:50.722 19492 19556 I ReactNativeJS: }
+10-14 20:04:50.722 19492 19556 I ReactNativeJS:       
+10-14 20:04:50.763 19492 19556 I ReactNativeJS: [Pixel 7] app: xstate.update -> ready.network.online
+10-14 20:04:50.763 19492 19556 I ReactNativeJS: {}
+10-14 20:04:50.763 19492 19556 I ReactNativeJS:       
+10-14 20:04:50.763 19492 19556 I ReactNativeJS: [Pixel 7] store: STORE_RESPONSE -> ready
+10-14 20:04:50.763 19492 19556 I ReactNativeJS: {
+10-14 20:04:50.763 19492 19556 I ReactNativeJS:   "response": null,
+10-14 20:04:50.763 19492 19556 I ReactNativeJS:   "requester": "x:35"
+10-14 20:04:50.763 19492 19556 I ReactNativeJS: }
+10-14 20:04:50.763 19492 19556 I ReactNativeJS:       
+10-14 20:04:50.776 19492 19556 I ReactNativeJS: Returned cached response forCommonPropsKey-6964d04a-9268-11ed-a1eb-0242ac120002
+10-14 20:04:50.778 19492 19556 I ReactNativeJS: [Pixel 7] OpenID4VP: done.invoke.OpenID4VP.checkIfClientValidationIsRequired:invocation[0] -> getKeyPairFromKeystore
+10-14 20:04:50.778 19492 19556 I ReactNativeJS: {
+10-14 20:04:50.778 19492 19556 I ReactNativeJS:   "data": false
+10-14 20:04:50.778 19492 19556 I ReactNativeJS: }
+10-14 20:04:50.778 19492 19556 I ReactNativeJS:       
+10-14 20:04:50.822 19492 19492 W ScreenFlashWrapper: completePendingScreenFlashClear: none pending!
+10-14 20:04:50.823 19492 19492 W ScreenFlashWrapper: completePendingScreenFlashClear: none pending!
+10-14 20:04:50.847 19492 19556 I ReactNativeJS: [Pixel 7] OpenID4VP: done.invoke.OpenID4VP.getKeyPairFromKeystore:invocation[0] -> checkKeyPair
+10-14 20:04:50.847 19492 19556 I ReactNativeJS: {
+10-14 20:04:50.847 19492 19556 I ReactNativeJS:   "data": {
+10-14 20:04:50.847 19492 19556 I ReactNativeJS:     "publicKey": {
+10-14 20:04:50.847 19492 19556 I ReactNativeJS:       "data": [
+10-14 20:04:50.847 19492 19556 I ReactNativeJS:         160,
+10-14 20:04:50.847 19492 19556 I ReactNativeJS:         4,
+10-14 20:04:50.847 19492 19556 I ReactNativeJS:         94,
+10-14 20:04:50.847 19492 19556 I ReactNativeJS:         23,
+10-14 20:04:50.847 19492 19556 I ReactNativeJS:         213,
+10-14 20:04:50.847 19492 19556 I ReactNativeJS:         70,
+10-14 20:04:50.847 19492 19556 I ReactNativeJS:         170,
+10-14 20:04:50.847 19492 19556 I ReactNativeJS:         164,
+10-14 20:04:50.847 19492 19556 I ReactNativeJS:         23,
+10-14 20:04:50.847 19492 19556 I ReactNativeJS:         251,
+10-14 20:04:50.847 19492 19556 I ReactNativeJS:         73,
+10-14 20:04:50.847 19492 19556 I ReactNativeJS:         162,
+10-14 20:04:50.847 19492 19556 I ReactNativeJS:         140,
+10-14 20:04:50.847 19492 19556 I ReactNativeJS:         18,
+10-14 20:04:50.847 19492 19556 I ReactNativeJS:         179,
+10-14 20:04:50.847 19492 19556 I ReactNativeJS:         204,
+10-14 20:04:50.847 19492 19556 I ReactNativeJS:         100,
+10-14 20:04:50.847 19492 19556 I ReactNativeJS:         21,
+10-14 20:04:50.847 19492 19556 I ReactNativeJS:         205,
+10-14 20:04:50.847 19492 19556 I ReactNativeJS:         158,
+10-14 20:04:50.847 19492 19556 I ReactNativeJS: ...
+10-14 20:04:50.847 19492 19556 I ReactNativeJS:       
+10-14 20:04:50.852  1176   742 W Lyric   : actuator_node.cc:553: 3 calls in 100 sec(s): cam2_actuator: Read dac position failed with status INTERNAL: cam2_actuator: shutter notification frame is dropped at frame16 at frame: 16
+10-14 20:04:50.852  1176   740 W Lyric   : ois_node.cc:369: 3 calls in 100 sec(s): cam2_ois, frame_number: 16, shutter notification is not available. Update vsync with current boottime and previous offset.
+10-14 20:04:50.855  1176   740 W Lyric   : face_detection_node.cc:661: 2 calls in 73 sec(s): Face Detection: producing frame drops due to request frame drop
+10-14 20:04:50.856  1176   761 W Lyric   : three_a_request_node.cc:903: 1 calls in 73 sec(s): cam2_three_a_request, frame_number: 16, request frame is not available
+10-14 20:04:50.856  1176  2147 W Lyric   : tnr_align_node.cc:609: 2 calls in 73 sec(s): TnrAlignNode producing alignment and noise frame drops for batch with first frame number: 15 due to error: DATA_LOSS: missing request_settings; Produced 1 alignment and noise frame drops since started. The corresponding image frame(s) will still be processed without denoising in TNR merge.
+10-14 20:04:50.856  1176   740 W Lyric   : tnr_merge_node.cc:589: TnrMergeNode producing frame drops from context 0xb4000071030de568 starting at frame number: 15 due to error: INVALID_ARGUMENT: TNR merge tuning frame is dropped.; TNR merge failed to get tuning data in context 0xb4000071030de568
+10-14 20:04:50.856  1176   740 W Lyric   : tnr_merge_node.cc:589: TnrMergeNode producing frame drops from context 0xb4000071030de568 starting at frame number: 16 due to error: INVALID_ARGUMENT: TNR merge tuning frame is dropped.; TNR merge failed to get tuning data in context 0xb4000071030de568
+10-14 20:04:50.856  1176  2147 W Lyric   : mesh_warp_node.cc:782: cam2_preview_mesh_warp Request frame is drop, drop all output for frame 15
+10-14 20:04:50.856  1176   740 W Lyric   : tnr_merge_node.cc:589: TnrMergeNode producing frame drops from context 0xb4000071030de568 starting at frame number: 17 due to error: INVALID_ARGUMENT: TNR merge tuning frame is dropped.; TNR merge failed to get tuning data in context 0xb4000071030de568
+10-14 20:04:50.856  1176  2147 W Lyric   : mesh_warp_node.cc:782: cam2_preview_mesh_warp Request frame is drop, drop all output for frame 16
+10-14 20:04:50.857  1176  2147 W Lyric   : mesh_warp_node.cc:782: cam2_preview_mesh_warp Request frame is drop, drop all output for frame 17
+10-14 20:04:50.863  1176  1617 E native  : E0000 00:00:1791983090.863262    1617 gcam_tflite_client.cc:323] Face Detection: Error clearing cached buffer handles because delegate is nullptr.
+10-14 20:04:50.868  1176  1616 E native  : E0000 00:00:1791983090.868097    1616 gcam_tflite_client.cc:323] Face Detection: Error clearing cached buffer handles because delegate is nullptr.
+10-14 20:04:50.868  1176  1616 E native  : E0000 00:00:1791983090.868132    1616 gcam_tflite_client.cc:323] Face Detection: Error clearing cached buffer handles because delegate is nullptr.
+10-14 20:04:50.888  1176  1617 W Lyric   : g3aa_pipeline.cc:705: [Bayer0] Draining the pipeline without waiting for the HW to finish. This is safe only if the HW has already been globally reset
+10-14 20:04:50.888  1176  1617 W Lyric   : g3aa_pipeline.cc:424: [Bayer0][Frame 19] Canceling transaction id 54900 for shadow 1: [FAILED]
+10-14 20:04:50.888  1176  1617 W Lyric   : g3aa_pipeline.cc:720: [Bayer0] WaitUntilDrained() failed: DEADLINE_EXCEEDED: [Bayer0] Timed out waiting for the pipeline to drain. 1 pending requests remain for frames: [19]
+10-14 20:04:50.888  1176  1617 E Lyric   : g3aa_pipeline.cc:1183: [Bayer0][Frame 19] Pending interrupt mask: 0X17FF
+10-14 20:04:50.888  1176  1617 W Lyric   : g3aa_pipeline.cc:461: [Bayer0] Clearing pending requests for frames: [19]
+10-14 20:04:50.888  1176  1617 W Lyric   : g3aa_pipeline.cc:705: [PDAF0] Draining the pipeline without waiting for the HW to finish. This is safe only if the HW has already been globally reset
+10-14 20:04:50.888  1176  1617 W Lyric   : g3aa_pipeline.cc:424: [PDAF0][Frame 19] Canceling transaction id 54901 for shadow 1: [FAILED]
+10-14 20:04:50.888  1176  1617 W Lyric   : g3aa_pipeline.cc:720: [PDAF0] WaitUntilDrained() failed: DEADLINE_EXCEEDED: [PDAF0] Timed out waiting for the pipeline to drain. 1 pending requests remain for frames: [19]
+10-14 20:04:50.888  1176  1617 E Lyric   : g3aa_pipeline.cc:1183: [PDAF0][Frame 19] Pending interrupt mask: 0XE000
+10-14 20:04:50.888  1176  1617 W Lyric   : g3aa_pipeline.cc:461: [PDAF0] Clearing pending requests for frames: [19]
+10-14 20:04:50.891  1176  1617 E Lyric   : software_fence.cc:40: Resetting unsignaled fence 2
+10-14 20:04:50.897  1176  1617 W Lyric   : g3aa_driver.cc:329: DisconnectFromPdp() function is called for Sysreg.
+10-14 20:04:50.897  1176  1617 W Lyric   : g3aa_driver.cc:342: G3AA disconnected from PDP via Sysreg. G3AA will no longer receive data from PDP.
+10-14 20:04:50.908  1176  2125 W Lyric   : graph_runner.cc:219: GraphRunner::StopGraph(1) called on a graph that is not running.
+10-14 20:04:50.909 19492 19556 I ReactNativeJS: [Pixel 7] OpenID4VP: done.invoke.OpenID4VP.checkKeyPair:invocation[0] -> authenticateVerifier
+10-14 20:04:50.909 19492 19556 I ReactNativeJS: {
+10-14 20:04:50.909 19492 19556 I ReactNativeJS:   "data": {
+10-14 20:04:50.909 19492 19556 I ReactNativeJS:     "publicKey": {
+10-14 20:04:50.909 19492 19556 I ReactNativeJS:       "data": [
+10-14 20:04:50.909 19492 19556 I ReactNativeJS:         160,
+10-14 20:04:50.909 19492 19556 I ReactNativeJS:         4,
+10-14 20:04:50.909 19492 19556 I ReactNativeJS:         94,
+10-14 20:04:50.909 19492 19556 I ReactNativeJS:         23,
+10-14 20:04:50.909 19492 19556 I ReactNativeJS:         213,
+10-14 20:04:50.909 19492 19556 I ReactNativeJS:         70,
+10-14 20:04:50.909 19492 19556 I ReactNativeJS:         170,
+10-14 20:04:50.909 19492 19556 I ReactNativeJS:         164,
+10-14 20:04:50.909 19492 19556 I ReactNativeJS:         23,
+10-14 20:04:50.909 19492 19556 I ReactNativeJS:         251,
+10-14 20:04:50.909 19492 19556 I ReactNativeJS:         73,
+10-14 20:04:50.909 19492 19556 I ReactNativeJS:         162,
+10-14 20:04:50.909 19492 19556 I ReactNativeJS:         140,
+10-14 20:04:50.909 19492 19556 I ReactNativeJS:         18,
+10-14 20:04:50.909 19492 19556 I ReactNativeJS:         179,
+10-14 20:04:50.909 19492 19556 I ReactNativeJS:         204,
+10-14 20:04:50.909 19492 19556 I ReactNativeJS:         100,
+10-14 20:04:50.909 19492 19556 I ReactNativeJS:         21,
+10-14 20:04:50.909 19492 19556 I ReactNativeJS:         205,
+10-14 20:04:50.909 19492 19556 I ReactNativeJS:         158,
+10-14 20:04:50.909 19492 19556 I ReactNativeJS: ...
+10-14 20:04:50.909 19492 19556 I ReactNativeJS:       
+10-14 20:04:50.929  1176  1617 E 3a.gcrd.dtm: data_manager.cc:72] Unregister: [5, 9001] had not been registered 
+10-14 20:04:50.941  1176  1616 W Lyric   : device_context.cc:418: NotifyCaptureSessionClose: No OisController found for physical camera RearWide. Status: NOT_FOUND: Failed to find controller by type and camera id(RearWide); Controller with ID: optical image stabilization controller for camera: RearWide not present in device_context
+10-14 20:04:50.965 19492 19492 E ConsumerBase: [ImageReader-4080x3072f21m4-19492-9] abandonLocked: ConsumerBase is abandoned!
+10-14 20:04:50.965 19492 19492 E ConsumerBase: [ImageReader-1600x1200f23m4-19492-10] abandonLocked: ConsumerBase is abandoned!
+10-14 20:04:50.965 19492 19492 E ConsumerBase: [ImageReader-1600x1200f23m4-19492-11] abandonLocked: ConsumerBase is abandoned!
+10-14 20:04:50.966 19492 19556 I ReactNativeJS: Returned cached response forCommonPropsKey-6964d04a-9268-11ed-a1eb-0242ac120002
+10-14 20:04:52.253  1172  1172 W audio_hw_35l41: cs35l41_amp_common_event: ret: 0, event: 3, state: 3, device: 4
+10-14 20:04:52.254  1172  1172 W audio_hw_35l41: cs35l41_amp_common_event: ret: 0, event: 4, state: 2, device: 4
+10-14 20:04:53.965 19492 19556 I ReactNativeJS: [Pixel 7] OpenID4VP: done.invoke.OpenID4VP.authenticateVerifier:invocation[0] -> checkVerifierTrust
+10-14 20:04:53.965 19492 19556 I ReactNativeJS: {
+10-14 20:04:53.965 19492 19556 I ReactNativeJS:   "data": {
+10-14 20:04:53.965 19492 19556 I ReactNativeJS:     "client_id": "did:web:ssi-verify.arlabsnepal.com:v1:verify",
+10-14 20:04:53.965 19492 19556 I ReactNativeJS:     "client_metadata": {
+10-14 20:04:53.965 19492 19556 I ReactNativeJS:       "client_name": "did:web:ssi-verify.arlabsnepal.com:v1:verify",
+10-14 20:04:53.965 19492 19556 I ReactNativeJS:       "vp_formats": {
+10-14 20:04:53.965 19492 19556 I ReactNativeJS:         "ldp_vp": {
+10-14 20:04:53.965 19492 19556 I ReactNativeJS:           "proof_type": [
+10-14 20:04:53.965 19492 19556 I ReactNativeJS:             "Ed25519Signature2018",
+10-14 20:04:53.965 19492 19556 I ReactNativeJS:             "Ed25519Sig...
+10-14 20:04:53.965 19492 19556 I ReactNativeJS:       
+10-14 20:04:54.066 19492 19556 I ReactNativeJS: [Pixel 7] OpenID4VP: done.invoke.OpenID4VP.checkVerifierTrust:invocation[0] -> getVCsSatisfyingAuthRequest
+10-14 20:04:54.066 19492 19556 I ReactNativeJS: {
+10-14 20:04:54.066 19492 19556 I ReactNativeJS:   "data": true
+10-14 20:04:54.066 19492 19556 I ReactNativeJS: }
+10-14 20:04:54.066 19492 19556 I ReactNativeJS:       
+10-14 20:04:54.113 19492 19556 I ReactNativeJS: [Pixel 7] OpenID4VP: DOWNLOADED_VCS -> selectingVCs
+10-14 20:04:54.113 19492 19556 I ReactNativeJS: {
+10-14 20:04:54.113 19492 19556 I ReactNativeJS:   "vcs": [
+10-14 20:04:54.113 19492 19556 I ReactNativeJS:     {
+10-14 20:04:54.113 19492 19556 I ReactNativeJS:       "verifiableCredential": {
+10-14 20:04:54.113 19492 19556 I ReactNativeJS:         "credential": {
+10-14 20:04:54.113 19492 19556 I ReactNativeJS:           "issuanceDate": "2026-10-14T13:02:44.579Z",
+10-14 20:04:54.113 19492 19556 I ReactNativeJS:           "credentialSubject": {
+10-14 20:04:54.113 19492 19556 I ReactNativeJS:             "gender": "Male",
+10-14 20:04:54.113 19492 19556 I ReactNativeJS:             "primaryCropType": "Maize",
+10-14 20:04:54.113 19492 19556 I ReactNativeJS:             "mobileNumber": "9876543210",
+10-14 20:04:54.113 19492 19556 I ReactNativeJS:             "postalCode": ...
+10-14 20:04:54.113 19492 19556 I ReactNativeJS:       
+10-14 20:04:54.190 19492 19556 I ReactNativeJS: [Pixel 7] vcMeta: GET_VC_ITEM -> ready.showTamperedPopup
+10-14 20:04:54.190 19492 19556 I ReactNativeJS: {
+10-14 20:04:54.190 19492 19556 I ReactNativeJS:   "vcMetadata": {
+10-14 20:04:54.190 19492 19556 I ReactNativeJS:     "idType": "",
+10-14 20:04:54.190 19492 19556 I ReactNativeJS:     "requestId": "1f72f273-4d3e-4118-b800-a1d57eca57a6_ssi-issuer",
+10-14 20:04:54.190 19492 19556 I ReactNativeJS:     "isPinned": false,
+10-14 20:04:54.190 19492 19556 I ReactNativeJS:     "id": "1f72f273-4d3e-4118-b800-a1d57eca57a6_ssi-issuer",
+10-14 20:04:54.190 19492 19556 I ReactNativeJS:     "issuer": "https://ssi-issuer.arlabsnepal.com",
+10-14 20:04:54.190 19492 19556 I ReactNativeJS:     "protocol": "",
+10-14 20:04:54.190 19492 19556 I ReactNativeJS:     "timestamp": "",
+10-14 20:04:54.190 19492 19556 I ReactNativeJS:     "isVerified":...
+10-14 20:04:54.190 19492 19556 I ReactNativeJS:       
+10-14 20:04:54.242 19492 19556 I ReactNativeJS: [Pixel 7] OpenID4VP: DOWNLOADED_VCS -> selectingVCs
+10-14 20:04:54.242 19492 19556 I ReactNativeJS: {
+10-14 20:04:54.242 19492 19556 I ReactNativeJS:   "vcs": [
+10-14 20:04:54.242 19492 19556 I ReactNativeJS:     {
+10-14 20:04:54.242 19492 19556 I ReactNativeJS:       "verifiableCredential": {
+10-14 20:04:54.242 19492 19556 I ReactNativeJS:         "credential": {
+10-14 20:04:54.242 19492 19556 I ReactNativeJS:           "issuanceDate": "2026-10-14T13:02:44.579Z",
+10-14 20:04:54.242 19492 19556 I ReactNativeJS:           "credentialSubject": {
+10-14 20:04:54.242 19492 19556 I ReactNativeJS:             "gender": "Male",
+10-14 20:04:54.242 19492 19556 I ReactNativeJS:             "primaryCropType": "Maize",
+10-14 20:04:54.242 19492 19556 I ReactNativeJS:             "mobileNumber": "9876543210",
+10-14 20:04:54.242 19492 19556 I ReactNativeJS:             "postalCode": ...
+10-14 20:04:54.242 19492 19556 I ReactNativeJS:       
+10-14 20:04:54.295 19492 19556 I ReactNativeJS: [Pixel 7] OpenID4VP: DOWNLOADED_VCS -> selectingVCs
+10-14 20:04:54.295 19492 19556 I ReactNativeJS: {
+10-14 20:04:54.295 19492 19556 I ReactNativeJS:   "vcs": [
+10-14 20:04:54.295 19492 19556 I ReactNativeJS:     {
+10-14 20:04:54.295 19492 19556 I ReactNativeJS:       "verifiableCredential": {
+10-14 20:04:54.295 19492 19556 I ReactNativeJS:         "credential": {
+10-14 20:04:54.295 19492 19556 I ReactNativeJS:           "issuanceDate": "2026-10-14T13:02:44.579Z",
+10-14 20:04:54.295 19492 19556 I ReactNativeJS:           "credentialSubject": {
+10-14 20:04:54.295 19492 19556 I ReactNativeJS:             "gender": "Male",
+10-14 20:04:54.295 19492 19556 I ReactNativeJS:             "primaryCropType": "Maize",
+10-14 20:04:54.295 19492 19556 I ReactNativeJS:             "mobileNumber": "9876543210",
+10-14 20:04:54.295 19492 19556 I ReactNativeJS:             "postalCode": ...
+10-14 20:04:54.295 19492 19556 I ReactNativeJS:       
+10-14 20:04:54.349 19492 19556 I ReactNativeJS: [Pixel 7] OpenID4VP: DOWNLOADED_VCS -> selectingVCs
+10-14 20:04:54.349 19492 19556 I ReactNativeJS: {
+10-14 20:04:54.349 19492 19556 I ReactNativeJS:   "vcs": [
+10-14 20:04:54.349 19492 19556 I ReactNativeJS:     {
+10-14 20:04:54.349 19492 19556 I ReactNativeJS:       "verifiableCredential": {
+10-14 20:04:54.349 19492 19556 I ReactNativeJS:         "credential": {
+10-14 20:04:54.349 19492 19556 I ReactNativeJS:           "issuanceDate": "2026-10-14T13:02:44.579Z",
+10-14 20:04:54.349 19492 19556 I ReactNativeJS:           "credentialSubject": {
+10-14 20:04:54.349 19492 19556 I ReactNativeJS:             "gender": "Male",
+10-14 20:04:54.349 19492 19556 I ReactNativeJS:             "primaryCropType": "Maize",
+10-14 20:04:54.349 19492 19556 I ReactNativeJS:             "mobileNumber": "9876543210",
+10-14 20:04:54.349 19492 19556 I ReactNativeJS:             "postalCode": ...
+10-14 20:04:54.349 19492 19556 I ReactNativeJS:       
+10-14 20:04:54.461 19492 19556 I ReactNativeJS: Returned cached response forCACHE_FETCH_ISSUER_WELLKNOWN_CONFIG_https://ssi-issuer.arlabsnepal.com
+10-14 20:04:54.461 19492 19556 E ReactNativeJS: Selected credential type is not available in wellknown config supported credentials list
+10-14 20:04:54.462 19492 19556 E ReactNativeJS: 'Error occurred while parsing well-known response of credential type - undefined so returning default fields only. Error is ', 'Error: Selected credential type - undefined is not available in wellknown config supported credentials list'
+10-14 20:04:54.463 19492 19556 I ReactNativeJS: [Pixel 7] activityLog: STORE_INCOMING_VC_WELLKNOWN_CONFIG -> ready.idle
+10-14 20:04:54.463 19492 19556 I ReactNativeJS: {
+10-14 20:04:54.463 19492 19556 I ReactNativeJS:   "issuer": "https://ssi-issuer.arlabsnepal.com"
+10-14 20:04:54.463 19492 19556 I ReactNativeJS: }
+10-14 20:04:54.463 19492 19556 I ReactNativeJS:       
+10-14 20:04:54.492 19492 19556 I ReactNativeJS: Returned cached response forCACHE_FETCH_ISSUER_WELLKNOWN_CONFIG_https://ssi-issuer.arlabsnepal.com
+10-14 20:04:54.521 19492 19556 I ReactNativeJS: [Pixel 7] activityLog: STORE_INCOMING_VC_WELLKNOWN_CONFIG -> ready.idle
+10-14 20:04:54.521 19492 19556 I ReactNativeJS: {
+10-14 20:04:54.521 19492 19556 I ReactNativeJS:   "issuer": "https://ssi-issuer.arlabsnepal.com",
+10-14 20:04:54.521 19492 19556 I ReactNativeJS:   "wellknown": {
+10-14 20:04:54.521 19492 19556 I ReactNativeJS:     "display": [
+10-14 20:04:54.521 19492 19556 I ReactNativeJS:       {
+10-14 20:04:54.521 19492 19556 I ReactNativeJS:         "name": "Farmer Issuer",
+10-14 20:04:54.521 19492 19556 I ReactNativeJS:         "locale": "en"
+10-14 20:04:54.521 19492 19556 I ReactNativeJS:       }
+10-14 20:04:54.521 19492 19556 I ReactNativeJS:     ],
+10-14 20:04:54.521 19492 19556 I ReactNativeJS:     "credential_issuer": "https://ssi-issuer.arlabsnepal.com",
+10-14 20:04:54.521 19492 19556 I ReactNativeJS:     "authorization_servers": [
+10-14 20:04:54.521 19492 19556 I ReactNativeJS:       "https://ssi-issuer.arlabsnepal.com...
+10-14 20:04:54.521 19492 19556 I ReactNativeJS:       
+10-14 20:04:54.565 19492 19492 W unknown:ReactNative: ReactImageView: Image source "null" doesn't exist
+10-14 20:04:54.566 19492 19556 W ReactNativeJS: ReactImageView: Image source "null" doesn't exist
+10-14 20:04:55.360  1658  2458 W AS.PlaybackActivityMon: No piid assigned for invalid/internal port id 511
+10-14 20:04:55.360  1658  6413 W AS.PlaybackActivityMon: No piid assigned for invalid/internal port id 511
+10-14 20:04:55.360  1172  1190 W audio_hw_35l41: cs35l41_amp_common_event: ret: 0, event: 15, state: 2, device: 0
+10-14 20:04:55.361  1172  5542 W audio_hw_35l41: cs35l41_amp_common_event: ret: 0, event: 1, state: 2, device: 4
+10-14 20:04:55.364  1172  5542 W audio_hw_35l41: cs35l41_amp_common_event: ret: 0, event: 2, state: 3, device: 4
+10-14 20:04:55.366  1427  1427 E AOC     : F1:ERR: mix_creator.cc, 136: Source CHP is not registered with AHWSinkSPKR
+10-14 20:04:55.382  2462  2481 W System  : A resource failed to call release. 
+10-14 20:04:55.383  2462  2481 W System  : A resource failed to call release. 
+10-14 20:04:55.383  2462  2481 W System  : A resource failed to call release. 
+10-14 20:04:55.383  2462  2481 W System  : A resource failed to call release. 
+10-14 20:04:55.384  2462  2481 W System  : A resource failed to call release. 
+10-14 20:04:55.384  2462  2481 W System  : A resource failed to call release. 
+10-14 20:04:55.385  2462  2481 W System  : A resource failed to call release. 
+10-14 20:04:55.385  2462  2481 W System  : A resource failed to call release. 
+10-14 20:04:55.385  2462  2481 W System  : A resource failed to call release. 
+10-14 20:04:55.385  2462  2481 W System  : A resource failed to call release. 
+10-14 20:04:55.385  2462  2481 W System  : A resource failed to call release. 
+10-14 20:04:55.385  2462  2481 W System  : A resource failed to call release. 
+10-14 20:04:55.385  2462  2481 W System  : A resource failed to call release. 
+10-14 20:04:55.385  2462  2481 W System  : A resource failed to call release. 
+10-14 20:04:55.385  2462  2481 W System  : A resource failed to call release. 
+10-14 20:04:55.385  2462  2481 W System  : A resource failed to call release. 
+10-14 20:04:55.385  2462  2481 W System  : A resource failed to call release. 
+10-14 20:04:55.510  1172  1190 W audio_hw_35l41: cs35l41_amp_common_event: ret: 0, event: 15, state: 3, device: 0
+10-14 20:04:56.040 19492 19556 I ReactNativeJS: [Pixel 7] OpenID4VP: VERIFY_AND_ACCEPT_REQUEST -> getConsentForVPSharing
+10-14 20:04:56.040 19492 19556 I ReactNativeJS: {
+10-14 20:04:56.040 19492 19556 I ReactNativeJS:   "selectedVCs": {
+10-14 20:04:56.040 19492 19556 I ReactNativeJS:     "farmer credential": [
+10-14 20:04:56.040 19492 19556 I ReactNativeJS:       {
+10-14 20:04:56.040 19492 19556 I ReactNativeJS:         "verifiableCredential": {
+10-14 20:04:56.040 19492 19556 I ReactNativeJS:           "credential": {
+10-14 20:04:56.040 19492 19556 I ReactNativeJS:             "issuanceDate": "2026-10-14T13:02:44.579Z",
+10-14 20:04:56.040 19492 19556 I ReactNativeJS:             "credentialSubject": {
+10-14 20:04:56.040 19492 19556 I ReactNativeJS:               "gender": "Male",
+10-14 20:04:56.040 19492 19556 I ReactNativeJS:               "primaryCropType": "Maize",
+10-14 20:04:56.040 19492 19556 I ReactNativeJS:               "mobi...
+10-14 20:04:56.040 19492 19556 I ReactNativeJS:       
+10-14 20:04:56.042 19492 19556 I ReactNativeJS: [Pixel 7] OpenID4VP: CHECK_FOR_CONSENT -> getConsentForVPSharing
+10-14 20:04:56.042 19492 19556 I ReactNativeJS: {}
+10-14 20:04:56.042 19492 19556 I ReactNativeJS:       
+10-14 20:04:56.166 19492 19492 E unknown:ReactModalHost: Creating new dialog from context: io.mosip.residentapp.MainActivity@97bde8b@159112843
+10-14 20:04:56.173  1658  6462 W InputChannel-JNI: Channel already disposed.
+10-14 20:04:56.180  1658  2212 W AS.PlaybackActivityMon: No piid assigned for invalid/internal port id 511
+10-14 20:04:56.181  1658  6413 W AS.PlaybackActivityMon: No piid assigned for invalid/internal port id 511
+10-14 20:04:56.181  1172  1190 W audio_hw_35l41: cs35l41_amp_common_event: ret: 0, event: 15, state: 3, device: 0
+10-14 20:04:56.188 19492 19492 E unknown:ReactModalHost: Updating existing dialog with context: io.mosip.residentapp.MainActivity@97bde8b@159112843
+10-14 20:04:56.210 19492 19556 W ReactNativeJS: Warning: No implementation found for action type 'forwardToServices'
+10-14 20:04:56.210 19492 19556 I ReactNativeJS: [Pixel 7] app: INACTIVE -> ready.network.online
+10-14 20:04:56.210 19492 19556 I ReactNativeJS: {}
+10-14 20:04:56.210 19492 19556 I ReactNativeJS:       
+10-14 20:04:56.238  1658  2247 W InputChannel-JNI: Channel already disposed.
+10-14 20:04:56.240  1658  6462 W PackageConfigPersister: App-specific configuration not found for packageName: io.mosip.residentapp and userId: 0
+10-14 20:04:56.309  1172  1190 W audio_hw_35l41: cs35l41_amp_common_event: ret: 0, event: 15, state: 3, device: 0
+10-14 20:04:58.050 19492 19556 I ReactNativeJS: [Pixel 7] OpenID4VP: CONFIRM -> checkIfAnySelectedVCHasImage
+10-14 20:04:58.050 19492 19556 I ReactNativeJS: {}
+10-14 20:04:58.050 19492 19556 I ReactNativeJS:       
+10-14 20:04:58.054 19492 19556 I ReactNativeJS: [Pixel 7] OpenID4VP: CHECK_FOR_IMAGE -> verifyingIdentity
+10-14 20:04:58.054 19492 19556 I ReactNativeJS: {}
+10-14 20:04:58.054 19492 19556 I ReactNativeJS:       
+10-14 20:04:58.124  1658  2458 W AS.PlaybackActivityMon: No piid assigned for invalid/internal port id 511
+10-14 20:04:58.125  1172  1172 W audio_hw_35l41: cs35l41_amp_common_event: ret: 0, event: 15, state: 3, device: 0
+10-14 20:04:58.127  1658  2827 W AS.PlaybackActivityMon: No piid assigned for invalid/internal port id 511
+10-14 20:04:58.163 19492 19492 E unknown:ReactModalHost: Creating new dialog from context: io.mosip.residentapp.MainActivity@97bde8b@159112843
+10-14 20:04:58.171  1658  6413 W InputChannel-JNI: Channel already disposed.
+10-14 20:04:58.182 19492 19492 E unknown:ReactModalHost: Updating existing dialog with context: io.mosip.residentapp.MainActivity@97bde8b@159112843
+10-14 20:04:58.249  1172  1172 W audio_hw_35l41: cs35l41_amp_common_event: ret: 0, event: 15, state: 3, device: 0
+10-14 20:04:58.285  1176 32452 W Lyric   : device_context.cc:373: NotifyCaptureSessionOpen: No OisController found for physical camera FrontVirtual. Status: NOT_FOUND: Failed to find controller by type and camera id(FrontVirtual); Controller with ID: optical image stabilization controller for camera: FrontVirtual not present in device_context
+10-14 20:04:58.285  1176 32452 W Lyric   : device_context.cc:373: NotifyCaptureSessionOpen: No OisController found for physical camera Front. Status: NOT_FOUND: Failed to find controller by type and camera id(Front); Controller with ID: optical image stabilization controller for camera: Front not present in device_context
+10-14 20:04:58.285  1176  1617 W libbinder.Binder: Binder 0xb40000714326fe78 destroyed after setMinSchedulerPolicy before being parceled.
+10-14 20:04:58.285  1176  1617 W libbinder.Binder: Binder 0xb40000714326fe78 destroyed after setMinSchedulerPolicy before being parceled.
+10-14 20:04:58.289  1658  2247 W InputChannel-JNI: Channel already disposed.
+10-14 20:04:58.292  1658  6492 W PackageConfigPersister: App-specific configuration not found for packageName: io.mosip.residentapp and userId: 0
+10-14 20:04:58.301  1359 16543 W cameraserver: createConfiguredSurface: Camera 1: Overriding format 0x4 to IMPLEMENTATION_DEFINED
+10-14 20:04:58.302 20763 19020 W Turbo.DeviceHealthLeversManagerImpl: NetworkDenylist enabled: true
+10-14 20:04:58.304  1176  2157 W Lyric   : stream_info_parser.cc:430: Camera Front unknown stream: {type: StreamInfo, stream_id: 32775, camera_id: Front, format: YCBCR_420_888, width: 3264, height: 2448, usage: [], stream_type: Output, use_case: Default, data_space: DataSpace(Custom)::Arbitrary, is_framework_physical_stream: 0, dynamic_range_profile: Standard, intended_for_max_resolution_mode: 0, group_id: -1, is_tunable: 1} does not fall in any known use case
+10-14 20:04:58.304  1176  2157 W Lyric   : stream_info_parser.cc:430: Camera FrontVirtual unknown stream: {type: StreamInfo, stream_id: 32774, camera_id: FrontVirtual, format: YCBCR_420_888, width: 3264, height: 2448, usage: [], stream_type: Output, use_case: Default, data_space: DataSpace(Custom)::Arbitrary, is_framework_physical_stream: 0, dynamic_range_profile: Standard, intended_for_max_resolution_mode: 0, group_id: -1, is_tunable: 1} does not fall in any known use case
+10-14 20:04:58.304 20763 19020 W Turbo.MaintenanceWindowJobService: Schedule DHL maintenance window job with result 1.
+10-14 20:04:58.305  1176  2154 W Lyric   : multisensor_controller.cc:1825: FrontVirtual Failed to get pdaf calibration data
+10-14 20:04:58.305  1176  5404 W Lyric   : multisensor_controller.cc:1825: Front Failed to get pdaf calibration data
+10-14 20:04:58.305  1176  2154 W Lyric   : sensor_generic_driver.cc:6543: DOKKAEBI Calibration data has been set already
+10-14 20:04:58.311  1176  2157 W Lyric   : multicam_defs.h:554: Can't found CameraFov for 
+10-14 20:04:58.312  1176  2157 W Lyric   : session_telemetry_controller.cc:109: Telemetry was not initialized dpm
+10-14 20:04:58.312  1176  2157 W Lyric   : session_telemetry_controller.cc:109: Telemetry was not initialized slc
+10-14 20:04:58.312  1176  2157 W Lyric   : session_telemetry_controller.cc:109: Telemetry was not initialized scsc
+10-14 20:04:58.312  1176  2157 W Lyric   : session_telemetry_controller.cc:109: Telemetry was not initialized mcsc
+10-14 20:04:58.312  1176  2157 W Lyric   : session_telemetry_controller.cc:109: Telemetry was not initialized gdc1
+10-14 20:04:58.312  1176  2157 W Lyric   : session_telemetry_controller.cc:109: Telemetry was not initialized gdc0
+10-14 20:04:58.312  1176  2157 W Lyric   : session_telemetry_controller.cc:109: Telemetry was not initialized gtnr-merge
+10-14 20:04:58.312  1176  2157 W Lyric   : session_telemetry_controller.cc:109: Telemetry was not initialized itp
+10-14 20:04:58.312  1176  2157 W Lyric   : session_telemetry_controller.cc:109: Telemetry was not initialized gtnr-align
+10-14 20:04:58.312  1176  2157 W Lyric   : session_telemetry_controller.cc:109: Telemetry was not initialized g3aa
+10-14 20:04:58.312  1176  2157 W Lyric   : session_telemetry_controller.cc:109: Telemetry was not initialized ipp
+10-14 20:04:58.312  1176  2157 W Lyric   : session_telemetry_controller.cc:109: Telemetry was not initialized pdp
+10-14 20:04:58.312  1176  2157 W Lyric   : session_telemetry_controller.cc:109: Telemetry was not initialized csi
+10-14 20:04:58.312  1176  2157 W Lyric   : session_telemetry_controller.cc:109: Telemetry was not initialized votf
+10-14 20:04:58.312  1176  2157 W Lyric   : session_telemetry_controller.cc:109: Telemetry was not initialized flash-lm3644
+10-14 20:04:58.312  1176  2157 W Lyric   : session_telemetry_controller.cc:109: Telemetry was not initialized ois-gargoyle
+10-14 20:04:58.312  1176  2157 W Lyric   : session_telemetry_controller.cc:109: Telemetry was not initialized act-slenderman
+10-14 20:04:58.312  1176  2157 W Lyric   : session_telemetry_controller.cc:109: Telemetry was not initialized eeprom-gargoyle
+10-14 20:04:58.312  1176  2157 W Lyric   : session_telemetry_controller.cc:109: Telemetry was not initialized eeprom-smaug-sandworm
+10-14 20:04:58.312  1176  2157 W Lyric   : session_telemetry_controller.cc:109: Telemetry was not initialized eeprom-smaug-dokkaebi
+10-14 20:04:58.312  1176  2157 W Lyric   : session_telemetry_controller.cc:109: Telemetry was not initialized sensor-dokkaebi
+10-14 20:04:58.312  1176  2157 W Lyric   : session_telemetry_controller.cc:109: Telemetry was not initialized sensor-nagual
+10-14 20:04:58.312  1176  2157 W Lyric   : session_telemetry_controller.cc:109: Telemetry was not initialized sensor-dokkaebi
+10-14 20:04:58.312  1176  2157 W Lyric   : session_telemetry_controller.cc:109: Telemetry was not initialized top
+10-14 20:04:58.313  1176  1617 W Lyric   : statistics_node.cc:335: Failed to get pdaf calibration data
+10-14 20:04:58.313  1176  1618 W Lyric   : video_esp_node.cc:94: Failed to acquire video esp context: INVALID_ARGUMENT: Video ESP cannot process stream with size {width: 1600, height: 1200}
+10-14 20:04:58.317  1176  1617 E GHAWB   : Skin Stats Analyzer: skin_stats_analyzer.cc:26] SetTuning: Disable SkinStatsAnalyzer in tuning
+10-14 20:04:58.317  1176  1617 W G3ACoordinator: awb_engine.cc:529: Failed to register data types in data manager.
+10-14 20:04:58.322  1176  1617 W Lyric   : stream_interface_controller.cc:460: Note: processing_context->consumer is being re-assigned from 13 to 8
+10-14 20:04:58.322  1176  1617 W Lyric   : video_esp_node.cc:94: Failed to acquire video esp context: INVALID_ARGUMENT: Video ESP cannot process stream with size {width: 1600, height: 1200}
+10-14 20:04:58.322  1176  1617 W Lyric   : statistics_node.cc:335: Failed to get pdaf calibration data
+10-14 20:04:58.322  1176  1617 E GHAWB   : Skin Stats Analyzer: skin_stats_analyzer.cc:26] SetTuning: Disable SkinStatsAnalyzer in tuning
+10-14 20:04:58.323  1176  1617 W G3ACoordinator: awb_engine.cc:529: Failed to register data types in data manager.
+10-14 20:04:58.323  1176  1617 W Lyric   : stream_interface_controller.cc:460: Note: processing_context->consumer is being re-assigned from 8 to 13
+10-14 20:04:58.323  1176  1617 W Lyric   : stream_interface_controller.cc:460: Note: processing_context->consumer is being re-assigned from 13 to 8
+10-14 20:04:58.324  1176  5403 W Lyric   : thread_schedule.cc:108: Couldn't set thread affinity with error code: Invalid argument
+10-14 20:04:58.324  1176  5408 W Lyric   : thread_schedule.cc:108: Couldn't set thread affinity with error code: Invalid argument
+10-14 20:04:58.336  1176  2156 W Lyric   : three_a_request_node.cc:121: 3 calls in 81 sec(s): ThreeARequestNode: Error getting  metadata entry [ANDROID_CONTROL_AF_REGIONS]: INVALID_ARGUMENT: Metadata doesn't have the entry for ANDROID_CONTROL_AF_REGIONS
+10-14 20:04:58.338  1176  5403 W G3ACoordinator: data_manager.cc:154: [5, 2, 9000] can't be found
+10-14 20:04:58.339  1176  5403 W G3ACoordinator: awb_tuning_util.cc:50: Tuning key not found:  Usecase: 13 Sensor mode: -1 Viridian value: -1 Camera position: 2 Camera lens_type: 5 Camera spectrum: -1 Partial Usecases: {}. Try default use case  Usecase: 0 Sensor mode: -1 Viridian value: -1 Camera position: 2 Camera lens_type: 5 Camera spectrum: -1 Partial Usecases: {}
+10-14 20:04:58.340  1176  5403 E GHAWB   : Skin Stats Analyzer: skin_stats_analyzer.cc:26] SetTuning: Disable SkinStatsAnalyzer in tuning
+10-14 20:04:58.341  1176  2153 W Lyric   : dysco_node.cc:176: LscStats payload is missing in frame 0 due to frame drop!
+10-14 20:04:58.352  1176  2156 W Lyric   : dysco_node.cc:176: LscStats payload is missing in frame 1 due to frame drop!
+10-14 20:04:58.353  1176  2156 W Lyric   : dysco_node.cc:176: LscStats payload is missing in frame 2 due to frame drop!
+10-14 20:04:58.355  1176  2156 W Lyric   : g3aa_pipeline.cc:936: [Bayer1][Frame 3] Skipping configuration of frames 2-2. Last received HW Frame -1 at SOF -1. Next trigger count updated from 1 to 2. Queue: [1].
+10-14 20:04:58.398  1176  2153 E native  : E0000 00:00:1791983098.398083    2153 frame_series.h:63] No valid frame assigned. Do nothing.
+10-14 20:04:58.403  1176  2149 W Lyric   : tnr_align_node.cc:377: No valid previous gaussian pyramid to use for frame 0(multicam_frame_number=0)
+10-14 20:04:58.476  1176  5407 W Lyric   : tnr_merge_node.cc:1233: TNR merge uses the previous initial image frame instead of merge feedback for denoise for frame/batch: 1 in context 0xb4000071030d95e8
+10-14 20:05:00.029  1176  5403 W Lyric   : generic_power_throttle_controller.cc:773: 415 calls in 10 sec(s):  Unsupported thermal policy: AE True Light
+10-14 20:05:00.821  1658  6467 W AS.PlaybackActivityMon: No piid assigned for invalid/internal port id 511
+10-14 20:05:00.822  1658  5788 W AS.PlaybackActivityMon: No piid assigned for invalid/internal port id 511
+10-14 20:05:00.838  1172  1172 W audio_hw_35l41: cs35l41_amp_common_event: ret: 0, event: 15, state: 3, device: 0
+10-14 20:05:00.976  1172  1172 W audio_hw_35l41: cs35l41_amp_common_event: ret: 0, event: 15, state: 3, device: 0
+10-14 20:05:01.268  1424  1424 W TracingMuxer: type=1400 audit(0.0:19623): avc:  denied  { write } for  name="traced_producer" dev="tmpfs" ino=1490 scontext=u:r:gxp_logging:s0 tcontext=u:object_r:traced_producer_socket:s0 tclass=sock_file permissive=0
+10-14 20:05:01.889  1658  5788 W AS.PlaybackActivityMon: No piid assigned for invalid/internal port id 511
+10-14 20:05:01.889  1658  6467 W AS.PlaybackActivityMon: No piid assigned for invalid/internal port id 511
+10-14 20:05:01.889  1172  1190 W audio_hw_35l41: cs35l41_amp_common_event: ret: 0, event: 15, state: 3, device: 0
+10-14 20:05:01.948  1176 32452 W Lyric   : face_detection_thread_pool.cc:176: The workload can not be finished successfully in time: DEADLINE_EXCEEDED: timed out waiting for fence with a timeout duration: 20ms will return last valid result instead. Frame number: 105
+10-14 20:05:01.985  1176 20157 W GCH_ZslBufferManager: IsPendingBufferEmpty: Pending buffer is not empty:3.
+10-14 20:05:01.991  1172  1190 W audio_hw_35l41: cs35l41_amp_common_event: ret: 0, event: 15, state: 3, device: 0
+10-14 20:05:02.007 19492 20161 W CCodecResources: Failed to query component store for system resources: 6
+10-14 20:05:02.012 19492 20164 W sip.residentapp: AIBinder_linkToDeath is being called with a non-null cookie and no onUnlink callback set. Use AIBinder_DeathRecipient_setOnUnlinked to manage the lifetime of the cookie. This will become an abort.
+10-14 20:05:02.017 19492 20162 W CCodecResources: Failed to query component store for system resources: 6
+10-14 20:05:02.018 19492 20164 W CCodecResources: Failed to query component interface for required system resources: 6
+10-14 20:05:02.021  1414  7099 E Codec2-ComponentInterface: We have a failed config
+10-14 20:05:02.022 19492 20166 W sip.residentapp: AIBinder_linkToDeath is being called with a non-null cookie and no onUnlink callback set. Use AIBinder_DeathRecipient_setOnUnlinked to manage the lifetime of the cookie. This will become an abort.
+10-14 20:05:02.024  1414  7099 W mediaswcodec: AIBinder_linkToDeath is being called with a non-null cookie and no onUnlink callback set. Use AIBinder_DeathRecipient_setOnUnlinked to manage the lifetime of the cookie. This will become an abort.
+10-14 20:05:02.024 19492 20164 W sip.residentapp: AIBinder_linkToDeath is being called with a non-null cookie and no onUnlink callback set. Use AIBinder_DeathRecipient_setOnUnlinked to manage the lifetime of the cookie. This will become an abort.
+10-14 20:05:02.032 19492 19786 W sip.residentapp: AIBinder_linkToDeath is being called with a non-null cookie and no onUnlink callback set. Use AIBinder_DeathRecipient_setOnUnlinked to manage the lifetime of the cookie. This will become an abort.
+10-14 20:05:02.032  1414 20165 W mediaswcodec: AIBinder_linkToDeath is being called with a non-null cookie and no onUnlink callback set. Use AIBinder_DeathRecipient_setOnUnlinked to manage the lifetime of the cookie. This will become an abort.
+10-14 20:05:02.037 19492 20166 W CCodecResources: Failed to query component interface for required system resources: 6
+10-14 20:05:02.041  1414 16694 E Codec2-ComponentInterface: We have a failed config
+10-14 20:05:02.042  1176  5398 W native  : W0000 00:00:1791983102.042709    5398 rectiface_node.cc:1496] Rectiface: out-of-order frame_id: previous (107) vs current (109)
+10-14 20:05:02.043  1414  7099 W mediaswcodec: AIBinder_linkToDeath is being called with a non-null cookie and no onUnlink callback set. Use AIBinder_DeathRecipient_setOnUnlinked to manage the lifetime of the cookie. This will become an abort.
+10-14 20:05:02.044 19492 20166 W sip.residentapp: AIBinder_linkToDeath is being called with a non-null cookie and no onUnlink callback set. Use AIBinder_DeathRecipient_setOnUnlinked to manage the lifetime of the cookie. This will become an abort.
+10-14 20:05:02.049 19492 19786 W sip.residentapp: AIBinder_linkToDeath is being called with a non-null cookie and no onUnlink callback set. Use AIBinder_DeathRecipient_setOnUnlinked to manage the lifetime of the cookie. This will become an abort.
+10-14 20:05:02.049  1414 20167 W mediaswcodec: AIBinder_linkToDeath is being called with a non-null cookie and no onUnlink callback set. Use AIBinder_DeathRecipient_setOnUnlinked to manage the lifetime of the cookie. This will become an abort.
+10-14 20:05:02.171  1658  6492 W AS.PlaybackActivityMon: No piid assigned for invalid/internal port id 757
+10-14 20:05:02.171  1658  6462 E AppOps  : attributionTag  not declared in manifest of io.mosip.residentapp
+10-14 20:05:02.173  1658  2769 E AppOps  : attributionTag  not declared in manifest of io.mosip.residentapp
+10-14 20:05:02.173  1658  2769 W AS.PlaybackActivityMon: No piid assigned for invalid/internal port id 757
+10-14 20:05:02.175  1172  1172 W audio_hw_35l41: cs35l41_amp_common_event: ret: 0, event: 15, state: 3, device: 0
+10-14 20:05:02.296  1658  2769 E AppOps  : attributionTag  not declared in manifest of io.mosip.residentapp
+10-14 20:05:02.296  1658  6462 E AppOps  : attributionTag  not declared in manifest of io.mosip.residentapp
+10-14 20:05:02.312  2733  3006 E SatelliteController: isSatelliteEnabled: mIsSatelliteEnabled=null
+10-14 20:05:02.360  1172  1172 W audio_hw_35l41: cs35l41_amp_common_event: ret: 0, event: 15, state: 3, device: 0
+10-14 20:05:03.000  1176  2156 W Lyric   : three_a_request_node.cc:121: 141 calls in 5 sec(s): ThreeARequestNode: Error getting  metadata entry [ANDROID_CONTROL_AF_REGIONS]: INVALID_ARGUMENT: Metadata doesn't have the entry for ANDROID_CONTROL_AF_REGIONS
+10-14 20:05:03.310  1658  2769 W AS.PlaybackActivityMon: No piid assigned for invalid/internal port id 511
+10-14 20:05:03.311  1658  6492 W AS.PlaybackActivityMon: No piid assigned for invalid/internal port id 511
+10-14 20:05:03.314  1172  1190 W audio_hw_35l41: cs35l41_amp_common_event: ret: 0, event: 15, state: 3, device: 0
+10-14 20:05:03.349 19492 19556 W ReactNativeJS: 'Warning: Compound state node \'scan.startVPSharing\' has no initial state.', { [Component Stack] name: 'Component Stack' }
+10-14 20:05:03.405 19492 19556 W ReactNativeJS: 'Warning: Compound state node \'scan.startVPSharing\' has no initial state.', { [Component Stack] name: 'Component Stack' }
+10-14 20:05:03.406 19492 19556 I ReactNativeJS: [Pixel 7] scan: IN_PROGRESS -> startVPSharing.inProgress
+10-14 20:05:03.406 19492 19556 I ReactNativeJS: {}
+10-14 20:05:03.406 19492 19556 I ReactNativeJS:       
+10-14 20:05:03.408 19492 19556 I ReactNativeJS: [Pixel 7] OpenID4VP: FACE_VALID -> sendingVP.sendVP
+10-14 20:05:03.408 19492 19556 I ReactNativeJS: {}
+10-14 20:05:03.408 19492 19556 I ReactNativeJS:       
+10-14 20:05:03.439  1172  1190 W audio_hw_35l41: cs35l41_amp_common_event: ret: 0, event: 15, state: 3, device: 0
+10-14 20:05:03.450 19492 19556 W ReactNativeJS: Warning: Attempted to read state from uninitialized service 'faceScanner'. Make sure the service is started first.
+10-14 20:05:03.450 19492 19556 W ReactNativeJS: Warning: Attempted to read state from uninitialized service 'faceScanner'. Make sure the service is started first.
+10-14 20:05:03.450 19492 19556 W ReactNativeJS: Warning: Attempted to read state from uninitialized service 'faceScanner'. Make sure the service is started first.
+10-14 20:05:03.451 19492 19556 W ReactNativeJS: Warning: Attempted to read state from uninitialized service 'faceScanner'. Make sure the service is started first.
+10-14 20:05:03.451 19492 19556 W ReactNativeJS: Warning: Attempted to read state from uninitialized service 'faceScanner'. Make sure the service is started first.
+10-14 20:05:03.451 19492 19556 W ReactNativeJS: Warning: Attempted to read state from uninitialized service 'faceScanner'. Make sure the service is started first.
+10-14 20:05:03.451 19492 19556 W ReactNativeJS: Warning: Attempted to read state from uninitialized service 'faceScanner'. Make sure the service is started first.
+10-14 20:05:03.451 19492 19556 W ReactNativeJS: Warning: Attempted to read state from uninitialized service 'faceScanner'. Make sure the service is started first.
+10-14 20:05:03.451 19492 19556 W ReactNativeJS: Warning: Attempted to read state from uninitialized service 'faceScanner'. Make sure the service is started first.
+10-14 20:05:05.535  1176 20159 W Lyric   : shutter_notification_manager.cc:269: 1 calls in 15 sec(s): vsync timeout for frame 216
+10-14 20:05:05.540 19492 19786 E BufferQueueProducer: [a8c31 SurfaceView[io.mosip.residentapp/io.mosip.residentapp.MainActivity]#17(BLAST Consumer)17](id:4c2400000020,api:4,p:1359,c:19492) dequeueBuffer: BufferQueue has been abandoned
+10-14 20:05:05.540  1359 15784 E Camera3-OutputStream: getBufferLockedCommon: Stream 0: Can't dequeue next output buffer: No such device (-19)
+10-14 20:05:05.540  1176 20158 W GCH_CameraDeviceSession: RequestStreamBuffers: Requesting stream buffer failed. (buffer_returns has 1 entries; status is Success(4)).
+10-14 20:05:05.541  1176 20158 W StreamBufferCacheManager: Refill: Failed to acquire buffer for stream 0, error 3
+10-14 20:05:05.541  1176 20158 W StreamBufferCacheManager: Refill: Stream 0 is disconnected or unknown error observed.This stream is marked as inactive.
+10-14 20:05:05.553 19492 19786 E BufferQueueProducer: [a8c31 SurfaceView[io.mosip.residentapp/io.mosip.residentapp.MainActivity]#17(BLAST Consumer)17](id:4c2400000020,api:4,p:1359,c:19492) queueBuffer: BufferQueue has been abandoned
+10-14 20:05:05.553  1359 15784 E Surface : [a8c31 SurfaceView[io.mosip.residentapp/io.mosip.residentapp.MainActivity]#17(BLAST Consumer)17](id:4c2400000020) queueBuffer: error queuing buffer, -19
+10-14 20:05:05.556  1176  2157 E StreamBufferCacheManager: GetStreamBuffer: Get buffer for stream 0 failed.
+10-14 20:05:05.556  1176  2157 E GCH_CameraDeviceSession: RequestBuffersFromStreamBufferCacheManager: Failed to get stream buffer from SBC manager, error status: Unknown error -2147483648(-2147483648).
+10-14 20:05:05.556  1176  2157 W Lyric   : scaler_node.cc:1045: 3 calls in 88 sec(s): ScalerNode: cam6_preview_scaler producing drops due to allocation failure: UNAVAILABLE: MultiAllocator unable to allocate: {type: AllocationSpec, request_id: 214, stream_id: 32768}, no allocators were able to fulfill this allocation: framework: RESOURCE_EXHAUSTED: Failed to get stream buffer for frame_number: 214, stream_id: 0; Failed to request stream buffer from the framework for {type: AllocationSpec, request_id: 214, stream_id: 32768}: 0 buffers already allocated; gralloc: NOT_FOUND: Size not available: {type: AllocationSpec, request_id: 214, stream_id: 32768}; A specified size is required; gralloc received invalid allocation spec; hardware: NOT_FOUND: Flags not available:{type: AllocationSpec, request_id: 214, stream_id: 32768}; LwisClient expects allocation flags; HwAllocator: hardware failed to allocate {type: AllocationSpec, request_id: 214, stream_id: 32768}; heap: NOT_FOUND: Flags not available:{type: AllocationSpec, request_id: 214, stream_id: 32768}; HeapAllocator expects allocation flags;; Failed to allocate image from parent context; Failed to allocate image from parent context; failed to allocate scaler output image
+10-14 20:05:05.556  1176  2149 E Lyric   : mesh_warp_node.cc:1113: With hw_dma_sync: INTERNAL: cam6_preview_mesh_warp: MeshWarpController returned: FAILED_PRECONDITION: cam6_preview_scaler producing drops as buffer allocation failed; Error signaled on ready-to-start for fence #0
+10-14 20:05:05.585 19492 19492 W ScreenFlashWrapper: completePendingScreenFlashClear: none pending!
+10-14 20:05:05.586 19492 19492 W ScreenFlashWrapper: completePendingScreenFlashClear: none pending!
+10-14 20:05:05.591  1176  2157 E StreamBufferCacheManager: GetStreamBuffer: Get buffer for stream 0 failed.
+10-14 20:05:05.591  1176  2157 E GCH_CameraDeviceSession: RequestBuffersFromStreamBufferCacheManager: Failed to get stream buffer from SBC manager, error status: Unknown error -2147483648(-2147483648).
+10-14 20:05:05.591  1176  2149 E Lyric   : mesh_warp_node.cc:1113: With hw_dma_sync: INTERNAL: cam6_preview_mesh_warp: MeshWarpController returned: FAILED_PRECONDITION: cam6_preview_scaler producing drops as buffer allocation failed; Error signaled on ready-to-start for fence #0
+10-14 20:05:05.592  1658  2247 W InputChannel-JNI: Channel already disposed.
+10-14 20:05:05.593  1176  5398 W Lyric   : face_detection_node.cc:661: 2 calls in 15 sec(s): Face Detection: producing frame drops due to request frame drop
+10-14 20:05:05.594  1176  2153 W Lyric   : three_a_request_node.cc:903: 2 calls in 15 sec(s): cam6_three_a_request, frame_number: 215, request frame is not available
+10-14 20:05:05.594  1176  2149 W Lyric   : tnr_align_node.cc:609: 3 calls in 15 sec(s): TnrAlignNode producing alignment and noise frame drops for batch with first frame number: 215 due to error: DATA_LOSS: missing request_settings; Produced 1 alignment and noise frame drops since started. The corresponding image frame(s) will still be processed without denoising in TNR merge.
+10-14 20:05:05.594  1176  5398 W Lyric   : tnr_merge_node.cc:589: TnrMergeNode producing frame drops from context 0xb4000071030d95e8 starting at frame number: 215 due to error: INVALID_ARGUMENT: TNR merge tuning frame is dropped.; TNR merge failed to get tuning data in context 0xb4000071030d95e8
+10-14 20:05:05.594  1176  5398 W Lyric   : tnr_merge_node.cc:589: TnrMergeNode producing frame drops from context 0xb4000071030d95e8 starting at frame number: 216 due to error: INVALID_ARGUMENT: TNR merge tuning frame is dropped.; TNR merge failed to get tuning data in context 0xb4000071030d95e8
+10-14 20:05:05.594  1176  5398 W Lyric   : tnr_merge_node.cc:589: TnrMergeNode producing frame drops from context 0xb4000071030d95e8 starting at frame number: 217 due to error: INVALID_ARGUMENT: TNR merge tuning frame is dropped.; TNR merge failed to get tuning data in context 0xb4000071030d95e8
+10-14 20:05:05.594  1176  2149 W Lyric   : mesh_warp_node.cc:782: cam6_preview_mesh_warp Request frame is drop, drop all output for frame 215
+10-14 20:05:05.594  1176  2149 W Lyric   : mesh_warp_node.cc:782: cam6_preview_mesh_warp Request frame is drop, drop all output for frame 216
+10-14 20:05:05.595  1176  2149 W Lyric   : mesh_warp_node.cc:782: cam6_preview_mesh_warp Request frame is drop, drop all output for frame 217
+10-14 20:05:05.596  1658  6492 W PackageConfigPersister: App-specific configuration not found for packageName: io.mosip.residentapp and userId: 0
+10-14 20:05:05.597 19492 19556 W ReactNativeJS: Warning: No implementation found for action type 'forwardToServices'
+10-14 20:05:05.602 19492 19556 I ReactNativeJS: [Pixel 7] app: ACTIVE -> ready.network.online
+10-14 20:05:05.602 19492 19556 I ReactNativeJS: {}
+10-14 20:05:05.602 19492 19556 I ReactNativeJS:       
+10-14 20:05:05.604  1176  1616 E native  : E0000 00:00:1791983105.604254    1616 gcam_tflite_client.cc:323] Face Detection: Error clearing cached buffer handles because delegate is nullptr.
+10-14 20:05:05.604  1176  1616 E native  : E0000 00:00:1791983105.604301    1616 gcam_tflite_client.cc:323] Face Detection: Error clearing cached buffer handles because delegate is nullptr.
+10-14 20:05:05.610 19492 19556 I ReactNativeJS: [Pixel 7] app: done.invoke.app.ready.focus.active:invocation[1] -> ready.network.online
+10-14 20:05:05.610 19492 19556 I ReactNativeJS: {}
+10-14 20:05:05.610 19492 19556 I ReactNativeJS:       
+10-14 20:05:05.611 19492 19556 I ReactNativeJS: [Pixel 7] app: done.invoke.app.ready.focus.active:invocation[3] -> ready.network.online
+10-14 20:05:05.611 19492 19556 I ReactNativeJS: {}
+10-14 20:05:05.611 19492 19556 I ReactNativeJS:       
+10-14 20:05:05.629  1176  1617 W Lyric   : g3aa_pipeline.cc:705: [Bayer1] Draining the pipeline without waiting for the HW to finish. This is safe only if the HW has already been globally reset
+10-14 20:05:05.629  1176  1617 W Lyric   : g3aa_pipeline.cc:424: [Bayer1][Frame 219] Canceling transaction id 55121 for shadow 1: [FAILED]
+10-14 20:05:05.629  1176  1617 W Lyric   : g3aa_pipeline.cc:720: [Bayer1] WaitUntilDrained() failed: DEADLINE_EXCEEDED: [Bayer1] Timed out waiting for the pipeline to drain. 1 pending requests remain for frames: [219]
+10-14 20:05:05.629  1176  1617 E Lyric   : g3aa_pipeline.cc:1183: [Bayer1][Frame 219] Pending interrupt mask: 0X17F3
+10-14 20:05:05.629  1176  1617 W Lyric   : g3aa_pipeline.cc:461: [Bayer1] Clearing pending requests for frames: [219]
+10-14 20:05:05.639  1176  1617 E Lyric   : software_fence.cc:40: Resetting unsignaled fence 6
+10-14 20:05:05.645  1176  1617 W Lyric   : g3aa_driver.cc:329: DisconnectFromPdp() function is called for Sysreg.
+10-14 20:05:05.645  1176  1617 W Lyric   : g3aa_driver.cc:342: G3AA disconnected from PDP via Sysreg. G3AA will no longer receive data from PDP.
+10-14 20:05:05.652  1176  2125 W Lyric   : graph_runner.cc:219: GraphRunner::StopGraph(1) called on a graph that is not running.
+10-14 20:05:05.660  1176  1616 W Lyric   : device_context.cc:418: NotifyCaptureSessionClose: No OisController found for physical camera FrontVirtual. Status: NOT_FOUND: Failed to find controller by type and camera id(FrontVirtual); Controller with ID: optical image stabilization controller for camera: FrontVirtual not present in device_context
+10-14 20:05:05.660  1176  1616 W Lyric   : device_context.cc:418: NotifyCaptureSessionClose: No OisController found for physical camera Front. Status: NOT_FOUND: Failed to find controller by type and camera id(Front); Controller with ID: optical image stabilization controller for camera: Front not present in device_context
+10-14 20:05:05.668 19492 19492 E ConsumerBase: [ImageReader-3264x2448f21m4-19492-12] abandonLocked: ConsumerBase is abandoned!
+10-14 20:05:05.668 19492 19492 E ConsumerBase: [ImageReader-1600x1200f23m4-19492-13] abandonLocked: ConsumerBase is abandoned!
+10-14 20:05:05.668 19492 19492 E ConsumerBase: [ImageReader-1600x1200f23m4-19492-14] abandonLocked: ConsumerBase is abandoned!
+10-14 20:05:05.678 20763 19020 W Turbo.DeviceHealthLeversManagerImpl: NetworkDenylist enabled: false
+10-14 20:05:05.679 20763 19020 W Turbo.DeviceHealthLeversManagerImpl: AppStandbyBucket enabled: false
+10-14 20:05:05.679 20763 19020 W Turbo.MaintenanceWindowJobService: DHL maintenance window job canceled.
+10-14 20:05:06.193  3654  3820 E TaskManager: <DWB> Alarm scheduled for PT-13195H-50M-6.192S from now
+10-14 20:05:06.426  1172  1190 W audio_hw_35l41: cs35l41_amp_common_event: ret: 0, event: 3, state: 3, device: 4
+10-14 20:05:06.427  1172  1190 W audio_hw_35l41: cs35l41_amp_common_event: ret: 0, event: 4, state: 2, device: 4
+10-14 20:05:07.143 19492 19556 I ReactNativeJS: [Pixel 7] scan: SUCCESS -> startVPSharing.success
+10-14 20:05:07.143 19492 19556 I ReactNativeJS: {}
+10-14 20:05:07.143 19492 19556 I ReactNativeJS:       
+10-14 20:05:07.296 19492 19556 I ReactNativeJS: [Pixel 7] vcMeta: GET_VC_ITEM -> ready.showTamperedPopup
+10-14 20:05:07.296 19492 19556 I ReactNativeJS: {
+10-14 20:05:07.296 19492 19556 I ReactNativeJS:   "vcMetadata": {
+10-14 20:05:07.296 19492 19556 I ReactNativeJS:     "idType": "",
+10-14 20:05:07.296 19492 19556 I ReactNativeJS:     "requestId": "1f72f273-4d3e-4118-b800-a1d57eca57a6_ssi-issuer",
+10-14 20:05:07.296 19492 19556 I ReactNativeJS:     "isPinned": false,
+10-14 20:05:07.296 19492 19556 I ReactNativeJS:     "id": "1f72f273-4d3e-4118-b800-a1d57eca57a6_ssi-issuer",
+10-14 20:05:07.296 19492 19556 I ReactNativeJS:     "issuer": "https://ssi-issuer.arlabsnepal.com",
+10-14 20:05:07.296 19492 19556 I ReactNativeJS:     "protocol": "",
+10-14 20:05:07.296 19492 19556 I ReactNativeJS:     "timestamp": "",
+10-14 20:05:07.296 19492 19556 I ReactNativeJS:     "isVerified":...
+10-14 20:05:07.296 19492 19556 I ReactNativeJS:       
+10-14 20:05:07.320 19492 19492 E unknown:ReactModalHost: Creating new dialog from context: io.mosip.residentapp.MainActivity@97bde8b@159112843
+10-14 20:05:07.325  1658  5788 W InputChannel-JNI: Channel already disposed.
+10-14 20:05:07.335 19492 19492 E unknown:ReactModalHost: Updating existing dialog with context: io.mosip.residentapp.MainActivity@97bde8b@159112843
+10-14 20:05:07.387  1658  2247 W InputChannel-JNI: Channel already disposed.
+10-14 20:05:07.388  1658  6413 W PackageConfigPersister: App-specific configuration not found for packageName: io.mosip.residentapp and userId: 0
+10-14 20:05:07.436 19492 19556 I ReactNativeJS: [Pixel 7] OpenID4VP: done.invoke.OpenID4VP.sendingVP.sendVP:invocation[0] -> success
+10-14 20:05:07.436 19492 19556 I ReactNativeJS: {
+10-14 20:05:07.436 19492 19556 I ReactNativeJS:   "data": {
+10-14 20:05:07.436 19492 19556 I ReactNativeJS:     "additional_params": "{}",
+10-14 20:05:07.436 19492 19556 I ReactNativeJS:     "headers": {
+10-14 20:05:07.436 19492 19556 I ReactNativeJS:       "alt-svc": [
+10-14 20:05:07.436 19492 19556 I ReactNativeJS:         "h3=\":443\"; ma=86400"
+10-14 20:05:07.436 19492 19556 I ReactNativeJS:       ],
+10-14 20:05:07.436 19492 19556 I ReactNativeJS:       "cf-cache-status": [
+10-14 20:05:07.436 19492 19556 I ReactNativeJS:         "DYNAMIC"
+10-14 20:05:07.436 19492 19556 I ReactNativeJS:       ],
+10-14 20:05:07.436 19492 19556 I ReactNativeJS:       "cf-ray": [
+10-14 20:05:07.436 19492 19556 I ReactNativeJS:         "a4a6cb2ddb19dc36-LAX"
+10-14 20:05:07.436 19492 19556 I ReactNativeJS:       ],
+10-14 20:05:07.436 19492 19556 I ReactNativeJS:       "content-type": [
+10-14 20:05:07.436 19492 19556 I ReactNativeJS:         "application/json"
+10-14 20:05:07.436 19492 19556 I ReactNativeJS:       ],
+10-14 20:05:07.436 19492 19556 I ReactNativeJS:       ...
+10-14 20:05:07.436 19492 19556 I ReactNativeJS:       
+10-14 20:05:07.441 19492 19556 I ReactNativeJS: [Pixel 7] store: PREPEND -> ready
+10-14 20:05:07.441 19492 19556 I ReactNativeJS: {
+10-14 20:05:07.441 19492 19556 I ReactNativeJS:   "key": "activityLog",
+10-14 20:05:07.441 19492 19556 I ReactNativeJS:   "value": {
+10-14 20:05:07.441 19492 19556 I ReactNativeJS:     "timestamp": 1791983107437,
+10-14 20:05:07.441 19492 19556 I ReactNativeJS:     "flow": "vp share",
+10-14 20:05:07.441 19492 19556 I ReactNativeJS:     "info": ""
+10-14 20:05:07.441 19492 19556 I ReactNativeJS:   }
+10-14 20:05:07.441 19492 19556 I ReactNativeJS: }
+10-14 20:05:07.441 19492 19556 I ReactNativeJS:       
+10-14 20:05:07.441 19492 19556 I ReactNativeJS: [Pixel 7] activityLog: LOG_ACTIVITY -> ready.logging
+10-14 20:05:07.441 19492 19556 I ReactNativeJS: {
+10-14 20:05:07.441 19492 19556 I ReactNativeJS:   "log": {
+10-14 20:05:07.441 19492 19556 I ReactNativeJS:     "timestamp": 1791983107437,
+10-14 20:05:07.441 19492 19556 I ReactNativeJS:     "flow": "vp share",
+10-14 20:05:07.441 19492 19556 I ReactNativeJS:     "info": ""
+10-14 20:05:07.441 19492 19556 I ReactNativeJS:   }
+10-14 20:05:07.441 19492 19556 I ReactNativeJS: }
+10-14 20:05:07.441 19492 19556 I ReactNativeJS:       
+10-14 20:05:07.441 19492 19556 I ReactNativeJS: [Pixel 7] OpenID4VP: LOG_ACTIVITY -> success
+10-14 20:05:07.441 19492 19556 I ReactNativeJS: {
+10-14 20:05:07.441 19492 19556 I ReactNativeJS:   "logType": "SHARED_WITH_FACE_VERIFIACTION"
+10-14 20:05:07.441 19492 19556 I ReactNativeJS: }
+10-14 20:05:07.441 19492 19556 I ReactNativeJS:       
+10-14 20:05:07.523 19492 19556 I ReactNativeJS: [Pixel 7] app: done.invoke.app.ready.focus.active:invocation[0] -> ready.network.online
+10-14 20:05:07.523 19492 19556 I ReactNativeJS: {
+10-14 20:05:07.523 19492 19556 I ReactNativeJS:   "data": ""
+10-14 20:05:07.523 19492 19556 I ReactNativeJS: }
+10-14 20:05:07.523 19492 19556 I ReactNativeJS:       
+10-14 20:05:07.523 19492 19556 I ReactNativeJS: [Pixel 7] app: done.invoke.app.ready.focus.active:invocation[2] -> ready.network.online
+10-14 20:05:07.523 19492 19556 I ReactNativeJS: {
+10-14 20:05:07.523 19492 19556 I ReactNativeJS:   "data": ""
+10-14 20:05:07.523 19492 19556 I ReactNativeJS: }
+10-14 20:05:07.523 19492 19556 I ReactNativeJS:       
+10-14 20:05:07.525 19492 19556 W ReactNativeJS: Warning: No implementation found for action type 'forwardToServices'
+10-14 20:05:07.525 19492 19556 I ReactNativeJS: [Pixel 7] app: INACTIVE -> ready.network.online
+10-14 20:05:07.525 19492 19556 I ReactNativeJS: {}
+10-14 20:05:07.525 19492 19556 I ReactNativeJS:       
+10-14 20:05:07.558 19492 19556 I ReactNativeJS: Returned cached response forCACHE_FETCH_ISSUER_WELLKNOWN_CONFIG_https://ssi-issuer.arlabsnepal.com
+10-14 20:05:07.558 19492 19556 E ReactNativeJS: Selected credential type is not available in wellknown config supported credentials list
+10-14 20:05:07.564 19492 19556 E ReactNativeJS: 'Error occurred while parsing well-known response of credential type - undefined so returning default fields only. Error is ', 'Error: Selected credential type - undefined is not available in wellknown config supported credentials list'
+10-14 20:05:07.565 19492 19556 I ReactNativeJS: [Pixel 7] activityLog: STORE_INCOMING_VC_WELLKNOWN_CONFIG -> ready.logging
+10-14 20:05:07.565 19492 19556 I ReactNativeJS: {
+10-14 20:05:07.565 19492 19556 I ReactNativeJS:   "issuer": "https://ssi-issuer.arlabsnepal.com"
+10-14 20:05:07.565 19492 19556 I ReactNativeJS: }
+10-14 20:05:07.565 19492 19556 I ReactNativeJS:       
+10-14 20:05:07.602 19492 19556 I ReactNativeJS: Returned cached response forCACHE_FETCH_ISSUER_WELLKNOWN_CONFIG_https://ssi-issuer.arlabsnepal.com
+10-14 20:05:07.631 19492 19556 I ReactNativeJS: [Pixel 7] activityLog: STORE_INCOMING_VC_WELLKNOWN_CONFIG -> ready.logging
+10-14 20:05:07.631 19492 19556 I ReactNativeJS: {
+10-14 20:05:07.631 19492 19556 I ReactNativeJS:   "issuer": "https://ssi-issuer.arlabsnepal.com",
+10-14 20:05:07.631 19492 19556 I ReactNativeJS:   "wellknown": {
+10-14 20:05:07.631 19492 19556 I ReactNativeJS:     "display": [
+10-14 20:05:07.631 19492 19556 I ReactNativeJS:       {
+10-14 20:05:07.631 19492 19556 I ReactNativeJS:         "name": "Farmer Issuer",
+10-14 20:05:07.631 19492 19556 I ReactNativeJS:         "locale": "en"
+10-14 20:05:07.631 19492 19556 I ReactNativeJS:       }
+10-14 20:05:07.631 19492 19556 I ReactNativeJS:     ],
+10-14 20:05:07.631 19492 19556 I ReactNativeJS:     "credential_issuer": "https://ssi-issuer.arlabsnepal.com",
+10-14 20:05:07.631 19492 19556 I ReactNativeJS:     "authorization_servers": [
+10-14 20:05:07.631 19492 19556 I ReactNativeJS:       "https://ssi-issuer.arlabsnepal.com...
+10-14 20:05:07.631 19492 19556 I ReactNativeJS:       
+10-14 20:05:07.654 19492 19556 I ReactNativeJS: [Pixel 7] activityLog: STORE_RESPONSE -> ready.idle
+10-14 20:05:07.654 19492 19556 I ReactNativeJS: {
+10-14 20:05:07.654 19492 19556 I ReactNativeJS:   "response": {
+10-14 20:05:07.654 19492 19556 I ReactNativeJS:     "timestamp": 1791983107437,
+10-14 20:05:07.654 19492 19556 I ReactNativeJS:     "flow": "vp share",
+10-14 20:05:07.654 19492 19556 I ReactNativeJS:     "info": ""
+10-14 20:05:07.654 19492 19556 I ReactNativeJS:   }
+10-14 20:05:07.654 19492 19556 I ReactNativeJS: }
+10-14 20:05:07.654 19492 19556 I ReactNativeJS:       
+10-14 20:05:07.685 19492 19492 W unknown:ReactNative: ReactImageView: Image source "null" doesn't exist
+10-14 20:05:07.721 19492 19556 I ReactNativeJS: [Pixel 7] app: xstate.update -> ready.network.online
+10-14 20:05:07.721 19492 19556 I ReactNativeJS: {}
+10-14 20:05:07.721 19492 19556 I ReactNativeJS:       
+10-14 20:05:07.721 19492 19556 I ReactNativeJS: [Pixel 7] store: STORE_RESPONSE -> ready
+10-14 20:05:07.721 19492 19556 I ReactNativeJS: {
+10-14 20:05:07.721 19492 19556 I ReactNativeJS:   "response": {
+10-14 20:05:07.721 19492 19556 I ReactNativeJS:     "timestamp": 1791983107437,
+10-14 20:05:07.721 19492 19556 I ReactNativeJS:     "flow": "vp share",
+10-14 20:05:07.721 19492 19556 I ReactNativeJS:     "info": ""
+10-14 20:05:07.721 19492 19556 I ReactNativeJS:   },
+10-14 20:05:07.721 19492 19556 I ReactNativeJS:   "requester": "x:7"
+10-14 20:05:07.721 19492 19556 I ReactNativeJS: }
+10-14 20:05:07.721 19492 19556 I ReactNativeJS:       
+10-14 20:05:07.729 19492 19556 W ReactNativeJS: ReactImageView: Image source "null" doesn't exist
+10-14 20:05:13.838  2733  3006 E SatelliteController: isSatelliteEnabled: mIsSatelliteEnabled=null

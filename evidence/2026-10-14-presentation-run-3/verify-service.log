@@ -1,0 +1,17 @@
+﻿2026-10-14T13:04:41.818498414Z 2026-10-14T13:04:41.817Z  INFO 1 --- [verify-service] [nio-8080-exec-9] VerifiablePresentationRequestServiceImpl : Creating authorization request
+2026-10-14T13:04:41.826312425Z 2026-10-14T13:04:41.825Z  INFO 1 --- [verify-service] [nio-8080-exec-9] VerifiablePresentationRequestServiceImpl : Authorization request created
+2026-10-14T13:05:06.423369922Z 2026-10-14T13:05:06.422Z  INFO 1 --- [verify-service] [nio-8080-exec-3] ifiablePresentationSubmissionServiceImpl : Received VP submission for state: req_1d60e1d6-9010-4bbd-94ea-9f2f1359ed36
+2026-10-14T13:05:06.423396223Z 2026-10-14T13:05:06.423Z  INFO 1 --- [verify-service] [nio-8080-exec-3] ifiablePresentationSubmissionServiceImpl : VP submission length: 9901
+2026-10-14T13:05:06.444002501Z 2026-10-14T13:05:06.443Z  INFO 1 --- [verify-service] [nio-8080-exec-3] ifiablePresentationSubmissionServiceImpl : VP submission saved for state: req_1d60e1d6-9010-4bbd-94ea-9f2f1359ed36
+2026-10-14T13:05:06.563374948Z 2026-10-14T13:05:06.562Z  INFO 1 --- [verify-service] [nio-8080-exec-5] ifiablePresentationSubmissionServiceImpl : Processing VP submission V2
+2026-10-14T13:05:06.563395949Z 2026-10-14T13:05:06.563Z  INFO 1 --- [verify-service] [nio-8080-exec-5] ifiablePresentationSubmissionServiceImpl : Processing VP token matching V2
+2026-10-14T13:05:06.563982380Z 2026-10-14T13:05:06.563Z  INFO 1 --- [verify-service] [nio-8080-exec-5] ifiablePresentationSubmissionServiceImpl : VP token matching done
+2026-10-14T13:05:06.564378101Z 2026-10-14T13:05:06.564Z  INFO 1 --- [verify-service] [nio-8080-exec-5] ifiablePresentationSubmissionServiceImpl : Processing VP verification V2
+2026-10-14T13:05:06.564818224Z 2026-10-14T13:05:06.564Z  INFO 1 --- [verify-service] [nio-8080-exec-5] i.m.v.vcverifier.PresentationVerifier    : Received Presentation For Verification - getPresentationVerificationResult Start
+2026-10-14T13:05:08.271977863Z 2026-10-14T13:05:08.271Z  INFO 1 --- [verify-service] [nio-8080-exec-5] i.m.v.vcverifier.PresentationVerifier    : Starting holder binding check
+2026-10-14T13:05:08.272151572Z 2026-10-14T13:05:08.271Z  INFO 1 --- [verify-service] [nio-8080-exec-5] i.m.v.vcverifier.PresentationVerifier    : Starting holder proof-of-possession check
+2026-10-14T13:05:08.281110041Z 2026-10-14T13:05:08.280Z  INFO 1 --- [verify-service] [nio-8080-exec-5] i.m.v.v.c.verifier.LdpVerifier           : Received Credentials Verification - Start
+2026-10-14T13:05:10.036271192Z 2026-10-14T13:05:10.035Z  INFO 1 --- [verify-service] [nio-8080-exec-5] i.m.v.v.c.s.LdpStatusChecker             : Started status check
+2026-10-14T13:05:10.036609110Z 2026-10-14T13:05:10.036Z  WARN 1 --- [verify-service] [nio-8080-exec-5] i.m.v.v.c.s.LdpStatusChecker             : No credentialStatus field present in the VC
+2026-10-14T13:05:10.037640364Z 2026-10-14T13:05:10.037Z  INFO 1 --- [verify-service] [nio-8080-exec-5] ifiablePresentationSubmissionServiceImpl : VP submission processing done V2
+2026-10-14T13:05:10.043765984Z 2026-10-14T13:05:10.043Z  INFO 1 --- [verify-service] [nio-8080-exec-5] i.i.v.controller.VPResultController      : Cleaning up VP session cookie
