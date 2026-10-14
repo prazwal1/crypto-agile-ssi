@@ -40,7 +40,7 @@ try {
   & $adb logcat -v threadtime ReactNativeJS:V ReactNative:V USF:S '*:W' | ForEach-Object { $writer.WriteLine($_); $_ }
 } finally {
   if ($writer) { $writer.Close() }
-  foreach ($c in "certify", "certify-nginx", "mimoto-service") {
+  foreach ($c in "certify", "certify-nginx", "mimoto-service", "verify-service", "verify-ui") {
     docker logs --since $start --timestamps $c 2>&1 | ForEach-Object { "$_" } | Out-File (Join-Path $out "$c.log") -Encoding utf8
   }
   & $adb shell getprop ro.product.model  | Out-File (Join-Path $out "device.txt") -Encoding utf8
