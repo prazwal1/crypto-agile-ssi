@@ -48,6 +48,13 @@ Dated record of working sessions. Each entry states what was done, what was obse
 - PB copied `/home/inji/verify-service.jar` out of the running container (image `inji-verify-service:0.18.2`, sha256 `2ed468e7...`) to `F:\thesis\artifacts\2026-10-14-verify-0.18.2\` (jar sha256 `4c049791...`). `inspect-jar.py`: vcverifier-jar 1.8.1, nimbus 9.37.4, BouncyCastle 1.69, 1.70 and 1.78 (1.69 first on the classpath); only 1.78 has pre-standard Dilithium/SPHINCS+.
 - Decision C-10 (closes D-08); F8, F18, F23 updated.
 
+### D-02: SD-JWT VC end to end (21:21 to 22:00)
+- Upstream SD-JWT setup read from Certify v0.14.0 (`docs/SD-JWT-Support.md`, api-test configs, `SDJWT.java`, `VelocityTemplatingEngineImpl.java:249-253` adds vct, cnf, iss). Registered `FarmerCredentialSdJwt` through Certify's own API (`stack.ps1 add-credential-config`): ES256 with the P-256 keymanager key, 12 selectively disclosable claims, farmerID plain.
+- While reading the config: `credential-configurations`, `credentials/status`, `system-info`, `ledger-search` are in `ignore-auth-urls` and were reachable through the public hostname (F24). Blocked in nginx (C-12).
+- Correction to the D-08 note on F18: vc-verifier 1.6.0's ES256K class verifies with the key's own curve (`SHA256withECDSA`), so P-256 signatures verify; the issue is the mislabelled registry and no alg-to-curve check, not a wrong-curve verification.
+- Issuance 1 (with face) succeeded; presentation 1 failed `FACE_INVALID` three times. Cause: wallet forces selfie from `getFaceAttribute` (reads SD-JWT) but takes the reference face from `credential.credentialSubject.face` only (`openID4VPSelectors.ts:81`). Face removed from the SD-JWT template.
+- Issuance 2 (21:5x): token 1,681 B, credential 5,436 B, holder proof `alg: Ed25519`. Presentation 2 (21:56): plain Share, 3 of 12 disclosures, KB-JWT EdDSA with aud = verifier DID, nonce, sd_hash (recomputed, matches); verify-service no error, status check skipped for SD-JWT. Issuer cert chain: P-256 leaf under a self-signed RSA example root; `iss` is the https URL. Trace in `TRACE-SDJWT.md`. C-11 closes D-02; F24, F25.
+
 ---
 
 ## 2026-10-13 (Tue, evening)

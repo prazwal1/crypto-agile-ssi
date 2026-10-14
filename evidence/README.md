@@ -26,3 +26,4 @@ SHA-256.
 | `2026-10-14-presentation-export/` | Full stored VP submissions (photo redacted) and `TRACE.md`, the presentation trace table | F20, F23 |
 | `2026-10-14-verify-version-diff/` | inji-verify v0.17.0 vs v0.18.2 and vc-verifier 1.6.0 vs 1.8.1 diffs, summary | C-10, F8, F18, F23 |
 | `2026-10-14-verify-image-libs/` | Libraries in the deployed verify-service jar (jar outside git: `F:\thesis\artifacts\2026-10-14-verify-0.18.2\`) | F8 |
+| `2026-10-14-sdjwt-issuance/`, `-sdjwt-presentation/`, `-sdjwt-issuance-2/`, `-sdjwt-presentation-2/` | SD-JWT VC runs (D-02): face-match failure, then successful issuance and selective-disclosure presentation; trace in `2026-10-14-presentation-export/TRACE-SDJWT.md` | C-11, F25 |

@@ -29,7 +29,7 @@ Files: `inji-verify-summary.txt` (per-file change status of the 18 inventory fil
 
 | Area | 1.6.0 | 1.8.1 |
 |---|---|---|
-| `SignatureFactory.get` | ES256 mapped to `ES256KSignatureVerifierImpl` (secp256k1 verifier for a P-256 alg, `:22`) | ES256 mapped to new `ES256SignatureVerifierImpl` (`:23`) |
+| `SignatureFactory.get` | ES256 mapped to `ES256KSignatureVerifierImpl` (`:22`); that class uses `SHA256withECDSA` with whatever key it is given, so P-256 still verifies | ES256 mapped to new `ES256SignatureVerifierImpl` (`:23`) |
 | LDP proofValue proofs (`LdpVerifier`) | any `proofValue` verified as Ed25519 (`:57-61`) | algorithm from proof type via `getJwsAlgorithmFromProofType` (`keyResolver/Utils.kt:72-80`); unknown suite throws |
 | Accepted proof types | RsaSignature2018, Ed25519Signature2018/2020, EcdsaSecp256k1Signature2019 | + EcdsaSecp256r1Signature2019 |
 | Accepted JWS algs (`ALGORITHMS_SUPPORTED`) | PS256, RS256, EdDSA, ES256K | unchanged (ES256 still absent from the JWS allow-list) |
@@ -41,5 +41,5 @@ Files: `inji-verify-summary.txt` (per-file change status of the 18 inventory fil
 1. Inji Verify-side static findings hold at v0.18.2: F20 (Ed25519-only request-signing key) and B-V3 lists are unchanged.
 2. F8 cannot rest on the shipped SBOM; the deployed jar is the reference. Inspected in `../2026-10-14-verify-image-libs/`: vcverifier-jar 1.8.1, nimbus 9.37.4, BouncyCastle 1.69, 1.70, 1.78.
 3. Two vc-verifier versions are in play: wallet 1.6.0, Inji Verify 1.8.1. F6 and F18 describe 1.6.0 (wallet); for Inji Verify, 1.8.1 fixes the proofValue-as-Ed25519 inference and adds EcdsaSecp256r1Signature2019, so issuer and the two verifiers now disagree differently.
-4. 1.6.0 maps ES256 to the secp256k1 verifier: a P-256 JWS would be checked against the wrong curve in the wallet. New detail for F18.
+4. 1.6.0 routes ES256 to the class written for ES256K. That class verifies with the key's own curve, so P-256 signatures verify correctly; the defect is a mislabelled registry entry and no check that the key's curve matches `alg` (corrected 2026-10-14 21:50 after reading the class). New detail for F18.
 5. The holder-binding check that exposed F23 exists only from vc-verifier 1.8.x; it accepts JsonWebSignature2020 with ES256, so the verifier would accept a P-256 presentation. F23 is a wallet-side limitation.

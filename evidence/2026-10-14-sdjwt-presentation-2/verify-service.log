@@ -1,0 +1,12 @@
+﻿2026-10-14T14:56:05.417389592Z 2026-10-14T14:56:05.415Z  INFO 1 --- [verify-service] [nio-8080-exec-7] VerifiablePresentationRequestServiceImpl : Creating authorization request
+2026-10-14T14:56:05.435686564Z 2026-10-14T14:56:05.435Z  INFO 1 --- [verify-service] [nio-8080-exec-7] VerifiablePresentationRequestServiceImpl : Authorization request created
+2026-10-14T14:56:30.276644292Z 2026-10-14T14:56:30.275Z  INFO 1 --- [verify-service] [nio-8080-exec-1] ifiablePresentationSubmissionServiceImpl : Received VP submission for state: req_67368f5d-13b8-4209-af8f-913d2a82e281
+2026-10-14T14:56:30.276682594Z 2026-10-14T14:56:30.276Z  INFO 1 --- [verify-service] [nio-8080-exec-1] ifiablePresentationSubmissionServiceImpl : VP submission length: 5127
+2026-10-14T14:56:30.307774864Z 2026-10-14T14:56:30.306Z  INFO 1 --- [verify-service] [nio-8080-exec-1] ifiablePresentationSubmissionServiceImpl : VP submission saved for state: req_67368f5d-13b8-4209-af8f-913d2a82e281
+2026-10-14T14:56:30.788049007Z 2026-10-14T14:56:30.787Z  INFO 1 --- [verify-service] [nio-8080-exec-3] ifiablePresentationSubmissionServiceImpl : Processing VP submission V2
+2026-10-14T14:56:30.788070508Z 2026-10-14T14:56:30.787Z  INFO 1 --- [verify-service] [nio-8080-exec-3] ifiablePresentationSubmissionServiceImpl : Processing VP token matching V2
+2026-10-14T14:56:30.788518633Z 2026-10-14T14:56:30.788Z  INFO 1 --- [verify-service] [nio-8080-exec-3] ifiablePresentationSubmissionServiceImpl : VP token matching done
+2026-10-14T14:56:30.789269376Z 2026-10-14T14:56:30.789Z  INFO 1 --- [verify-service] [nio-8080-exec-3] ifiablePresentationSubmissionServiceImpl : Processing VP verification V2
+2026-10-14T14:56:31.669715401Z 2026-10-14T14:56:31.669Z  WARN 1 --- [verify-service] [nio-8080-exec-3] i.m.v.vcverifier.CredentialsVerifier     : Error occurred while checking credential status of format VC_SD_JWT: Credential status checking not supported for this credential format. Returning empty status list.
+2026-10-14T14:56:31.673045391Z 2026-10-14T14:56:31.672Z  INFO 1 --- [verify-service] [nio-8080-exec-3] ifiablePresentationSubmissionServiceImpl : VP submission processing done V2
+2026-10-14T14:56:31.679767573Z 2026-10-14T14:56:31.679Z  INFO 1 --- [verify-service] [nio-8080-exec-3] i.i.v.controller.VPResultController      : Cleaning up VP session cookie
