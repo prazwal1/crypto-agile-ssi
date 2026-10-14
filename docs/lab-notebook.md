@@ -24,6 +24,7 @@ Dated record of working sessions. Each entry states what was done, what was obse
 - Wallet stuck twice on "Loading from localhost:8081": wireless adb drops the Metro reverse forward. Added `env/wallet/connect-phone.ps1`; `capture-logs.ps1` sets the forward.
 - Reissue (`evidence/2026-10-14-reissue-face/`): offer, metadata and token succeeded (token response 45,239 bytes); `POST /v1/certify/issuance/credential` was rejected by nginx with 400 "Request Header Or Cookie Too Large" before reaching Certify. Source: Certify writes all claims into the access token `sub` (F22). Fix: nginx header buffers 64k; face photos shrunk to 240 px. Checked the evidence for the photo and tokens before committing: none logged.
 - Reissue 2 (`evidence/2026-10-14-reissue-face-2/`, 19:27): token 11,941 bytes passed nginx, then Certify's Tomcat rejected the header (`Request header is too large`). The wallet retried with the consumed offer (`invalid_grant`). Fix: `server.max-http-request-header-size=64KB`. Same 8 KB budget at a second layer, which strengthens F22.
+- Reissue 3 (`evidence/2026-10-14-reissue-face-3/`, 19:42): token 11,948 bytes, `POST /issuance/credential` 200 (9,203 bytes), wallet then resolved the issuer DID and shows the card as valid.
 
 ---
 

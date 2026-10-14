@@ -19,3 +19,4 @@ SHA-256.
 | `2026-10-14-presentation-run/` | First presentation attempt; wallet face-matcher crash on the 28x5 placeholder face | known-issues 2026-10-14 |
 | `2026-10-14-reissue-face/` | Reissue with a face photo; credential request rejected by nginx (header too large) | F22 |
 | `2026-10-14-reissue-face-2/` | Second reissue; Certify Tomcat rejects the 11.9 KB token header | F22 |
+| `2026-10-14-reissue-face-3/` | Successful reissue with face photo after both header limits raised (token 11,948 bytes, credential 200) | F22 |
