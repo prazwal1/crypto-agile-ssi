@@ -4,6 +4,16 @@ Dated record of working sessions. Each entry states what was done, what was obse
 
 ---
 
+## 2026-10-14 (Wed)
+
+### Preparing the OpenID4VP presentation trace
+- Goal: one cross-device presentation of the FarmerCredential to Inji Verify, to observe at runtime the bindings F20 describes statically (VP signing, request-object verification, response handling).
+- Found presentations disabled (`VP_SUBMISSION_SUPPORTED=false`) and the verifier identified by internal Docker names (`did:web:verify-service:v1:verify`), unreachable from the phone. Upstream 0.18.2 compose expects a public proxy host (`VERIFY_SERVICE_PROXY_FOR_LOCALHOST`).
+- Changes: optional third tunnel hostname `VERIFY_HOSTNAME` (verify-ui:8000, which proxies `/v1/verify` and the DID to verify-service); verifier DID, response URI and redirect built from it; presentations enabled; FarmerCredential request added to `verify-config/config.json` (client_id_scheme did, ldp_vc, Ed25519Signature2020) and made the only essential entry.
+- Found D-08: verifier source analysed at v0.17.0, images run 0.18.2.
+
+---
+
 ## 2026-10-13 (Tue, evening)
 
 ### Final Phase 1 stack

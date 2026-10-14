@@ -73,6 +73,10 @@ if ($named) {
     "PUBLIC_CERTIFY_HOST=$($named.CERTIFY_HOSTNAME)",
     "PUBLIC_MIMOTO_URL=$mimotoUrl"
   ) | Set-Content -Path .env -Encoding ascii
+  if ($named.VERIFY_HOSTNAME) {
+    # Optional third hostname for the verifier (OpenID4VP presentations), mapped to verify-ui:8000
+    @("PUBLIC_VERIFY_HOST=$($named.VERIFY_HOSTNAME)", "PUBLIC_VERIFY_URL=https://$($named.VERIFY_HOSTNAME)") | Add-Content -Path .env -Encoding ascii
+  }
   # Remove quick-tunnel containers left from the other mode, then start everything.
   docker rm -f tunnel-certify tunnel-mimoto 2>&1 | Out-Null
   docker compose up -d | Out-Null
@@ -136,6 +140,8 @@ $checks = [ordered]@{
   "issuer DID"      = "$certifyUrl/.well-known/did.json"
   "mimoto issuers"  = "$mimotoUrl/v1/mimoto/issuers"
 }
+$pv = Get-EnvValue "PUBLIC_VERIFY_URL"
+if ($pv) { $checks["verifier DID"] = "$pv/v1/verify/did.json"; $checks["verifier UI"] = "$pv/" }
 $pending = [System.Collections.ArrayList]@($checks.Keys)
 $last = @{}
 $deadline = (Get-Date).AddMinutes(5)

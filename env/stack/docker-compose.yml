@@ -120,6 +120,8 @@ services:
     networks: [mosip]
 
   # ---------- Verifier (unmodified counterparty) ----------
+  # Local change (2026-10-14): verifier identity comes from PUBLIC_VERIFY_HOST/URL (named tunnel,
+  # VERIFY_HOSTNAME in tunnel.env), so the phone can fetch request objects and post presentations.
   verify-service:
     image: injistack/inji-verify-service:0.18.2
     container_name: verify-service
@@ -136,11 +138,11 @@ services:
       - DATABASE_USERNAME=postgres
       - DATABASE_PASSWORD=postgres
       - INJI_VP_REQUEST_LONG_POLLING_TIMEOUT=55000
-      - INJI_VP_SUBMISSION_BASE_URL=http://verify-service:8080/v1/verify
-      - INJI_DID_VERIFY_URI=did:web:verify-service:v1:verify
-      - INJI_DID_VERIFY_PUBLIC_KEY_URI=did:web:verify-service:v1:verify#key-0
+      - INJI_VP_SUBMISSION_BASE_URL=${PUBLIC_VERIFY_URL:-http://verify-service:8080}/v1/verify
+      - INJI_DID_VERIFY_URI=did:web:${PUBLIC_VERIFY_HOST:-verify-service}:v1:verify
+      - INJI_DID_VERIFY_PUBLIC_KEY_URI=did:web:${PUBLIC_VERIFY_HOST:-verify-service}:v1:verify#key-0
       - INJI_KEYSTORE_FILE_PASS=mosip
-      - INJI_VERIFY_REDIRECT_URI=http://verify-service:8080
+      - INJI_VERIFY_REDIRECT_URI=${PUBLIC_VERIFY_URL:-http://verify-service:8080}
       - INJI_VERIFY_RESPONSE_CODE_EXPIRY_TIME_IN_MINS=5
       - INJI_VERIFY_CLAIMS_WITH_META_DATA=_sd,_sd_alg,iss,cnf,sub,aud,exp,nbf,iat,cti
     depends_on:
@@ -160,9 +162,9 @@ services:
       - INTERNET_CONNECTIVITY_CHECK_TIMEOUT=10000
       - OVP_QR_HEADER=INJI_OVP://payload=
       - VERIFIABLE_CLAIMS_CONFIG_URL=/assets/config.json
-      - VP_SUBMISSION_SUPPORTED=false
+      - VP_SUBMISSION_SUPPORTED=true   # local change: OpenID4VP presentation (cross-device) enabled
       - CLIENT_ID=inji-verify-ui
-      - CLIENT_ID_DID=did:web:verify-service:v1:verify
+      - CLIENT_ID_DID=did:web:${PUBLIC_VERIFY_HOST:-verify-service}:v1:verify
       - DISPLAY_TIMEOUT=120000
     volumes:
       - ./verify-config/config.json:/usr/share/nginx/html/assets/config.json

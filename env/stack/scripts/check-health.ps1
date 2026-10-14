@@ -27,6 +27,8 @@ if ($pc) {
     Write-Host ("  {0}  {1}" -f (Get-HttpStatus $u), $u)
   }
 } else { Write-Note ".env has no public URLs yet; run .\stack.ps1 refresh-tunnels" }
+$pv = Get-EnvValue "PUBLIC_VERIFY_URL"
+if ($pv) { foreach ($u in @("$pv/v1/verify/did.json", "$pv/")) { Write-Host ("  {0}  {1}" -f (Get-HttpStatus $u), $u) } }
 
 Write-Section "Tunnel status"
 $tunnels = if (Test-Path .\tunnel.env) { @("tunnel-named") } else { @("tunnel-certify", "tunnel-mimoto") }
