@@ -13,7 +13,8 @@ $out = Join-Path $RepoRoot ("evidence\{0}-presentation-export" -f (Get-Date -For
 New-Item -ItemType Directory -Force -Path $out | Out-Null
 
 # The table has no creation time; rows are matched to runs by request_id (state) in verify-service.log.
-$sql = "SELECT json_agg(t) FROM (SELECT request_id, error, error_description, presentation_submission, vp_token FROM verify.vp_submission) t;"
+# vp_token holds a PostgreSQL large-object id (VPSubmission.vpToken is @JdbcTypeCode(SqlTypes.CLOB), which PostgreSQL stores as a large object), so the content is read with lo_get.
+$sql = "SELECT json_agg(t) FROM (SELECT request_id, error, error_description, presentation_submission, vp_token AS vp_token_oid, convert_from(lo_get(vp_token::oid), 'UTF8') AS vp_token FROM verify.vp_submission) t;"
 $raw = docker exec inji-postgres psql -U postgres -d inji_verify -t -A -c $sql
 if ($LASTEXITCODE -ne 0 -or -not $raw) { Write-Fail "Query failed"; exit 1 }
 $raw = ($raw -join "`n")
