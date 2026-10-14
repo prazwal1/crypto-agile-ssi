@@ -18,7 +18,7 @@ $sql = "SELECT json_agg(t) FROM (SELECT request_id, error, error_description, pr
 $raw = docker exec inji-postgres psql -U postgres -d inji_verify -t -A -c $sql
 if ($LASTEXITCODE -ne 0 -or -not $raw) { Write-Fail "Query failed"; exit 1 }
 $raw = ($raw -join "`n")
-$clean = [regex]::Replace($raw, 'data:image/[a-zA-Z]+;base64,[A-Za-z0-9+/=\\]+', '<face image redacted>')
+$clean = [regex]::Replace($raw, 'data:image/[a-zA-Z]+;base64,[A-Za-z0-9+/=]+', '<face image redacted>')
 $n = ([regex]::Matches($raw, 'data:image/')).Count
 $clean | Set-Content -Path (Join-Path $out "vp_submission.json") -Encoding utf8
 $rows = ([regex]::Matches($raw, '"request_id"')).Count

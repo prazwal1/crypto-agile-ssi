@@ -23,3 +23,4 @@ SHA-256.
 | `2026-10-14-presentation-run-2/` | Two OpenID4VP presentations rejected for holder binding (Ed25519 VP key vs P-256 credential key) | F23 |
 | `2026-10-14-reissue-eddsa/` | Reissue bound to Ed25519 (proof `alg: EdDSA`) and presentation A, verified | F23, F20 |
 | `2026-10-14-presentation-run-3/` | Presentation B, verified (holder binding passed) | F20, F23 |
+| `2026-10-14-presentation-export/` | Full stored VP submissions (photo redacted) and `TRACE.md`, the presentation trace table | F20, F23 |

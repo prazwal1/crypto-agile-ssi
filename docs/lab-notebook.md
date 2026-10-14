@@ -38,6 +38,8 @@ Dated record of working sessions. Each entry states what was done, what was obse
 - Presentation B (`evidence/2026-10-14-presentation-run-3/`, 20:04 to 20:05): `req_1d60e1d6`, VP 9,901 chars, same checks passed, result valid in the browser.
 - Both: `LdpStatusChecker` warns "No credentialStatus field present in the VC" (no revocation check possible for this credential).
 - The access token header in logcat is `{"b64":false,"crit":["b64"],"kid":...}` (detached-payload JWS form from keymanager); values in logcat are truncated, so the VP proof is taken from the verifier database (`stack.ps1 export-presentation`).
+- 20:08 to 20:10 `export-presentation` (`evidence/2026-10-14-presentation-export/`). First run returned only large-object ids: `VPSubmission.vpToken` is `@JdbcTypeCode(SqlTypes.CLOB)`, stored by PostgreSQL as a large object; fixed with `lo_get`. Second run: 4 submissions, 4 face images redacted; the redaction regex also removed a JSON escape, repaired and the regex fixed. Trace summarised in `TRACE.md`: VP proof `JsonWebSignature2020` with detached EdDSA JWS; credential proof `Ed25519Signature2020`; failed runs P-256 subject vs Ed25519 holder, successful runs same Ed25519 key.
+- Side observation: the wallet writes VP proof `created` in local time with a `Z` suffix (7 h off); not checked by the verifier.
 
 ---
 
