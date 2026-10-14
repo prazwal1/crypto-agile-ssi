@@ -1,6 +1,6 @@
 # D-01 draft: the classical baseline algorithm set
 
-Status: draft for PB decision. Question (decisions.md D-01): include RS256 and ES256K in the
+Status: DECIDED 2026-10-14 (C-14) - Option A. Baseline = Ed25519, ES256, RS256; ES256K kept in inventory/CBOM but not a demonstrated migration target. Question (decisions.md D-01): include RS256 and ES256K in the
 baseline, or justify excluding them. "Baseline" = the classical algorithms the Crypto Service
 Layer (CSL) must already handle before any post-quantum algorithm is added, i.e. the "before" state
 the migration starts from.
@@ -53,5 +53,4 @@ Option A keeps the baseline equal to what the prototype demonstrably does, which
 story for RQ1 to RQ4: every baseline algorithm has a runtime trace, and ES256K is named as a known
 registry entry the agility mechanism must handle without being a migration target.
 
-PB decision: ______  (A / B / C / other). Once decided, this becomes a closed decision and the
-baseline column feeds the RQ1 narrative and the Phase 4 migration scope.
+PB decision: **A** (2026-10-14, C-14). Feeds the RQ1 narrative and the Phase 4 migration scope.

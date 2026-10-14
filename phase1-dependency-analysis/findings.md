@@ -58,7 +58,7 @@ production files); method and evidence in `../evidence/2026-10-13-inventory-revi
 - [x] SD-JWT VC end to end (D-02, C-11; `../evidence/2026-10-14-presentation-export/TRACE-SDJWT.md`; F24, F25)
 - [x] Map Certify's signing path through MOSIP keymanager (`issuer-signing-path.md`, F12 to F15)
 - [x] D-07 issuer DID conformance checked and deferred to D-03 (C-13; `../evidence/2026-10-14-did-conformance/`)
-- [ ] Decide the classical baseline algorithm set (D-01)
+- [x] Classical baseline decided: Ed25519, ES256, RS256 (D-01 -> C-14, option A; `../docs/d01-baseline-algorithms.md`)
 - [x] CycloneDX 1.6 CBOM (`results/cbom.json`, schema-valid; `results/cbom-README.md`)
 - [x] Phase 1 workbook with findings, requirements R-01 to R-14, traceability and evidence links (`../docs/phase1/Phase1-Workbook.xlsx`)
 - [ ] Phase 1 summary answering RQ1 (narrative chapter text)
