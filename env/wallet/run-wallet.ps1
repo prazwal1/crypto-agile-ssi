@@ -38,3 +38,7 @@ Start-Sleep 5
 Set-Location $WalletDir
 & $adb reverse tcp:8081 tcp:8081 | Out-Null
 npx react-native run-android --mode=residentappDebug --active-arch-only
+
+# run-android can finish before the phone fetches the bundle; on wireless adb the forward may already be gone.
+& $adb reverse tcp:8081 tcp:8081 | Out-Null
+Write-Host "If the app stays on 'Loading from localhost:8081', run .\connect-phone.ps1" -ForegroundColor Cyan
