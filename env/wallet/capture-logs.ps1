@@ -27,6 +27,8 @@ $dev = & $adb devices | Select-String "\tdevice$"
 if (-not $dev) { Write-Host "No phone connected (adb devices shows none). Check USB debugging." -ForegroundColor Red; exit 1 }
 
 $start = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
+# Re-establish the Metro port forward; wireless adb drops it on every reconnect.
+& $adb reverse tcp:8081 tcp:8081 | Out-Null
 & $adb logcat -c
 Write-Host "Recording to $out  (started $start UTC)." -ForegroundColor Cyan
 Write-Host "Now: run issue-offer, scan in the wallet, WAIT for the result on the phone, then press Ctrl+C here." -ForegroundColor Cyan
