@@ -1,0 +1,32 @@
+﻿**********************
+Windows PowerShell transcript start
+Start time: 20261014191703
+Username: PRAZWAL\acer
+RunAs User: PRAZWAL\acer
+Configuration Name: 
+Machine: PRAZWAL (Microsoft Windows NT 10.0.26200.0)
+Host Application: C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.exe
+Process ID: 36284
+PSVersion: 5.1.26100.9444
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.9444
+BuildVersion: 10.0.26100.9444
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+Transcript started, output file is logs\20261014-191702-issue-offer-face.log
+PS F:\thesis\crypto-agile-ssi\env\stack> .\scripts\issue-test-offer.ps1 -FaceFile F:\thesis\private\face.jpg
+  FAIL  Face file not found: F:\thesis\private\face.jpg
+PS F:\thesis\crypto-agile-ssi\env\stack> .\scripts\issue-test-offer.ps1 -FaceFile F:\thesis\private\face.jpeg
+  OK    Face claim from face.jpeg (300x400, 24 KB)
+
+== Requesting credential offer
+  OK    Offer created
+  openid-credential-offer://?credential_offer_uri=https%3A%2F%2Fssi-issuer.arlabsnepal.com%2Fv1%2Fcertify%2Fcredential-offer-data%2Fb579bf94-cd44-4191-be5a-87f26c0400c5
+PS F:\thesis\crypto-agile-ssi\env\stack> Stop-Transcript
+**********************
+Windows PowerShell transcript end
+End time: 20261014191730
+**********************

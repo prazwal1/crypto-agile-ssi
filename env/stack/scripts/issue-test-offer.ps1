@@ -9,7 +9,7 @@
   Optional photo (jpg or png) that replaces the row's face claim. Needed for presentations:
   Inji Wallet forces "Share with selfie" for any credential with a face, and the sample rows
   carry a 28x5 placeholder that crashes its face matcher (minimum 32x32). The photo is
-  resized to at most 400 px, sent only to the local Certify, and never written to the repo.
+  resized to at most 240 px and saved as JPEG quality 70, sent only to the local Certify, and never written to the repo.
   Keep it outside the repo, e.g. F:\thesis\private\face.jpg.
 
 .OUTPUTS
@@ -33,14 +33,18 @@ if ($FaceFile) {
   if (-not (Test-Path $FaceFile)) { Write-Fail "Face file not found: $FaceFile"; exit 1 }
   Add-Type -AssemblyName System.Drawing
   $img = [System.Drawing.Image]::FromFile((Resolve-Path $FaceFile))
-  $scale = [Math]::Min(1.0, 400.0 / [Math]::Max($img.Width, $img.Height))
+  $scale = [Math]::Min(1.0, 240.0 / [Math]::Max($img.Width, $img.Height))
   $w = [int]($img.Width * $scale); $h = [int]($img.Height * $scale)
   $bmp = New-Object System.Drawing.Bitmap $w, $h
   $g = [System.Drawing.Graphics]::FromImage($bmp)
   $g.InterpolationMode = [System.Drawing.Drawing2D.InterpolationMode]::HighQualityBicubic
   $g.DrawImage($img, 0, 0, $w, $h)
   $ms = New-Object System.IO.MemoryStream
-  $bmp.Save($ms, [System.Drawing.Imaging.ImageFormat]::Jpeg)
+  # Keep it small: Certify copies all claims into the access token, which travels as a header.
+  $codec = [System.Drawing.Imaging.ImageCodecInfo]::GetImageEncoders() | Where-Object { $_.MimeType -eq "image/jpeg" }
+  $ep = New-Object System.Drawing.Imaging.EncoderParameters 1
+  $ep.Param[0] = New-Object System.Drawing.Imaging.EncoderParameter ([System.Drawing.Imaging.Encoder]::Quality), 70L
+  $bmp.Save($ms, $codec, $ep)
   $g.Dispose(); $bmp.Dispose(); $img.Dispose()
   $claims["face"] = "data:image/jpeg;base64," + [Convert]::ToBase64String($ms.ToArray())
   Write-Ok ("Face claim from {0} ({1}x{2}, {3} KB)" -f (Split-Path $FaceFile -Leaf), $w, $h, [int]($ms.Length / 1024))

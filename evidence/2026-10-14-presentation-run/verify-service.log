@@ -1,0 +1,4 @@
+﻿2026-10-14T04:40:19.813028846Z 2026-10-14T04:40:19.811Z  INFO 1 --- [verify-service] [nio-8080-exec-6] VerifiablePresentationRequestServiceImpl : Creating authorization request
+2026-10-14T04:40:19.838583066Z 2026-10-14T04:40:19.838Z  INFO 1 --- [verify-service] [nio-8080-exec-6] VerifiablePresentationRequestServiceImpl : Authorization request created
+2026-10-14T04:45:07.540969710Z 2026-10-14T04:45:07.540Z  INFO 1 --- [verify-service] [nio-8080-exec-3] VerifiablePresentationRequestServiceImpl : Creating authorization request
+2026-10-14T04:45:07.549824158Z 2026-10-14T04:45:07.549Z  INFO 1 --- [verify-service] [nio-8080-exec-3] VerifiablePresentationRequestServiceImpl : Authorization request created

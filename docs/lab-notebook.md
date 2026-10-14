@@ -19,6 +19,11 @@ Dated record of working sessions. Each entry states what was done, what was obse
 - Fix: SQL patch 002 (adds the columns, drops NOT NULL on `vp_token` and `presentation_submission`, adds the unique constraint and index, as in the 0.18.2 DDL); `apply-patches` now routes a patch by its `-- database:` header and restarts verify-service; `verify_init.sql` corrected for fresh installs. Other three tables match the DDL (`input_descriptors` is jsonb here, text upstream; no effect on reads).
 - Lesson for the method: compare schemas against the release DDL, not the convenience compose file.
 
+### Presentation attempt 1 and reissue with a face photo (11:42 to 19:18)
+- Attempt 1 (`evidence/2026-10-14-presentation-run/`): wallet offered only "Share with selfie" and crashed after the selfie with "Input image width and height should be at least 32". The sample credential's `face` is a 28x5 placeholder PNG; `SendVPScreen.tsx:325-355` forces Share with selfie whenever a credential has a face. Added `issue-test-offer.ps1 -FaceFile` (photo kept in `F:\thesis\private\`, gitignored).
+- Wallet stuck twice on "Loading from localhost:8081": wireless adb drops the Metro reverse forward. Added `env/wallet/connect-phone.ps1`; `capture-logs.ps1` sets the forward.
+- Reissue (`evidence/2026-10-14-reissue-face/`): offer, metadata and token succeeded (token response 45,239 bytes); `POST /v1/certify/issuance/credential` was rejected by nginx with 400 "Request Header Or Cookie Too Large" before reaching Certify. Source: Certify writes all claims into the access token `sub` (F22). Fix: nginx header buffers 64k; face photos shrunk to 240 px. Checked the evidence for the photo and tokens before committing: none logged.
+
 ---
 
 ## 2026-10-13 (Tue, evening)
