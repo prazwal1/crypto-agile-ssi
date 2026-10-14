@@ -5,6 +5,10 @@
 .PARAMETER Id
   Row id in config\farmer_identity_data.csv whose claims go into the credential.
 
+.PARAMETER ConfigId
+  Credential configuration to offer: FarmerCredential (ldp_vc, default) or FarmerCredentialSdJwt (vc+sd-jwt, D-02).
+  Both take the same CSV claims.
+
 .PARAMETER FaceFile
   Optional photo (jpg or png) that replaces the row's face claim. Needed for presentations:
   Inji Wallet forces "Share with selfie" for any credential with a face, and the sample rows
@@ -19,7 +23,8 @@ param(
   [string]$Id = "2154189532",
   [string]$TxCode = "",
   [int]$ExpiresIn = 600,
-  [string]$FaceFile = ""
+  [string]$FaceFile = "",
+  [string]$ConfigId = "FarmerCredential"
 )
 . "$PSScriptRoot\common.ps1"
 
@@ -50,7 +55,7 @@ if ($FaceFile) {
   Write-Ok ("Face claim from {0} ({1}x{2}, {3} KB)" -f (Split-Path $FaceFile -Leaf), $w, $h, [int]($ms.Length / 1024))
 }
 
-$body = [ordered]@{ credential_configuration_id = "FarmerCredential"; claims = $claims; expires_in = $ExpiresIn }
+$body = [ordered]@{ credential_configuration_id = $ConfigId; claims = $claims; expires_in = $ExpiresIn }
 if ($TxCode) { $body.tx_code = $TxCode }
 
 Write-Section "Requesting credential offer"
@@ -75,7 +80,7 @@ $html = @"
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>body{font-family:sans-serif;margin:32px;background:#fff;color:#111}#qr{margin:24px 0}code{word-break:break-all;font-size:12px}</style>
 </head><body>
-<h2>FarmerCredential offer for $Id</h2>
+<h2>$ConfigId offer for $Id</h2>
 <p>Scan with Inji Wallet. Expires in $ExpiresIn seconds.$(if ($TxCode) { " Transaction code: <b>$TxCode</b>" })</p>
 <div id="qr"></div>
 <code>$enc</code>

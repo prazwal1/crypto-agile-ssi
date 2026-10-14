@@ -44,6 +44,48 @@
     },
     {
       "logo": "/assets/cert.png",
+      "name": "Farmer Credential (SD-JWT)",
+      "type": "FarmerCredentialSdJwt",
+      "essential": false,
+      "clientIdScheme": "did",
+      "definition": {
+        "purpose": "Relying party is requesting your Farmer credential (SD-JWT) for the D-02 end-to-end test",
+        "format": {
+          "vc+sd-jwt": {
+            "sd-jwt_alg_values": [
+              "ES256"
+            ]
+          }
+        },
+        "input_descriptors": [
+          {
+            "id": "farmer credential sd-jwt",
+            "format": {
+              "vc+sd-jwt": {
+                "sd-jwt_alg_values": [
+                  "ES256"
+                ]
+              }
+            },
+            "constraints": {
+              "fields": [
+                {
+                  "path": [
+                    "$.vct"
+                  ],
+                  "filter": {
+                    "type": "string",
+                    "pattern": "FarmerCredentialSdJwt"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "logo": "/assets/cert.png",
       "name": "MOSIP ID",
       "type": "MOSIPVerifiableCredential",
       "essential": false,

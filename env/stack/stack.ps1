@@ -16,12 +16,13 @@
   .\stack.ps1 capture-baseline # save issuer DID and metadata to evidence\<date>-issuer-baseline
   .\stack.ps1 reset-keys       # regenerate issuer keys (invalidates issued credentials)
   .\stack.ps1 diagnose-verifier # layer test, logs and config of Inji Verify into evidence\
+  .\stack.ps1 add-credential-config # register config\credential-configs\FarmerCredentialSdJwt.json in Certify (D-02)
   .\stack.ps1 export-presentation # latest stored VP submissions (photo redacted) into evidence\
   .\stack.ps1 stop             # stop containers, keep data
 #>
 param(
   [Parameter(Position = 0)]
-  [ValidateSet("start", "refresh-tunnels", "check", "restart-issuer", "apply-patches", "issue-offer", "capture-baseline", "reset-keys", "diagnose-verifier", "export-presentation", "stop")]
+  [ValidateSet("start", "refresh-tunnels", "check", "restart-issuer", "apply-patches", "issue-offer", "capture-baseline", "reset-keys", "diagnose-verifier", "export-presentation", "add-credential-config", "stop")]
   [string]$Command = "check"
 )
 
@@ -36,6 +37,7 @@ $map = @{
   "reset-keys"       = "reset-issuer-keys.ps1"
   "diagnose-verifier" = "diagnose-verifier.ps1"
   "export-presentation" = "export-presentation.ps1"
+  "add-credential-config" = "add-credential-config.ps1"
   "stop"             = "stop-stack.ps1"
 }
 
