@@ -51,9 +51,10 @@ production files); method and evidence in `../evidence/2026-10-13-inventory-revi
 - [x] Runtime trace of one issuance and one verification (`../evidence/2026-10-13-reference-run/`): the default flow uses ES256 (F3, F9)
 - [x] Mimoto image matches the analysed source (C-07, closes D-05)
 - [x] Hand-score `results/inventory.csv` (`results/inventory-scored.csv`, `results/bindings.csv`; F17 to F20). Spot-check by PB pending (`review/spot-check.csv`)
+- [x] Runtime OpenID4VP presentation trace (`../evidence/2026-10-14-presentation-export/TRACE.md`; F22, F23; patches 002, 003)
 - [ ] Confirm whether Inji supports SD-JWT VC end to end (D-02)
 - [x] Map Certify's signing path through MOSIP keymanager (`issuer-signing-path.md`, F12 to F15)
 - [ ] Decide the classical baseline algorithm set (D-01)
 - [ ] Export verified rows to a CycloneDX CBOM
-- [x] Phase 1 workbook with findings, requirements R-01 to R-12, traceability and evidence links (`../docs/phase1/Phase1-Workbook.xlsx`)
+- [x] Phase 1 workbook with findings, requirements R-01 to R-14, traceability and evidence links (`../docs/phase1/Phase1-Workbook.xlsx`)
 - [ ] Phase 1 summary answering RQ1 (narrative chapter text)
