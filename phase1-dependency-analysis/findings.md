@@ -57,6 +57,7 @@ production files); method and evidence in `../evidence/2026-10-13-inventory-revi
 - [x] Inji Verify source vs running version (D-08, C-10; `../evidence/2026-10-14-verify-version-diff/`, `../evidence/2026-10-14-verify-image-libs/`)
 - [x] SD-JWT VC end to end (D-02, C-11; `../evidence/2026-10-14-presentation-export/TRACE-SDJWT.md`; F24, F25)
 - [x] Map Certify's signing path through MOSIP keymanager (`issuer-signing-path.md`, F12 to F15)
+- [x] D-07 issuer DID conformance checked and deferred to D-03 (C-13; `../evidence/2026-10-14-did-conformance/`)
 - [ ] Decide the classical baseline algorithm set (D-01)
 - [ ] Export verified rows to a CycloneDX CBOM
 - [x] Phase 1 workbook with findings, requirements R-01 to R-14, traceability and evidence links (`../docs/phase1/Phase1-Workbook.xlsx`)

@@ -55,6 +55,10 @@ Dated record of working sessions. Each entry states what was done, what was obse
 - Issuance 1 (with face) succeeded; presentation 1 failed `FACE_INVALID` three times. Cause: wallet forces selfie from `getFaceAttribute` (reads SD-JWT) but takes the reference face from `credential.credentialSubject.face` only (`openID4VPSelectors.ts:81`). Face removed from the SD-JWT template.
 - Issuance 2 (21:5x): token 1,681 B, credential 5,436 B, holder proof `alg: Ed25519`. Presentation 2 (21:56): plain Share, 3 of 12 disclosures, KB-JWT EdDSA with aud = verifier DID, nonce, sd_hash (recomputed, matches); verify-service no error, status check skipped for SD-JWT. Issuer cert chain: P-256 leaf under a self-signed RSA example root; `iss` is the https URL. Trace in `TRACE-SDJWT.md`. C-11 closes D-02; F24, F25.
 
+### Closing items on Claude's side (22:08 onward)
+- InsufficientAuthenticationException (open since 2026-10-09): mechanism confirmed from `SecurityConfig` (`.anyRequest().authenticated()` + oauth2 resource server). Any request to `certify:8090` on a non-ignored path without a bearer token is rejected (401) and logged at ERROR by `ExceptionHandlerAdvice`. No functional impact. Added `stack.ps1 diagnose-certify-auth` to pin the exact caller; left as cosmetic.
+- D-07: issuer DID `assertionMethod`/`authentication` list the bare DID, not the verification-method id (`DIDDocumentUtil.java:62-63` vs the id at `:132`). Non-conformant with DID Core / Controlled Identifiers; MOSIP verifiers do not enforce it (`vc-verifier LdpVerifier.kt:43-55`) so runs passed. Deferred to the D-03 external-verifier test (C-13); covered by R-10. Evidence `evidence/2026-10-14-did-conformance/`.
+
 ---
 
 ## 2026-10-13 (Tue, evening)
