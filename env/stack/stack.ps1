@@ -15,11 +15,12 @@
   .\stack.ps1 issue-offer      # create a pre-authorized test credential offer (QR in offer.html)
   .\stack.ps1 capture-baseline # save issuer DID and metadata to evidence\<date>-issuer-baseline
   .\stack.ps1 reset-keys       # regenerate issuer keys (invalidates issued credentials)
+  .\stack.ps1 diagnose-verifier # layer test, logs and config of Inji Verify into evidence\
   .\stack.ps1 stop             # stop containers, keep data
 #>
 param(
   [Parameter(Position = 0)]
-  [ValidateSet("start", "refresh-tunnels", "check", "restart-issuer", "apply-patches", "issue-offer", "capture-baseline", "reset-keys", "stop")]
+  [ValidateSet("start", "refresh-tunnels", "check", "restart-issuer", "apply-patches", "issue-offer", "capture-baseline", "reset-keys", "diagnose-verifier", "stop")]
   [string]$Command = "check"
 )
 
@@ -32,6 +33,7 @@ $map = @{
   "issue-offer"      = "issue-test-offer.ps1"
   "capture-baseline" = "capture-issuer-baseline.ps1"
   "reset-keys"       = "reset-issuer-keys.ps1"
+  "diagnose-verifier" = "diagnose-verifier.ps1"
   "stop"             = "stop-stack.ps1"
 }
 
