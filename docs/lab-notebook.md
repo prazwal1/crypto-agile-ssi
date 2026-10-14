@@ -26,6 +26,11 @@ Dated record of working sessions. Each entry states what was done, what was obse
 - Reissue 2 (`evidence/2026-10-14-reissue-face-2/`, 19:27): token 11,941 bytes passed nginx, then Certify's Tomcat rejected the header (`Request header is too large`). The wallet retried with the consumed offer (`invalid_grant`). Fix: `server.max-http-request-header-size=64KB`. Same 8 KB budget at a second layer, which strengthens F22.
 - Reissue 3 (`evidence/2026-10-14-reissue-face-3/`, 19:42): token 11,948 bytes, `POST /issuance/credential` 200 (9,203 bytes), wallet then resolved the issuer DID and shows the card as valid.
 
+### Presentation run 2 (19:44 to 19:46)
+- `evidence/2026-10-14-presentation-run-2/`. Two presentations; both reached verify-service (VP 10,032 chars) and both failed the holder binding check: VP holder `did:jwk` OKP/Ed25519, VC subject `did:jwk` EC/P-256. Credential signature verification itself ran (LdpVerifier); no credentialStatus in the VC.
+- Cause in the wallet source: issuance key from the issuer's allowed proof algorithms and the user's key order; presentation key fixed to Ed25519 (F23). Fix for the run: SQL patch 003 (FarmerCredential allows EdDSA proofs; wallet default order puts Ed25519 first), then reissue.
+- Verifier screenshot not committed: it shows the holder's photo.
+
 ---
 
 ## 2026-10-13 (Tue, evening)
