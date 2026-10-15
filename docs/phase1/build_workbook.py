@@ -98,37 +98,45 @@ def add_review(ws, first_row, last_row, note=None):
     REVIEWED.append((ws.title, first_row, last_row, c0, note))
 
 # ---------------- README
-order_names = ['Review Status','RQ1 Answer','Findings','Requirements','Traceability','Algorithm Matrix','Bindings','Issuer Registries','Stats','Inventory','Runtime Evidence','Source Citations','Evidence Index','Environment','Decisions','Known Issues','Activity Log','Method','Spot-Check']
-ws = wb.create_sheet('README')
+order_names = ['Environment', 'Method', 'Activity Log', 'RQ1 Answer', 'Findings', 'Requirements', 'Traceability', 'Bindings', 'Issuer Registries', 'Algorithm Matrix', 'Runtime Evidence', 'Inventory', 'Source Citations', 'Evidence Index', 'Spot-Check', 'Stats', 'Decisions', 'Known Issues', 'Review Status']
+ws = wb.create_sheet('Overview')
 ws.column_dimensions['A'].width = 28; ws.column_dimensions['B'].width = 110
 rows = [
  ('Phase 1 Workbook: Cryptographic Dependency Analysis (RQ1)', None),
  ('Thesis', 'Crypto-agile architecture for W3C DID/VC systems, prototyped on MOSIP Inji (AIT Master\'s thesis, Prajwal Bhandary; supervisor Aj. George)'),
  ('Phase 1 question (RQ1)', 'Where, and how tightly, does the Inji stack bind to specific cryptographic algorithms, and what does that mean for a post-quantum migration?'),
- ('Status', 'Analysis complete (2026-10-13). Open: PB spot-check of 20 inventory rows (sheet Spot-Check); D-01 and D-02 (sheet Decisions); CBOM export.'),
- ('Source repository', 'F:\\thesis\\crypto-agile-ssi (git). This workbook: docs/phase1/Phase1-Workbook.xlsx. Links in column "Evidence" open files relative to this workbook, so keep the repository folder structure. Links in "Code" open the exact line on GitHub at the pinned commit.'),
- ('Generated', 'From the repository files by docs/phase1/build_workbook.py (findings.md, decisions.md, known-issues.md, results/*.csv, review/*.tsv, evidence/*). Edit the sources, then rebuild.'),
+ ('What we did', 'Built the Inji stack locally (issuer, wallet, two verifiers), then issued and presented real credentials on a hardware-backed Android phone. Mapped every place the code commits to a specific algorithm: a static scan of 10 pinned repositories (919 candidate sites, 446 verified by hand into 35 bindings) plus runtime traces of issuance, OpenID4VP presentation and SD-JWT. Verified libraries were exported to a CycloneDX CBOM.'),
+ ('How to read this workbook', 'Left to right it follows the study: Context (this sheet and Environment), Method (how the analysis was done, and the Activity Log), Results (RQ1 Answer, Findings, Requirements, Traceability), Supporting detail (bindings, registries, inventory, evidence), Discussion (Decisions, Known Issues), and Review.'),
+ ('Status', 'Analysis complete. 25 findings (F1 to F25) and 15 requirements (R-01 to R-15). Classical baseline decided (C-14: Ed25519, ES256, RS256). Pending before Phase 1 closes: PB and supervisor review of the yellow columns, then the RQ1 narrative chapter.'),
+ ('Source repository', 'F:\thesis\crypto-agile-ssi (git). This workbook: docs/phase1/Phase1-Workbook.xlsx. Links in column "Evidence" open files relative to this workbook, so keep the repository folder structure. Links in "Code" open the exact line on GitHub at the pinned commit.'),
+ ('Generated', 'From the repository files by docs/phase1/build_workbook.py (findings.md, decisions.md, known-issues.md, results/*.csv, review/*.tsv, evidence/*). Edit the sources, then rebuild; review verdicts are preserved.'),
  ('', None),
- ('Sheet', 'What it contains'),
- ('Review Status', 'Review progress and agreement per sheet, for PB and the supervisor (formulas)'),
+ ('Contents', None),
+ ('Context', None),
+ ('Environment', 'The stack the analysis ran against: pinned repositories, running images, device and libraries'),
+ ('How the analysis was done', None),
+ ('Method', 'Surfaces S1 to S4, coupling types, statuses, the two review passes, scanner rules and limits'),
+ ('Activity Log', 'Work sessions and every git commit, in order: what was done and when'),
+ ('Results', None),
  ('RQ1 Answer', 'Short answers to the six Phase 1 sub-questions, each with supporting findings and the metric behind it'),
- ('Findings', 'F1 to F21: finding, how we concluded it (reasoning), why it matters, evidence type, confidence, code and evidence links'),
- ('Requirements', 'R-01 to R-12: design requirements derived from the findings, input to RQ2, with rationale, priority and how each will be checked in RQ4'),
+ ('Findings', 'F1 to F25: the finding, how we concluded it, why it matters, evidence type, confidence, and code and evidence links'),
+ ('Requirements', 'R-01 to R-15: design requirements derived from the findings, input to RQ2, with rationale, priority and the RQ4 check'),
  ('Traceability', 'Findings x requirements matrix (computed from the Requirements sheet)'),
- ('Algorithm Matrix', 'Which algorithm each component supports, accepts or advertises, with the code or evidence for each column'),
+ ('Supporting detail', None),
  ('Bindings', 'The 35 places in the stack that depend on an algorithm choice, with surface, coupling type, trust boundary and files'),
  ('Issuer Registries', 'The 12 places an issuer-side algorithm must be added to (F12), with code links'),
- ('Stats', 'Counts computed by formula from the Inventory sheet'),
+ ('Algorithm Matrix', 'Which algorithm each component supports, accepts or advertises, with the code or evidence for each column'),
+ ('Runtime Evidence', 'Step-by-step timeline of the runs (issuance, presentation, SD-JWT), with the log file for each step'),
  ('Inventory', 'All 919 scanner rows with status, binding and scores (filterable)'),
- ('Runtime Evidence', 'Timeline of the reference run and the failed first attempt, step by step, with log files'),
- ('Source Citations', 'Every cited source location (C1 to C24 signing trace, R1 to R16 inventory review) with GitHub permalink and local path'),
- ('Evidence Index', 'Evidence folders and artifacts: what, how produced, what they support'),
- ('Environment', 'Pinned repositories, running images, device and libraries'),
- ('Decisions', 'Open and closed scope and design decisions'),
- ('Known Issues', 'Environment problems met, causes and fixes'),
- ('Activity Log', 'Work sessions and every git commit, in order'),
- ('Method', 'Surfaces, coupling types, statuses, review passes, scanner rules and limits'),
+ ('Source Citations', 'Every cited source location (signing trace and inventory review) with GitHub permalink and local path'),
+ ('Evidence Index', 'Evidence folders and artifacts: what each is, how it was produced, and what it supports'),
  ('Spot-Check', 'Independent check of 20 sampled inventory rows: yellow cells are for the reviewer'),
+ ('Stats', 'Counts computed by formula from the Inventory and Bindings sheets'),
+ ('Discussion', None),
+ ('Decisions', 'Scope and design decisions: D-xx open, C-xx closed, each with the reasoning at the time'),
+ ('Known Issues', 'Environment problems met during the work, their causes and fixes'),
+ ('Review', None),
+ ('Review Status', 'Review progress and agreement per sheet, for PB and the supervisor (formulas)'),
  ('', None),
  ('How to review', 'Each sheet that makes a claim (RQ1 Answer, Findings, Requirements, Algorithm Matrix, Bindings, Issuer Registries, Runtime Evidence, Source Citations, Decisions, Spot-Check) has yellow review columns on the right: PB verdict and comment, Supervisor verdict and comment. Verdict is Agree, Partly or Disagree (drop-down); say why in the comment. Progress is counted on the Review Status sheet. Rebuilding the workbook keeps every verdict and comment.'),
  ('Conventions', 'S1 key generation and storage; S2 verification method and DID encoding; S3 proof suites, formats, issuance and presentation proofs; S4 transport and key agreement. Coupling types after Rameshan and Messmer: creation, operation, provider. Yellow cells are inputs for the reviewer. No values are typed over formulas.'),
@@ -475,7 +483,7 @@ for col in 'CDEFGHIJK':
 c = put(ws, r, 12, f'=IF(D{r}=0,"-",E{r}/D{r})', bold=True); c.number_format = '0%'
 c = put(ws, r, 13, f'=IF(H{r}=0,"-",I{r}/H{r})', bold=True); c.number_format = '0%'
 
-order = ['README','Review Status','RQ1 Answer','Findings','Requirements','Traceability','Algorithm Matrix','Bindings','Issuer Registries','Stats','Inventory','Runtime Evidence','Source Citations','Evidence Index','Environment','Decisions','Known Issues','Activity Log','Method','Spot-Check']
+order = ['Overview', 'Environment', 'Method', 'Activity Log', 'RQ1 Answer', 'Findings', 'Requirements', 'Traceability', 'Bindings', 'Issuer Registries', 'Algorithm Matrix', 'Runtime Evidence', 'Inventory', 'Source Citations', 'Evidence Index', 'Spot-Check', 'Stats', 'Decisions', 'Known Issues', 'Review Status']
 wb._sheets = [wb[n] for n in order]
 for wsx in wb.worksheets: wsx.sheet_view.zoomScale = 100
 out = OUT
