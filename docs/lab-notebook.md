@@ -4,6 +4,16 @@ Dated record of working sessions. Each entry states what was done, what was obse
 
 ---
 
+## 2026-10-29 (Thu)
+
+### Workbook review columns
+- PB finished checking every sheet of `docs/phase1/Phase1-Workbook.xlsx`; no corrections.
+- Replaced the four review columns on ten sheets (PB verdict and comment, Supervisor verdict and comment) with a single yellow `Professor review` column on the four sheets that carry the argument: RQ1 Answer, Findings, Requirements, Decisions. Bindings, Issuer Registries, Algorithm Matrix, Runtime Evidence, Source Citations and Spot-Check are supporting evidence and no longer have review columns.
+- Review Status now counts commented rows per sheet. Overview, Method and Spot-Check text updated to record PB review as done; Findings title corrected to F1 to F25.
+- Change made in `build_workbook.py`, so a rebuild keeps it and carries professor comments over.
+
+---
+
 ## 2026-10-14 (Wed)
 
 ### Preparing the OpenID4VP presentation trace

@@ -53,8 +53,7 @@ def finish(ws, last_col):
     ws.auto_filter.ref = f'A{ws._hdr}:{get_column_letter(last_col)}{ws.max_row}'
 
 # ---------------- Review columns (preserved across rebuilds)
-REVIEW_COLS = ['PB verdict', 'PB comment', 'Supervisor verdict', 'Supervisor comment']
-VERDICTS = '"Agree,Partly,Disagree"'
+REVIEW_COL = 'Professor review'
 RHFILL = PatternFill('solid', fgColor='BF8F00')
 REVIEWED = []   # (sheet title, key column letter, first row, last row, first review column index)
 
@@ -73,10 +72,10 @@ def harvest(path):
     for ws in owb.worksheets:
         for hr in range(1, 8):
             heads = {ws.cell(hr, c).value: c for c in range(1, ws.max_column + 1)}
-            if 'PB verdict' in heads:
+            if REVIEW_COL in heads:
                 for r in range(hr + 1, ws.max_row + 1):
-                    vals = [ws.cell(r, heads[h]).value for h in REVIEW_COLS]
-                    if any(v not in (None, '') for v in vals): old[(ws.title, review_key(ws, r))] = vals
+                    v = ws.cell(r, heads[REVIEW_COL]).value
+                    if v not in (None, ''): old[(ws.title, review_key(ws, r))] = v
                 break
     return old
 
@@ -85,16 +84,12 @@ print('existing review entries carried over:', len(OLD_REVIEWS))
 
 def add_review(ws, first_row, last_row, note=None):
     c0 = ws.max_column + 1
-    for k, h in enumerate(REVIEW_COLS):
-        c = ws.cell(ws._hdr, c0 + k, h); c.font = HFONT; c.fill = RHFILL; c.border = BORDER
-        c.alignment = Alignment(wrap_text=True, vertical='center')
-        ws.column_dimensions[get_column_letter(c0 + k)].width = 12 if 'verdict' in h else 40
-    dv = DataValidation(type='list', formula1=VERDICTS, allow_blank=True); ws.add_data_validation(dv)
+    c = ws.cell(ws._hdr, c0, REVIEW_COL); c.font = HFONT; c.fill = RHFILL; c.border = BORDER
+    c.alignment = Alignment(wrap_text=True, vertical='center')
+    ws.column_dimensions[get_column_letter(c0)].width = 45
     for r in range(first_row, last_row + 1):
-        prev = OLD_REVIEWS.get((ws.title, review_key(ws, r)), [None] * 4)
-        for k in range(4):
-            c = ws.cell(r, c0 + k, prev[k]); c.fill = INPUT; c.font = BODY; c.alignment = WRAP; c.border = BORDER
-        dv.add(f'{get_column_letter(c0)}{r}'); dv.add(f'{get_column_letter(c0 + 2)}{r}')
+        c = ws.cell(r, c0, OLD_REVIEWS.get((ws.title, review_key(ws, r))))
+        c.fill = INPUT; c.font = BODY; c.alignment = WRAP; c.border = BORDER
     REVIEWED.append((ws.title, first_row, last_row, c0, note))
 
 # ---------------- README
@@ -107,7 +102,7 @@ rows = [
  ('Phase 1 question (RQ1)', 'Where, and how tightly, does the Inji stack bind to specific cryptographic algorithms, and what does that mean for a post-quantum migration?'),
  ('What we did', 'Built the Inji stack locally (issuer, wallet, two verifiers), then issued and presented real credentials on a hardware-backed Android phone. Mapped every place the code commits to a specific algorithm: a static scan of 10 pinned repositories (919 candidate sites, 446 verified by hand into 35 bindings) plus runtime traces of issuance, OpenID4VP presentation and SD-JWT. Verified libraries were exported to a CycloneDX CBOM.'),
  ('How to read this workbook', 'Left to right it follows the study: Context (this sheet and Environment), Method (how the analysis was done, and the Activity Log), Results (RQ1 Answer, Findings, Requirements, Traceability), Supporting detail (bindings, registries, inventory, evidence), Discussion (Decisions, Known Issues), and Review.'),
- ('Status', 'Analysis complete. 25 findings (F1 to F25) and 15 requirements (R-01 to R-15). Classical baseline decided (C-14: Ed25519, ES256, RS256). Pending before Phase 1 closes: PB and supervisor review of the yellow columns, then the RQ1 narrative chapter.'),
+ ('Status', 'Analysis complete. 25 findings (F1 to F25) and 15 requirements (R-01 to R-15). Classical baseline decided (C-14: Ed25519, ES256, RS256). PB review complete (2026-10-29, no changes). Pending before Phase 1 closes: professor review, then the RQ1 narrative chapter.'),
  ('Source repository', 'F:\thesis\crypto-agile-ssi (git). This workbook: docs/phase1/Phase1-Workbook.xlsx. Links in column "Evidence" open files relative to this workbook, so keep the repository folder structure. Links in "Code" open the exact line on GitHub at the pinned commit.'),
  ('Generated', 'From the repository files by docs/phase1/build_workbook.py (findings.md, decisions.md, known-issues.md, results/*.csv, review/*.tsv, evidence/*). Edit the sources, then rebuild; review verdicts are preserved.'),
  ('', None),
@@ -130,16 +125,16 @@ rows = [
  ('Inventory', 'All 919 scanner rows with status, binding and scores (filterable)'),
  ('Source Citations', 'Every cited source location (signing trace and inventory review) with GitHub permalink and local path'),
  ('Evidence Index', 'Evidence folders and artifacts: what each is, how it was produced, and what it supports'),
- ('Spot-Check', 'Independent check of 20 sampled inventory rows: yellow cells are for the reviewer'),
+ ('Spot-Check', 'Independent check of 20 sampled inventory rows (checked by PB)'),
  ('Stats', 'Counts computed by formula from the Inventory and Bindings sheets'),
  ('Discussion', None),
  ('Decisions', 'Scope and design decisions: D-xx open, C-xx closed, each with the reasoning at the time'),
  ('Known Issues', 'Environment problems met during the work, their causes and fixes'),
  ('Review', None),
- ('Review Status', 'Review progress and agreement per sheet, for PB and the supervisor (formulas)'),
+ ('Review Status', 'Professor review progress per sheet (formulas)'),
  ('', None),
- ('How to review', 'Each sheet that makes a claim (RQ1 Answer, Findings, Requirements, Algorithm Matrix, Bindings, Issuer Registries, Runtime Evidence, Source Citations, Decisions, Spot-Check) has yellow review columns on the right: PB verdict and comment, Supervisor verdict and comment. Verdict is Agree, Partly or Disagree (drop-down); say why in the comment. Progress is counted on the Review Status sheet. Rebuilding the workbook keeps every verdict and comment.'),
- ('Conventions', 'S1 key generation and storage; S2 verification method and DID encoding; S3 proof suites, formats, issuance and presentation proofs; S4 transport and key agreement. Coupling types after Rameshan and Messmer: creation, operation, provider. Yellow cells are inputs for the reviewer. No values are typed over formulas.'),
+ ('How to review', 'Four sheets carry the argument and have a yellow Professor review column on the right: RQ1 Answer, Findings, Requirements and Decisions. Leave a row blank if it is fine; write a comment where you disagree or want a change. The other sheets are supporting evidence, already checked by PB. Progress is counted on the Review Status sheet. Rebuilding the workbook keeps every comment.'),
+ ('Conventions', 'S1 key generation and storage; S2 verification method and DID encoding; S3 proof suites, formats, issuance and presentation proofs; S4 transport and key agreement. Coupling types after Rameshan and Messmer: creation, operation, provider. Yellow cells are for professor comments. No values are typed over formulas.'),
 ]
 for i, (a, b) in enumerate(rows, 1):
     ca = ws.cell(i, 1, a); ca.font = Font(name=F, size=13 if i == 1 else 10, bold=(i == 1 or b is None and a != '' or a in ('Sheet',)))
@@ -150,7 +145,7 @@ for i, (a, b) in enumerate(rows, 1):
 
 # ---------------- Findings
 ws = sheet('Findings', ['ID','Surface','Component','Finding','How we concluded (reasoning)','Why it matters','RQ','Evidence type','Confidence','Code (pinned commit)','Code 2','Code 3','Evidence in repo','Evidence 2','Requirements'], [6,9,16,60,45,45,10,14,10,38,38,38,36,36,14],
-           'Phase 1 findings F1 to F21', 'Static = confirmed by reading source at the pinned commit; runtime = observed on the running stack; links open the exact lines.')
+           'Phase 1 findings F1 to F25', 'Static = confirmed by reading source at the pinned commit; runtime = observed on the running stack; links open the exact lines.')
 reqmap = {}
 for rid, *_ , in REQS: pass
 for rq in REQS:
@@ -224,7 +219,6 @@ for i, a in enumerate(ALGS):
     for j, m in enumerate(MATRIX, 2):
         v = m[2][i]; c = put(ws, rr, j, v)
         if v.startswith('No'): c.fill = PatternFill('solid', fgColor='F2F2F2')
-add_review(ws, ws._hdr + 2, ws._hdr + 1 + len(ALGS), 'Are the support claims in this row right?')
 nr = ws._hdr + 2 + len(ALGS) + 1
 put(ws, nr, 1, 'Observations', bold=True)
 obs = ['ES256: issuer can sign and accepts ES256 holder proofs, but vc-verifier\'s allow-list rejects ES256 JWS and its proof-type list lacks EcdsaSecp256r1Signature2019 (F18).',
@@ -250,7 +244,6 @@ for row in csv.DictReader(open(os.path.join(ROOT, 'phase1-dependency-analysis/re
     r += 1
 bl = r - 1; bfirst = ws._hdr + 1
 put(ws, r, 4, 'Total', bold=True); put(ws, r, 5, f'=SUM(E{ws._hdr+1}:E{bl})'); put(ws, r, 6, f'=SUM(F{ws._hdr+1}:F{bl})')
-add_review(ws, bfirst, bl, 'Is this a real, correctly scored binding?')
 ws.auto_filter.ref = f'A{ws._hdr}:{get_column_letter(ws.max_column)}{bl}'
 
 # ---------------- Issuer Registries
@@ -262,7 +255,6 @@ for n, name, kind, loc, ev, code in REGISTRIES:
     if code: put(ws, r, 5, coderef_text(code), link=gh(*code))
     else: put(ws, r, 5, ev, link=REPO_REL + ev)
     r += 1
-add_review(ws, ws._hdr + 1, r - 1, 'Is this a place an issuer algorithm must be added?')
 put(ws, r, 2, 'Code registries', bold=True); put(ws, r, 3, f'=COUNTIF(C{ws._hdr+1}:C{r-1},"code*")')
 put(ws, r + 1, 2, 'All registries', bold=True); put(ws, r + 1, 3, f'=COUNTA(A{ws._hdr+1}:A{r-1})')
 
@@ -330,7 +322,6 @@ r = ws._hdr + 1
 for run, t, step, res, ev in RUNTIME:
     put(ws, r, 1, run, bold=True); put(ws, r, 2, t); put(ws, r, 3, step); put(ws, r, 4, res); put(ws, r, 5, ev, link=REPO_REL + ev); r += 1
 finish(ws, 5)
-add_review(ws, ws._hdr + 1, r - 1, 'Does the log file show this step and result?')
 finish(ws, ws.max_column)
 
 # ---------------- Source Citations
@@ -348,7 +339,6 @@ for src, exf in [(os.path.join(ROOT, 'evidence/2026-10-13-issuer-signing-trace/c
         put(ws, r, 8, 'open', link=gh(repo, path, int(a), int(b))); put(ws, r, 9, exf.split('/')[1], link=REPO_REL + exf)
         r += 1
 finish(ws, 9)
-add_review(ws, ws._hdr + 1, r - 1, 'Do the linked lines show what the row says?')
 finish(ws, ws.max_column)
 
 # ---------------- Evidence Index
@@ -434,7 +424,7 @@ meth = [
  ('Review','Pass 1 (scripted)','file_class from path: test, build, deploy-config (non-code files only), doc, app-config, source. Rules in tools/score_inventory.py'),
  ('Review','Pass 2 (hand)','For every source and app-config file: read the matched lines and surrounding code at the pinned commit; one judgement per file in review/judgements.tsv; script refuses to run if any is missing'),
  ('Review','Correction','Deploy rule first matched production Java classes under config/ packages; rule changed to non-code files and the four classes reviewed by hand'),
- ('Review','Independent check','Seeded stratified sample of 20 rows (sheet Spot-Check), to be checked by PB'),
+ ('Review','Independent check','Seeded stratified sample of 20 rows (sheet Spot-Check), checked by PB with no corrections'),
  ('Runtime','capture-logs.ps1','Clears logcat, records wallet JS and native warnings, then saves Certify, nginx and Mimoto logs for the same window'),
  ('Runtime','capture-baseline','Saves issuer DID, issuer metadata, OAuth metadata and JWKS from the public hostname'),
  ('Citations','tools/cite.py','Extracts every cited file:line range from the pinned clones into an excerpt file with repo, tag and commit'),
@@ -453,35 +443,29 @@ for line in open(os.path.join(ROOT, 'phase1-dependency-analysis/tools/rules.yaml
 
 # ---------------- Spot-Check
 ws = sheet('Spot-Check', ['ID','Repo','File','Lines','Rule','Matched','Status given','Binding','Coupling','Surface','Trust boundary','Notes','Code'], [7,13,45,12,12,16,14,8,10,8,9,40,8],
-           'Spot-check of the inventory review', 'Open the code link, read the lines, then fill the yellow cells: verdict Agree / Partly / Disagree and a comment. Example: Agree, "Proof suite constant; operation coupling is right".')
+           'Spot-check of the inventory review', 'Seeded sample of 20 inventory rows; each code link opens the exact lines. Checked by PB (2026-10-29): status, binding and scoring confirmed for all rows.')
 r = ws._hdr + 1
 for x in csv.DictReader(open(os.path.join(ROOT, 'phase1-dependency-analysis/review/spot-check.csv'))):
     vals = [x['id'], x['repo'], x['file'], x['lines'], x['rule'], x['matched'], x['status'], x['binding'], x['coupling_type'], x['surface'], x['crosses_trust_boundary'], x['notes']]
     for i, v in enumerate(vals, 1): put(ws, r, i, v)
     first = re.match(r'\d+', x['lines'] or ''); put(ws, r, 13, 'open', link=gh(x['repo'], x['file'], int(first.group()) if first else None))
     r += 1
-add_review(ws, ws._hdr + 1, r - 1, 'Is the status, binding and scoring of this inventory row right?')
 finish(ws, ws.max_column)
 
 # ---------------- Review Status (formulas)
-ws = sheet('Review Status', ['Sheet','What reviewers check','Items','PB reviewed','PB agree','PB partly','PB disagree','Supervisor reviewed','Supervisor agree','Supervisor partly','Supervisor disagree','PB agreement','Supervisor agreement'],
-           [18,48,7,9,8,8,9,11,10,10,11,11,12], 'Review status', 'Counts are formulas over the yellow review columns of each sheet. Agreement = agree / reviewed. Rebuilding the workbook keeps every verdict and comment.')
+ws = sheet('Review Status', ['Sheet','What to check','Items','Rows commented'],
+           [18,60,8,12], 'Review status', 'Professor review is limited to the sheets that carry the argument. Blank means no objection; a comment flags a row to discuss or change. Rebuilding the workbook keeps every comment.')
 r = ws._hdr + 1
 for title, a, b, c0, note in REVIEWED:
     q = "'" + title + "'"
-    rng = lambda k: f"{q}!${get_column_letter(c0 + k)}${a}:${get_column_letter(c0 + k)}${b}"
+    L = get_column_letter(c0)
     put(ws, r, 1, title, link=f"#{q}!A1"); put(ws, r, 2, note or '')
     put(ws, r, 3, f"=ROWS({q}!$A${a}:$A${b})")
-    put(ws, r, 4, f'=COUNTA({rng(0)})'); put(ws, r, 5, f'=COUNTIF({rng(0)},"Agree")'); put(ws, r, 6, f'=COUNTIF({rng(0)},"Partly")'); put(ws, r, 7, f'=COUNTIF({rng(0)},"Disagree")')
-    put(ws, r, 8, f'=COUNTA({rng(2)})'); put(ws, r, 9, f'=COUNTIF({rng(2)},"Agree")'); put(ws, r, 10, f'=COUNTIF({rng(2)},"Partly")'); put(ws, r, 11, f'=COUNTIF({rng(2)},"Disagree")')
-    c = put(ws, r, 12, f'=IF(D{r}=0,"-",E{r}/D{r})'); c.number_format = '0%'
-    c = put(ws, r, 13, f'=IF(H{r}=0,"-",I{r}/H{r})'); c.number_format = '0%'
+    put(ws, r, 4, f'=COUNTA({q}!${L}${a}:${L}${b})')
     r += 1
 put(ws, r, 1, 'Total', bold=True)
-for col in 'CDEFGHIJK':
+for col in 'CD':
     put(ws, r, ord(col) - 64, f'=SUM({col}{ws._hdr+1}:{col}{r-1})', bold=True)
-c = put(ws, r, 12, f'=IF(D{r}=0,"-",E{r}/D{r})', bold=True); c.number_format = '0%'
-c = put(ws, r, 13, f'=IF(H{r}=0,"-",I{r}/H{r})', bold=True); c.number_format = '0%'
 
 order = ['Overview', 'Environment', 'Method', 'Activity Log', 'RQ1 Answer', 'Findings', 'Requirements', 'Traceability', 'Bindings', 'Issuer Registries', 'Algorithm Matrix', 'Runtime Evidence', 'Inventory', 'Source Citations', 'Evidence Index', 'Spot-Check', 'Stats', 'Decisions', 'Known Issues', 'Review Status']
 wb._sheets = [wb[n] for n in order]
