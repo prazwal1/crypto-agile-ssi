@@ -12,7 +12,7 @@ from openpyxl.utils import get_column_letter
 from openpyxl.worksheet.datavalidation import DataValidation
 from openpyxl.comments import Comment
 
-REPO_REL = '../../'   # workbook lives in docs/phase1/; links are relative to it
+REPO_REL = 'https://github.com/prazwal1/crypto-agile-ssi/blob/main/'   # evidence links open on GitHub so the workbook is self-contained
 F = 'Arial'
 HFILL = PatternFill('solid', fgColor='1F3864'); HFONT = Font(name=F, bold=True, color='FFFFFF', size=10)
 BODY = Font(name=F, size=10); BOLD = Font(name=F, size=10, bold=True)
@@ -93,7 +93,7 @@ def add_review(ws, first_row, last_row, note=None):
     REVIEWED.append((ws.title, first_row, last_row, c0, note))
 
 # ---------------- README
-order_names = ['Environment', 'Method', 'Activity Log', 'RQ1 Answer', 'Findings', 'Requirements', 'Traceability', 'Bindings', 'Issuer Registries', 'Algorithm Matrix', 'Runtime Evidence', 'Inventory', 'Source Citations', 'Evidence Index', 'Spot-Check', 'Stats', 'Decisions', 'Known Issues', 'Review Status']
+order_names = ['Environment', 'Method', 'RQ1 Answer', 'Findings', 'Requirements', 'Traceability', 'Bindings', 'Issuer Registries', 'Algorithm Matrix', 'Runtime Evidence', 'Inventory', 'Source Citations', 'Evidence Index', 'Spot-Check', 'Stats', 'Known Issues']
 ws = wb.create_sheet('Overview')
 ws.column_dimensions['A'].width = 28; ws.column_dimensions['B'].width = 110
 rows = [
@@ -101,9 +101,9 @@ rows = [
  ('Thesis', 'Crypto-agile architecture for W3C DID/VC systems, prototyped on MOSIP Inji (AIT Master\'s thesis, Prajwal Bhandary; supervisor Aj. George)'),
  ('Phase 1 question (RQ1)', 'Where, and how tightly, does the Inji stack bind to specific cryptographic algorithms, and what does that mean for a post-quantum migration?'),
  ('What we did', 'Built the Inji stack locally (issuer, wallet, two verifiers), then issued and presented real credentials on a hardware-backed Android phone. Mapped every place the code commits to a specific algorithm: a static scan of 10 pinned repositories (919 candidate sites, 446 verified by hand into 35 bindings) plus runtime traces of issuance, OpenID4VP presentation and SD-JWT. Verified libraries were exported to a CycloneDX CBOM.'),
- ('How to read this workbook', 'Left to right it follows the study: Context (this sheet and Environment), Method (how the analysis was done, and the Activity Log), Results (RQ1 Answer, Findings, Requirements, Traceability), Supporting detail (bindings, registries, inventory, evidence), Discussion (Decisions, Known Issues), and Review.'),
- ('Status', 'Analysis complete. 25 findings (F1 to F25) and 15 requirements (R-01 to R-15). Classical baseline decided (C-14: Ed25519, ES256, RS256). PB review complete (2026-10-29, no changes). Pending before Phase 1 closes: professor review, then the RQ1 narrative chapter.'),
- ('Source repository', 'F:\thesis\crypto-agile-ssi (git). This workbook: docs/phase1/Phase1-Workbook.xlsx. Links in column "Evidence" open files relative to this workbook, so keep the repository folder structure. Links in "Code" open the exact line on GitHub at the pinned commit.'),
+ ('How to read this workbook', 'Left to right it follows the study: Context (this sheet and Environment), Method, Results (RQ1 Answer, Findings, Requirements, Traceability), Supporting detail (bindings, registries, inventory, evidence), and Known Issues.'),
+ ('Status', 'Analysis complete. 25 findings (F1 to F25) and 15 requirements (R-01 to R-15). Classical baseline decided (C-14: Ed25519, ES256, RS256). Author review complete (no changes). Pending before Phase 1 closes: supervisor review, then the RQ1 narrative chapter.'),
+ ('Repository', 'https://github.com/prazwal1/crypto-agile-ssi (public). The workbook is self-contained: links in the "Evidence" columns open the file on GitHub, and links in "Code" open the exact line in the upstream MOSIP repository at the pinned commit. No local files are needed.'),
  ('Generated', 'From the repository files by docs/phase1/build_workbook.py (findings.md, decisions.md, known-issues.md, results/*.csv, review/*.tsv, evidence/*). Edit the sources, then rebuild; review verdicts are preserved.'),
  ('', None),
  ('Contents', None),
@@ -111,7 +111,6 @@ rows = [
  ('Environment', 'The stack the analysis ran against: pinned repositories, running images, device and libraries'),
  ('How the analysis was done', None),
  ('Method', 'Surfaces S1 to S4, coupling types, statuses, the two review passes, scanner rules and limits'),
- ('Activity Log', 'Work sessions and every git commit, in order: what was done and when'),
  ('Results', None),
  ('RQ1 Answer', 'Short answers to the six Phase 1 sub-questions, each with supporting findings and the metric behind it'),
  ('Findings', 'F1 to F25: the finding, how we concluded it, why it matters, evidence type, confidence, and code and evidence links'),
@@ -125,15 +124,12 @@ rows = [
  ('Inventory', 'All 919 scanner rows with status, binding and scores (filterable)'),
  ('Source Citations', 'Every cited source location (signing trace and inventory review) with GitHub permalink and local path'),
  ('Evidence Index', 'Evidence folders and artifacts: what each is, how it was produced, and what it supports'),
- ('Spot-Check', 'Independent check of 20 sampled inventory rows (checked by PB)'),
+ ('Spot-Check', 'Independent check of 20 sampled inventory rows (checked by the author)'),
  ('Stats', 'Counts computed by formula from the Inventory and Bindings sheets'),
  ('Discussion', None),
- ('Decisions', 'Scope and design decisions: D-xx open, C-xx closed, each with the reasoning at the time'),
  ('Known Issues', 'Environment problems met during the work, their causes and fixes'),
- ('Review', None),
- ('Review Status', 'Professor review progress per sheet (formulas)'),
  ('', None),
- ('How to review', 'Four sheets carry the argument and have a yellow Professor review column on the right: RQ1 Answer, Findings, Requirements and Decisions. Leave a row blank if it is fine; write a comment where you disagree or want a change. The other sheets are supporting evidence, already checked by PB. Progress is counted on the Review Status sheet. Rebuilding the workbook keeps every comment.'),
+ ('How to review', 'Three sheets carry the argument and have a yellow Professor review column on the right: RQ1 Answer, Findings and Requirements. Leave a row blank if it is fine; write a comment where you disagree or want a change. The other sheets are supporting evidence, already checked by the author. Rebuilding the workbook keeps every comment.'),
  ('Conventions', 'S1 key generation and storage; S2 verification method and DID encoding; S3 proof suites, formats, issuance and presentation proofs; S4 transport and key agreement. Coupling types after Rameshan and Messmer: creation, operation, provider. Yellow cells are for professor comments. No values are typed over formulas.'),
 ]
 for i, (a, b) in enumerate(rows, 1):
@@ -467,7 +463,7 @@ put(ws, r, 1, 'Total', bold=True)
 for col in 'CD':
     put(ws, r, ord(col) - 64, f'=SUM({col}{ws._hdr+1}:{col}{r-1})', bold=True)
 
-order = ['Overview', 'Environment', 'Method', 'Activity Log', 'RQ1 Answer', 'Findings', 'Requirements', 'Traceability', 'Bindings', 'Issuer Registries', 'Algorithm Matrix', 'Runtime Evidence', 'Inventory', 'Source Citations', 'Evidence Index', 'Spot-Check', 'Stats', 'Decisions', 'Known Issues', 'Review Status']
+order = ['Overview', 'Environment', 'Method', 'RQ1 Answer', 'Findings', 'Requirements', 'Traceability', 'Bindings', 'Issuer Registries', 'Algorithm Matrix', 'Runtime Evidence', 'Inventory', 'Source Citations', 'Evidence Index', 'Spot-Check', 'Stats', 'Known Issues']
 wb._sheets = [wb[n] for n in order]
 for wsx in wb.worksheets: wsx.sheet_view.zoomScale = 100
 out = OUT
